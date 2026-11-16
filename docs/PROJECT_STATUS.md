@@ -4,9 +4,23 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 03:24 UTC  
-**Verified main:** `9780969ac432758f78f0928fab73e4e979aa1891`  
-**Latest main merge:** PR #17, canonical project-status and chat-independent continuity checkpoint.
+**Last verified:** 2026-11-16 04:55 UTC  
+**Verified main:** `4d2cf3b82bd78437541b49da46f522c06d2652b5`  
+**Current work:** PR #28 — Android artifact verification and reproducible build path (OPEN; exact-head CI running).
+
+## Current live snapshot — 2026-11-16 04:55 UTC
+
+- Main SHA: `4d2cf3b82bd78437541b49da46f522c06d2652b5`.
+- Main CI: PASS — workflow run [#43801760248](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43801760248) on the exact main SHA; Godot, Python and Android Debug export jobs succeeded.
+- Current PR: #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), head `1ee509549f1eaf300488e6788dc330209ae31332`; exact-head CI runs #43806903494 (pull_request) and #43806890386 (push) were queued/in progress at this checkpoint. Re-check before merge.
+- The previous live API refresh found no other open PRs or issues; PR #28 is the only newly opened task in this snapshot.
+- Fresh main artifact: Actions artifact ID `14196731065`, run #346, SHA-256 of artifact ZIP `ab0fb977453de814fc48395f51ab7aa30196c149a70d8e3cad57a0ec6398cb4c`, expires 2026-11-30. The extracted APK SHA-256 is recorded in the build handoff; this is a debug build.
+- APK container integrity and expected Godot/arm64 payload were checked on the downloaded artifact. CI's existing Android job also ran aapt metadata and apksigner verification.
+- Redmi installation/launch, touch, persistence and thermal QA: NOT RUN.
+- No Gradle wrapper or Android Studio project is required by the current product. The Godot-generated Gradle template remains optional and must be generated from the exact Godot version if a reviewed Android plugin/AAB/custom-template requirement appears.
+- Repository branch protection remains UNVERIFIED because the GitHub integration could not read the settings endpoint (403).
+
+The older dated PR/issue tables and baseline below are historical snapshots and are superseded by this live section. Do not use them as current open-work inventory.
 
 ## Resume rule
 
@@ -45,7 +59,7 @@ This file is the operational starting point, not a substitute for live verificat
 - Production Kawasaki ZX-25RR geometry, verified UV/surface registration, mechanical fitment, structural/thermal validation and calibrated hardware mapping: NOT RUN.
 - Earlier merged work includes PR #2 (charter/workflow/catalog/manifesto/docs), #3 (BuildDocument contract), #4 (Neon profile store), #6 (research audit), #9 (context integrity), #10 (part paint/safe persistence), #12 (Android export preflight/signature verification), #14 (visual asset/charter handoff), #16 (chat-independent continuity) and #17 (canonical project checkpoint).
 
-## Open pull requests — live refresh 2026-11-16 03:24 UTC
+## Historical open-pull-request snapshot — 2026-11-16 03:24 UTC (superseded)
 
 | PR | Scope | Current state | Next action |
 |---|---|---|---|
@@ -55,7 +69,7 @@ This file is the operational starting point, not a substitute for live verificat
 
 PR #22 is closed without merge as a duplicate of #23. PRs #7, #8, #11, #18 and #19 are closed (superseded or diagnostic-only). PRs #2, #3, #4, #6, #9, #10, #12, #14, #16 and #17 are merged. Refresh all statuses before acting.
 
-## Open issues — live refresh 2026-11-16 03:24 UTC
+## Historical open-issue snapshot — 2026-11-16 03:24 UTC (superseded)
 
 - Issue #1: “[Architecture] Deliver the unified Atomic-Z-Customi-Z system”.
 - Issue #5: “[Research] Verify external engineering sources and sequence safe integration”.
@@ -88,7 +102,7 @@ Both issues were confirmed open; inspect comments/labels again before selecting 
 - The previous checkpoint recorded `main` as unprotected. A fresh branch-protection API read during this refresh returned 403 (Resource not accessible by integration), so current technical enforcement is **UNVERIFIED**. The repository owner must inspect Settings → Branches / Rulesets and configure required reviews/checks.
 - Do not claim required checks or reviews are enforced until repository settings confirm it.
 
-## Priority next actions
+## Historical priority next actions (superseded by current live snapshot)
 
 1. Independently review PR #20 and reconcile its base from `dccd402...` to current `main` before any merge decision.
 2. Review PR #23; consider whether the diagnostics and app-resume sampling guard suggested in the PR discussion improve the proposed controller without expanding beyond measured evidence.
@@ -106,3 +120,12 @@ Both issues were confirmed open; inspect comments/labels again before selecting 
 - Keep changes on a dedicated task branch and reviewed PR. No direct-main writes, force-push, self-merge or bypass of required checks.
 - Status vocabulary: PASS / FAIL / NOT RUN / BLOCKED. Every PASS must point to fresh evidence for the exact commit.
 - This checkpoint is the portable handoff. Do not depend on this chat, old chats, saved memory or an AI-generated recap.
+
+
+## Current next action — PR #28
+
+1. Wait for exact-head Godot/Python/Android CI and inspect logs if any job fails.
+2. Review the APK verifier against the actual CI-produced artifact; fix any mismatch before merge.
+3. Merge PR #28 only after review and green required checks.
+4. Publish a durable, versioned GitHub Release artifact only after release signing and device acceptance are approved.
+5. Run physical Redmi Note 13 Pro installation/launch and interaction QA; record the exact device SKU and APK SHA.
