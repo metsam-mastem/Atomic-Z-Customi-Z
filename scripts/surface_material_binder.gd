@@ -3,6 +3,7 @@ class_name SurfaceMaterialBinder
 
 var _root: Node
 var _bindings: Dictionary = {}
+var _owned_overrides: Dictionary = {}
 
 ## Configure stable surface IDs against an imported scene.
 ## Each entry: {surface_id: String, node_path: NodePath/String, surface_index: int}.
@@ -77,7 +78,7 @@ func apply_material(surface_id: String, source_material: Material) -> Material:
 	if source_material == null or not _bindings.has(surface_id):
 		return null
 	var mesh_instance := _resolve_mesh_instance(surface_id)
-	if mesh_instance == null:
+	if mesh_instance == null or mesh_instance.material_override != null:
 		return null
 
 	var surface_index := int(_bindings[surface_id]["surface_index"])
@@ -88,6 +89,11 @@ func apply_material(surface_id: String, source_material: Material) -> Material:
 	if instance_material == null:
 		return null
 	mesh_instance.set_surface_override_material(surface_index, instance_material)
+	_owned_overrides[surface_id] = {
+		"instance_id": mesh_instance.get_instance_id(),
+		"surface_index": surface_index,
+		"material": instance_material
+	}
 	return instance_material
 
 ## Clears only the override registered to this stable surface ID.
@@ -97,10 +103,24 @@ func clear_material_override(surface_id: String) -> bool:
 	var mesh_instance := _resolve_mesh_instance(surface_id)
 	if mesh_instance == null:
 		return false
+	if not _owned_overrides.has(surface_id):
+		return false
+	var ownership: Dictionary = _owned_overrides[surface_id]
 	var surface_index := int(_bindings[surface_id]["surface_index"])
 	if mesh_instance.mesh == null or surface_index >= mesh_instance.mesh.get_surface_count():
+		_owned_overrides.erase(surface_id)
+		return false
+	if int(ownership.get("instance_id", -1)) != mesh_instance.get_instance_id():
+		_owned_overrides.erase(surface_id)
+		return false
+	if int(ownership.get("surface_index", -1)) != surface_index:
+		_owned_overrides.erase(surface_id)
+		return false
+	if mesh_instance.get_surface_override_material(surface_index) != ownership.get("material"):
+		_owned_overrides.erase(surface_id)
 		return false
 	mesh_instance.set_surface_override_material(surface_index, null)
+	_owned_overrides.erase(surface_id)
 	return true
 
 func has_surface(surface_id: String) -> bool:
