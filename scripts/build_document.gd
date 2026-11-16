@@ -113,12 +113,12 @@ static func validate(document: Dictionary) -> Dictionary:
 				var surface_id := str(surface.get("surface_id", "")).strip_edges()
 				var node_path := str(surface.get("node_path", "")).strip_edges()
 				var surface_index: Variant = surface.get("surface_index", null)
-				if surface_id.is_empty() or known_surface_ids.has(surface_id):
-					errors.append("Asset surface IDs must be non-empty and unique.")
+				if not _is_stable_surface_id(surface_id) or known_surface_ids.has(surface_id):
+					errors.append("Asset surface IDs must be stable, non-empty and unique.")
 				else:
 					known_surface_ids[surface_id] = true
-				if node_path.is_empty():
-					errors.append("Asset surface %s requires a node_path." % surface_id)
+				if not _is_root_relative_node_path(node_path):
+					errors.append("Asset surface %s requires a safe root-relative node_path." % surface_id)
 				var surface_index_is_integer := surface_index is int
 				if surface_index is float:
 					surface_index_is_integer = is_equal_approx(float(surface_index), floorf(float(surface_index)))
@@ -196,6 +196,19 @@ static func from_json(json_text: String) -> Dictionary:
 	if not validate(parsed).get("ok", false):
 		return {}
 	return parsed
+
+static func _is_stable_surface_id(value: String) -> bool:
+	var regex := RegEx.new()
+	regex.compile("^[a-z0-9][a-z0-9._-]*$")
+	return regex.search(value) != null
+
+static func _is_root_relative_node_path(value: String) -> bool:
+	if value.is_empty() or value.begins_with("/") or value.contains(":"):
+		return false
+	for segment in value.split("/", false):
+		if segment == "..":
+			return false
+	return true
 
 static func _stable_id(label: String) -> String:
 	var normalized := label.to_lower().strip_edges()
