@@ -4,7 +4,7 @@ Date: 2026-11-16. Research informs architecture; it does not prove the project's
 
 ## Repository baseline observed
 Repository: https://github.com/metsam-mastem/Atomic-Z-Customi-Z
-Observed: Godot 4 Compatibility project, Android arm64 export preset, main scene, bike assembly script, neon skin runtime, legacy JSON, Tkinter preview, Godot/Python tests, architecture/acceptance/research docs. Recent commits include neon runtime, garage controls, validation, save/reload and Android export changes. Branch search showed main only; PR search returned none; open issue search returned none. Commit responses did not identify every agent reliably. README still calls Tkinter a separate preview tool and ModernGL an isolated experiment; unified-system spec supersedes this framing.
+Observed: Godot 4 Compatibility project, Android arm64 export preset, main scene, bike assembly script, neon skin runtime, legacy JSON, Tkinter preview, Godot/Python tests, architecture/acceptance/research docs. Recent commits include neon runtime, garage controls, validation, save/reload and Android export changes. That initial branch/PR snapshot is historical and no longer current; use the live GitHub snapshot in [PROJECT_STATUS.md](PROJECT_STATUS.md) and the mandatory preflight in AGENTS.md before acting. README still calls Tkinter a separate preview tool and ModernGL an isolated experiment; unified-system spec supersedes this framing.
 
 ## Open-source references
 - Godot: https://github.com/godotengine/godot — use native scene, resource, renderer, UI, input, persistence and Android export.
@@ -50,3 +50,17 @@ Nature Index topic pages are synthesized summaries, not direct validation. Consu
 
 ## External adoption checklist
 Verify license and commercial rights, maintenance/release, Godot/API compatibility, copied code versus inspiration, exact upstream commit, dependencies/security, attribution, integration tests and reason native Godot features are insufficient. No external code or asset is automatically approved by being listed here.
+
+## Motorcycle-game and reverse-engineering source decision — 2026-11-16
+
+A dedicated [Research Vault](../research/README.md) now contains the source registry, pinned commit references, per-project architecture dossiers, legal/provenance boundaries and a sparse local source-retrieval helper.
+
+This audit establishes a **research-only** source baseline. It does not approve adding a riding simulator, importing another game's source, or changing the Godot renderer. In particular:
+- DankNooner and its standalone predecessor are AGPL-3.0 and target newer Godot/renderer configurations; study their controller boundaries, not their code or assets.
+- OpenNFS's original code is MIT, but the project is a desktop C++/Bullet car engine and EA assets/data are not covered by its code licence.
+- OpenUG2 and Roadkill do not have a repository-level licence grant established for the full content; keep them study-only.
+- SPEED RE's MIT statement is explicitly limited to original contributions and excludes recovered game content.
+- REA's canonical upstream is [morluto/rea](https://github.com/morluto/rea), MIT; it remains an optional separate analysis tool.
+- CC0 Innerscene models are possible placeholder meshes only, not OEM CAD or fitment evidence.
+
+No external code or asset was imported into the Godot runtime in this task. Any future code adoption requires a separate licence review, architecture decision, isolated implementation PR and verification against Atomic-Z's BuildDocument and Android constraints.
