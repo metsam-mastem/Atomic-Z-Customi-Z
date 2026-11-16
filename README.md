@@ -1,0 +1,51 @@
+# Atomic Z — Customization Lab
+
+Android-first, modular 3D motorcycle customization and engineering-preview workbench.
+
+**Asset honesty:** the first scene uses procedural geometric placeholders. It is not a Kawasaki factory CAD model, a ZX-25RR-accurate replica, or a validated engineering model. Real model assets require clear licensing and verified dimensions.
+
+## First vertical slice
+- Godot 4 / GDScript project foundation.
+- Procedural sport-motorcycle placeholder with independently movable named parts.
+- Stock ↔ exploded assembly toggle.
+- Live body-color editing.
+- Touch/mouse orbit camera.
+- Adaptive low-cost rendering policy based on measured frame rate.
+- Architecture, research register and acceptance gates.
+
+## Run
+1. Install the current stable Godot 4 editor.
+2. Clone this repository.
+3. Import the folder containing project.godot.
+4. Run the project from the editor.
+
+No third-party runtime plugin is required for this slice.
+
+## Android
+Use the official Godot Android export guide:
+https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html
+
+This repository does not yet contain an APK/AAB or a device-tested export. Device profiling is a required acceptance gate, not an assumed result.
+
+## Planned modules
+| Module | Responsibility | Status |
+|---|---|---|
+| Garage scene | Showroom, camera, lighting, touch input | Foundation |
+| Assembly graph | Named parts, parent/child and explode offsets | Foundation |
+| Material lab | PBR presets and texture sets | Basic color control |
+| Asset pipeline | Blender → glTF/GLB → validation → Godot | Planned |
+| Part catalog | Fitment rules, dimensions, metadata, licensing | Planned |
+| Geometry lab | Parametric and procedural part generation | Planned |
+| Engineering checks | Interference, mass properties, solver adapters | Planned |
+| Plugin system | Versioned manifests and capability contracts | Planned |
+| Android profile | Device tiers, frame-time and memory budgets | Not run |
+
+## Project principles
+1. Mobile-first and offline-capable runtime.
+2. Visual preview is separate from engineering validation.
+3. Every imported model/material has provenance and license metadata.
+4. Parts use stable IDs, not display names.
+5. Prefer reusable modules and data-driven catalogs.
+6. No feature is complete until its acceptance checks pass on target hardware.
+
+See docs/architecture.md, docs/research-register.md and docs/acceptance.md.
