@@ -7,6 +7,7 @@ const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 
 const FIXTURE_PATH := "user://atomic_z_glb_runtime_fixture.glb"
 const SAVE_PATH := "user://atomic_z_glb_runtime_build.json"
+const MAIN_SAVE_PATH := "user://atomic_z_build.json"
 const FIXTURE_BASE64 := "Z2xURgIAAABcBwAA8AUAAEpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJBdG9taWMgWiBzeW50aGV0aWMgR0xCIHJ1bnRpbWUgdGVzdCBmaXh0dXJlIn0sInNjZW5lIjowLCJzY2VuZXMiOlt7Im5hbWUiOiJBdG9taWNGaXh0dXJlVmVoaWNsZSIsIm5vZGVzIjpbMF19XSwibm9kZXMiOlt7Im5hbWUiOiJBdG9taWNGaXh0dXJlVmVoaWNsZSIsImNoaWxkcmVuIjpbMSwyXX0seyJuYW1lIjoiQm9keVBhbmVsIiwibWVzaCI6MH0seyJuYW1lIjoiRnJvbnRXaGVlbFJpbSIsIm1lc2giOjF9XSwibWVzaGVzIjpbeyJuYW1lIjoiQm9keVBhbmVsTWVzaCIsInByaW1pdGl2ZXMiOlt7ImF0dHJpYnV0ZXMiOnsiUE9TSVRJT04iOjB9LCJpbmRpY2VzIjoxLCJtYXRlcmlhbCI6MH1dfSx7Im5hbWUiOiJGcm9udFdoZWVsUmltTWVzaCIsInByaW1pdGl2ZXMiOlt7ImF0dHJpYnV0ZXMiOnsiUE9TSVRJT04iOjJ9LCJpbmRpY2VzIjozLCJtYXRlcmlhbCI6MX1dfV0sIm1hdGVyaWFscyI6W3sibmFtZSI6IkZpeHR1cmVCb2R5UGFpbnQiLCJwYnJNZXRhbGxpY1JvdWdobmVzcyI6eyJiYXNlQ29sb3JGYWN0b3IiOlswLjIsMC4zNSwwLjY1LDEuMF0sIm1ldGFsbGljRmFjdG9yIjowLjQ1LCJyb3VnaG5lc3NGYWN0b3IiOjAuMzh9fSx7Im5hbWUiOiJGaXh0dXJlUmltTWV0YWwiLCJwYnJNZXRhbGxpY1JvdWdobmVzcyI6eyJiYXNlQ29sb3JGYWN0b3IiOlswLjY1LDAuNjgsMC43MiwxLjBdLCJtZXRhbGxpY0ZhY3RvciI6MC45LCJyb3VnaG5lc3NGYWN0b3IiOjAuMjJ9fV0sImJ1ZmZlcnMiOlt7ImJ5dGVMZW5ndGgiOjMzNn1dLCJidWZmZXJWaWV3cyI6W3siYnVmZmVyIjowLCJieXRlT2Zmc2V0IjowLCJieXRlTGVuZ3RoIjo5NiwidGFyZ2V0IjozNDk2Mn0seyJidWZmZXIiOjAsImJ5dGVPZmZzZXQiOjk2LCJieXRlTGVuZ3RoIjo3MiwidGFyZ2V0IjozNDk2M30seyJidWZmZXIiOjAsImJ5dGVPZmZzZXQiOjE2OCwiYnl0ZUxlbmd0aCI6OTYsInRhcmdldCI6MzQ5NjJ9LHsiYnVmZmVyIjowLCJieXRlT2Zmc2V0IjoyNjQsImJ5dGVMZW5ndGgiOjcyLCJ0YXJnZXQiOjM0OTYzfV0sImFjY2Vzc29ycyI6W3siYnVmZmVyVmlldyI6MCwiY29tcG9uZW50VHlwZSI6NTEyNiwiY291bnQiOjgsInR5cGUiOiJWRUMzIiwibWluIjpbLTAuNzUsMC4xNzUsLTAuMTc1XSwibWF4IjpbMC43NSwwLjUyNDk5OTk5OTk5OTk5OTksMC4xNzVdfSx7ImJ1ZmZlclZpZXciOjEsImNvbXBvbmVudFR5cGUiOjUxMjMsImNvdW50IjozNiwidHlwZSI6IlNDQUxBUiIsIm1pbiI6WzBdLCJtYXgiOls3XX0seyJidWZmZXJWaWV3IjoyLCJjb21wb25lbnRUeXBlIjo1MTI2LCJjb3VudCI6OCwidHlwZSI6IlZFQzMiLCJtaW4iOlswLjcyNTAwMDAwMDAwMDAwMDEsLTAuMzg3NDk5OTk5OTk5OTk5OTYsMC4yMDUwMDAwMDAwMDAwMDAwMl0sIm1heCI6WzEuMDc1LC0wLjIxMjUsMC4yOTVdfSx7ImJ1ZmZlclZpZXciOjMsImNvbXBvbmVudFR5cGUiOjUxMjMsImNvdW50IjozNiwidHlwZSI6IlNDQUxBUiIsIm1pbiI6WzBdLCJtYXgiOls3XX1dfVABAABCSU4AAABAvzMzMz4zMzO+AABAPzMzMz4zMzO+AABAP2ZmBj8zMzO+AABAv2ZmBj8zMzO+AABAvzMzMz4zMzM+AABAPzMzMz4zMzM+AABAP2ZmBj8zMzM+AABAv2ZmBj8zMzM+AAACAAEAAAADAAIABAAFAAYABAAGAAcAAAABAAUAAAAFAAQAAwAHAAYAAwAGAAIAAAAEAAcAAAAHAAMAAQACAAYAAQAGAAUAmpk5P2Zmxr6F61E+mpmJP2Zmxr6F61E+mpmJP5qZWb6F61E+mpk5P5qZWb6F61E+mpk5P2Zmxr49Cpc+mpmJP2Zmxr49Cpc+mpmJP5qZWb49Cpc+mpk5P5qZWb49Cpc+AAACAAEAAAADAAIABAAFAAYABAAGAAcAAAABAAUAAAAFAAQAAwAHAAYAAwAGAAIAAAAEAAcAAAAHAAMAAQACAAYAAQAGAAUA"
 
 var _failed := false
@@ -19,6 +20,9 @@ func _run() -> void:
 	_remove_if_exists(SAVE_PATH)
 	_remove_if_exists(SAVE_PATH + ".tmp")
 	_remove_if_exists(SAVE_PATH + ".bak")
+	_remove_if_exists(MAIN_SAVE_PATH)
+	_remove_if_exists(MAIN_SAVE_PATH + ".tmp")
+	_remove_if_exists(MAIN_SAVE_PATH + ".bak")
 
 	var fixture_file := FileAccess.open(FIXTURE_PATH, FileAccess.WRITE)
 	_assert(fixture_file != null, "Synthetic GLB fixture must be writable.")
@@ -103,6 +107,31 @@ func _run() -> void:
 	_assert(restored_bike.get_part_color("body_panel").is_equal_approx(body_color), "Saved imported body paint must be reapplied on reopen.")
 	_assert(restored_bike.get_part_color("front_wheel_rim").is_equal_approx(rim_color), "Saved imported rim paint must be reapplied on reopen.")
 
+	_assert(BuildDocumentStoreScript.save_document(restored_document, MAIN_SAVE_PATH), "Imported GLB BuildDocument must be staged for the integrated garage UI test.")
+	var main_packed: PackedScene = load("res://scenes/main.tscn")
+	_assert(main_packed != null, "Integrated garage scene must be loadable for the GLB UI test.")
+	if main_packed != null:
+		var main_scene := main_packed.instantiate()
+		root.add_child(main_scene)
+		await process_frame
+		var main_bike = main_scene.get_node_or_null("MotorcyclePlaceholder")
+		_assert(main_bike != null and main_bike.is_imported_model(), "The existing garage scene must boot directly into the persisted imported GLB.")
+		var assembly_button := main_scene.find_child("AssemblyModeButton", true, false) as Button
+		var neon_button := main_scene.find_child("NeonToggleButton", true, false) as Button
+		var neon_primary := main_scene.find_child("NeonPrimaryPicker", true, false) as ColorPickerButton
+		var glow_slider := main_scene.find_child("NeonGlowSlider", true, false) as HSlider
+		var summary := main_scene.find_child("BuildSummaryLabel", true, false) as Label
+		var overlay := main_scene.get_node_or_null("NeonSkinOverlay") as Node3D
+		_assert(assembly_button != null and assembly_button.disabled, "The integrated UI must disable Exploded mode until part pivots are verified.")
+		_assert(neon_button != null and neon_button.disabled, "The integrated UI must disable unverified Neon paths for an imported GLB.")
+		_assert(neon_primary != null and neon_primary.disabled, "Imported GLB mode must disable Neon palette editing until UV mapping is verified.")
+		_assert(glow_slider != null and not glow_slider.editable, "Imported GLB mode must disable the unverified Neon glow control.")
+		_assert(overlay != null and not overlay.visible, "Legacy screen-space Neon overlays must not float over an imported GLB.")
+		_assert(summary != null and summary.text.contains("IMPORTED GLB") and summary.text.contains("DISABLED"), "HUD must identify the imported asset and disclose the pending Neon mapping.")
+		_assert(main_scene.save_project(), "The imported GLB UI state must save through the canonical BuildDocument path.")
+		main_scene.queue_free()
+		await process_frame
+
 	var tampered_document: Dictionary = restored_document.duplicate(true)
 	tampered_document["asset"]["sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
 	var tampered_bike := BikeAssemblyScript.new()
@@ -130,6 +159,9 @@ func _cleanup() -> void:
 	_remove_if_exists(SAVE_PATH)
 	_remove_if_exists(SAVE_PATH + ".tmp")
 	_remove_if_exists(SAVE_PATH + ".bak")
+	_remove_if_exists(MAIN_SAVE_PATH)
+	_remove_if_exists(MAIN_SAVE_PATH + ".tmp")
+	_remove_if_exists(MAIN_SAVE_PATH + ".bak")
 
 func _remove_if_exists(path: String) -> void:
 	if FileAccess.file_exists(path):
