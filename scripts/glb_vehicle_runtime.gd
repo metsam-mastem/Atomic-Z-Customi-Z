@@ -33,12 +33,9 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 	if str(asset.get("source", "")).strip_edges().is_empty():
 		return _failure("Asset source/provenance metadata is required.")
 
-	var catalog_value: Variant = asset.get("surface_catalog", null)
+	var catalog_value: Variant = asset.get("surface_catalog", [])
 	if not (catalog_value is Array):
 		return _failure("BuildDocument asset.surface_catalog must be an array.")
-	var surface_catalog: Array = catalog_value
-	if surface_catalog.is_empty():
-		return _failure("A validated, non-empty surface catalog is required for editable GLB loading.")
 
 	var gltf_document := GLTFDocument.new()
 	var gltf_state := GLTFState.new()
@@ -56,6 +53,23 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 	if not inventory.get("ok", false) or inventory.get("surfaces", []).is_empty():
 		scene_root.free()
 		return _failure("Imported GLB contains no inspectable mesh surfaces.")
+
+	var surface_catalog: Array = catalog_value
+	if surface_catalog.is_empty():
+		var definitions := _build_default_surface_manifest(inventory.get("surfaces", []))
+		if definitions.is_empty():
+			scene_root.free()
+			return _failure("No stable mesh surfaces could be mapped to editable parts.")
+		var attached: Dictionary = GlbSurfaceCatalogScript.attach_to_document(document, scene_root, definitions)
+		if not attached.get("ok", false):
+			scene_root.free()
+			return _failure("Automatic surface catalog creation failed: " + str(attached.get("errors", [])))
+		document.clear()
+		document.merge(attached["document"], true)
+		surface_catalog = document.get("asset", {}).get("surface_catalog", [])
+		if surface_catalog.is_empty():
+			scene_root.free()
+			return _failure("Automatic surface catalog creation returned no entries.")
 
 	var binder = SurfaceMaterialBinderScript.new()
 	var binder_result: Dictionary = binder.configure_from_build_document(scene_root, document)
@@ -99,6 +113,34 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 		"part_ids": part_ids,
 		"surface_inventory": inventory.get("surfaces", []).duplicate(true)
 	}
+
+static func _build_default_surface_manifest(inventory: Array) -> Array:
+	var definitions: Array = []
+	for surface_value in inventory:
+		if not (surface_value is Dictionary):
+			continue
+		var surface: Dictionary = surface_value
+		var node_path := str(surface.get("node_path", "")).strip_edges()
+		var surface_index := int(surface.get("surface_index", -1))
+		if node_path.is_empty() or surface_index < 0:
+			continue
+		var part_id := _stable_part_id(node_path)
+		definitions.append({
+			"surface_id": part_id + ".surface_" + str(surface_index),
+			"node_path": node_path,
+			"surface_index": surface_index,
+			"part_id": part_id
+		})
+	return definitions
+
+static func _stable_part_id(node_path: String) -> String:
+	if node_path == ".":
+		return "vehicle_root"
+	var normalized := node_path.to_snake_case().to_lower()
+	var regex := RegEx.new()
+	regex.compile("[^a-z0-9]+")
+	normalized = regex.sub(normalized, "_", true).trim_prefix("_").trim_suffix("_")
+	return normalized if not normalized.is_empty() else "vehicle_part"
 
 static func _apply_saved_surface_materials(document: Dictionary, binder) -> Dictionary:
 	var customization: Dictionary = document.get("customization", {})
