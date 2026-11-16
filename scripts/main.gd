@@ -204,8 +204,6 @@ func _build_hud() -> void:
 	root.add_child(_build_summary_label)
 	_refresh_build_summary()
 
-	_refresh_build_summary()
-
 func _on_toggle_assembly() -> void:
 	_bike.toggle_exploded()
 	_refresh_build_summary()
