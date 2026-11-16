@@ -101,3 +101,16 @@ Every task has owner, scope, dependencies, acceptance criteria and estimate. Eve
 - NOT RUN — verified production GLB motorcycle asset, factory dimensions, UV/surface mapping, undo/redo, responsive touch review, Android FPS/memory/thermal profiling and engineering validation.
 
 The current milestone is a working Godot garage vertical slice with a CI-built debug APK, not a production-ready motorcycle configurator. Do not close Phases 2–7 until their stated exit criteria are met.
+
+
+## Live integration checkpoint — 2026-11-16
+
+- PASS — GLB surface catalog and stable surface-ID validation integrated through PR #43; Godot smoke, GLB contract, Neon simulator and Android Debug/Release CI passed on exact head.
+- PASS — Neon state now migrates into the canonical BuildDocument through PR #45. The parallel skin profile writer is retired; legacy shader values that cannot be safely normalized remain preserved as unmapped extension data.
+- PASS — P1 camera gestures integrated through PR #45: one-finger orbit, two-finger pan and pinch zoom. Exact-head CI passed; physical Redmi touch QA remains NOT RUN.
+- OPEN — PR #46 carries the research-only source vault and is awaiting exact-head CI completion/review.
+- DRAFT — PR #31 optional multi-model AI adapter remains a prototype and is excluded from P1 release acceptance.
+- BLOCKED — Issue #47 tracks GLB runtime import and Android content-URI plugin work after PR #38's Android export failure.
+- NOT RUN — physical device installation, production GLB provenance/fitment, performance/thermal profiling, production signing and commercial release acceptance.
+
+The current P1 gate is now a single integrated Godot runtime with one BuildDocument write path. Do not start another parallel Neon store, camera controller, renderer or Android app. Finish the exact-device acceptance and release-hardening gates before expanding scope.
