@@ -49,3 +49,14 @@ This repository does not yet contain an APK/AAB or a device-tested export. Devic
 6. No feature is complete until its acceptance checks pass on target hardware.
 
 See docs/architecture.md, docs/research-register.md and docs/acceptance.md.
+
+
+## Verification
+The repository includes a headless smoke test for scene loading, stock/exploded transform restoration and body-material updates:
+
+```bash
+godot --headless --editor --path . --quit
+godot --headless --path . --script res://tests/smoke_test.gd
+```
+
+GitHub Actions runs these checks on pushes and pull requests. A green CI run proves only the tested headless behaviors; it does not prove visual quality, Android export, device performance or engineering validity.
