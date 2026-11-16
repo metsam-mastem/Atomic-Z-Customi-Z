@@ -24,8 +24,8 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 
 		var definition: Dictionary = definition_value
 		var surface_id := str(definition.get("surface_id", "")).strip_edges()
-		if surface_id.is_empty():
-			errors.append("surface_id must be a non-empty stable identifier.")
+		if not _is_stable_surface_id(surface_id):
+			errors.append("surface_id must use a stable lowercase identifier.")
 			continue
 		if candidate.has(surface_id):
 			errors.append("Duplicate surface_id: %s" % surface_id)
@@ -249,6 +249,11 @@ func has_surface(surface_id: String) -> bool:
 
 func get_surface_ids() -> Array:
 	return _bindings.keys()
+
+func _is_stable_surface_id(value: String) -> bool:
+	var regex := RegEx.new()
+	regex.compile("^[a-z0-9][a-z0-9._-]*$")
+	return regex.search(value) != null
 
 func _resolve_mesh_instance(surface_id: String) -> MeshInstance3D:
 	if _root == null or not _bindings.has(surface_id):
