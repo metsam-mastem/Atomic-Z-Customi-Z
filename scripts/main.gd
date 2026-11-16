@@ -111,7 +111,7 @@ func _build_hud() -> void:
 	root.add_child(title)
 
 	var hint := Label.new()
-	hint.text = "DRAG TO ORBIT  •  WHEEL TO ZOOM"
+	hint.text = "1 FINGER ORBIT  •  2 FINGER PAN / PINCH ZOOM  •  WHEEL ZOOM"
 	hint.position = Vector2(24.0, 52.0)
 	hint.add_theme_font_size_override("font_size", 12)
 	hint.modulate = Color("#aab8c8")
