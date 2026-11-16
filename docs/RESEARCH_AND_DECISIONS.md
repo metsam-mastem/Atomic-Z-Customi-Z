@@ -64,3 +64,15 @@ This audit establishes a **research-only** source baseline. It does not approve 
 - CC0 Innerscene models are possible placeholder meshes only, not OEM CAD or fitment evidence.
 
 No external code or asset was imported into the Godot runtime in this task. Any future code adoption requires a separate licence review, architecture decision, isolated implementation PR and verification against Atomic-Z's BuildDocument and Android constraints.
+
+
+### Call of Duty source/reconstruction classification — 2026-11-16
+
+The dedicated [COD reconstruction dossier](../research/sources/COD_RECONSTRUCTION.md) resolves the earlier broad source question:
+- Activision's official open-source release is selected Telescope Webkit middleware source with per-version licence archives, not complete Call of Duty game source.
+- OpenCOD1 and OpenCOD2 are independent, unfinished engine reconstructions; inspected repositories have no detected licence grant and depend on separately supplied lawful game data.
+- CoDWaW's MIT-licensed public repository is reverse-engineering notes and evidence tables, not proprietary game code or redistributable game content.
+- CoD-Research is GPL-3.0 community documentation.
+- The MW2 2009 dashboard refers to a private reconstruction; no public source repository or licence was established.
+
+No COD source, binaries, game assets or recovered data are added to Atomic-Z. This classification is now machine-readable in the Research Vault source registry. It does not expand the product scope beyond the existing motorcycle customization workbench.
