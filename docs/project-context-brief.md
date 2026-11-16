@@ -39,7 +39,7 @@ The current procedural motorcycle geometry is placeholder geometry. It is not fa
 - `BuildDocument` is the single authoritative editable build state.
 - `neon_skin_config.json` is read-only legacy migration input; runtime edits never write it. The former `NeonSkin.save_skin()` writer is retired.
 - Any migration must preserve stable IDs and include schema validation and round-trip tests.
-- The historical PR #4 skin-profile writer has been retired and removed. On first launch only, when no canonical BuildDocument exists, `user://skin_profile.json` is imported: color enters the primary palette, while legacy 0..10 glow/pulse values are preserved as an unmapped versioned extension. The original user file is retained. Existing canonical documents always take precedence.
+- The historical PR #4 skin-profile writer and `NeonSkin.save_skin()` have been retired and removed. On first launch only, when no canonical BuildDocument exists, `user://skin_profile.json` is imported: color enters the primary palette, while legacy 0..10 glow/pulse values are preserved as an unmapped versioned extension. The original user file is retained. Existing canonical documents always take precedence. Neon runtime snapshots and round-trips now use BuildDocument.
 - Python/Tkinter and ModernGL are development/research aids, not alternate product runtimes. Port selected ideas into Godot only after compatibility, value and license review.
 
 ## 5. Repository implementation/evidence notes
