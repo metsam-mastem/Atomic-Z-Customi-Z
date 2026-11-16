@@ -1,6 +1,7 @@
 extends SceneTree
 
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
+const BuildDocumentScript = preload("res://scripts/build_document.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -58,25 +59,41 @@ func _run() -> void:
 		push_error("Rejected config must not replace the last valid skin.")
 		quit(1)
 		return
-	var save_path := "user://test_neon_skin_config.json"
-	if not skin.save_skin(save_path):
-		push_error("Valid skin state must save to the user data directory.")
+	skin.set_skin_visible(false)
+	var snapshot: Dictionary = skin.get_build_document_snapshot()
+	if not BuildDocumentScript.validate(snapshot).get("ok", false):
+		push_error("Neon edits must remain part of a valid canonical BuildDocument.")
 		quit(1)
 		return
-	var restored = NeonSkinScript.new()
+	if snapshot.get("customization", {}).get("palette", {}).get("primary") != "#112233":
+		push_error("Primary palette changes must update the canonical BuildDocument.")
+		quit(1)
+		return
+	if not is_equal_approx(float(snapshot.get("render", {}).get("glow_intensity", -1.0)), 1.0):
+		push_error("Normalized glow changes must update the canonical BuildDocument.")
+		quit(1)
+		return
+	if bool(snapshot.get("render", {}).get("neon_enabled", true)):
+		push_error("Global neon visibility must update the canonical BuildDocument.")
+		quit(1)
+		return
+
+	var restored_document := BuildDocumentScript.from_json(BuildDocumentScript.to_json(snapshot))
+	var restored := NeonSkinScript.new()
+	restored.configure_build_document(restored_document)
 	root.add_child(restored)
-	if not restored.load_skin(save_path):
-		push_error("Saved skin config must load again.")
-		quit(1)
-		return
+	await process_frame
 	if restored.get_segment_color("tail_underglow") != Color("#112233") or not is_equal_approx(restored.get_glow_intensity(), 1.0):
-		push_error("Saved palette and glow state must round-trip.")
+		push_error("BuildDocument round-trip must restore palette and glow state.")
 		quit(1)
 		return
 	if restored.is_segment_visible("tank_accent"):
-		push_error("Saved segment visibility must round-trip.")
+		push_error("BuildDocument round-trip must restore per-segment visibility.")
 		quit(1)
 		return
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
-	print("PASS: neon skin JSON loading, stable IDs, palette editing, glow clamping and visibility.")
+	if restored.get_build_document_snapshot().get("render", {}).get("neon_enabled", true):
+		push_error("BuildDocument round-trip must restore global neon visibility.")
+		quit(1)
+		return
+	print("PASS: legacy neon import, stable IDs, BuildDocument-backed palette/glow/visibility and round-trip.")
 	quit(0)
