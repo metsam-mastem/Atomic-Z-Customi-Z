@@ -242,7 +242,78 @@ func _test_quality_controller() -> bool:
 		push_error("Four consecutive high-FPS samples must restore key-light shadows.")
 		return false
 
+
+	var frame_light := DirectionalLight3D.new()
+	var frame_controller = QualityControllerScript.new()
+	root.add_child(frame_light)
+	root.add_child(frame_controller)
+	frame_controller.configure(frame_light)
+	if not frame_controller.has_method("record_frame"):
+		push_error("QualityController must expose frame-delta sampling for the runtime.")
+		return false
+	if frame_controller.call("get_quality_tier") != "quality":
+		push_error("Adaptive quality must expose its initial quality tier.")
+		return false
+
+	# A suspended/resumed app must discard a partial sample window.
+	for _frame in range(20):
+		frame_controller.call("record_frame", 0.05)
+	frame_controller.call("record_frame", 3.0)
+	for _frame in range(20):
+		frame_controller.call("record_frame", 0.05)
+	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 0.0):
+		push_error("A long app-resume pause must not be counted as an FPS sample.")
+		return false
+
+	_feed_quality_window(frame_controller, 20)
+	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 20.0):
+		push_error("Quality telemetry must expose FPS measured over the complete two-second window.")
+		return false
+	if not is_equal_approx(float(frame_controller.call("get_last_frame_time_ms")), 50.0):
+		push_error("Quality telemetry must expose the corresponding frame-time estimate.")
+		return false
+	if bool(frame_controller.call("is_reduced_quality")):
+		push_error("A single low-FPS window must not switch the quality tier.")
+		return false
+	_feed_quality_window(frame_controller, 20)
+	if frame_controller.call("get_quality_tier") != "performance" or frame_light.shadow_enabled:
+		push_error("Two consecutive low-FPS windows must switch to performance tier.")
+		return false
+	for _window in range(3):
+		_feed_quality_window(frame_controller, 60)
+	if not bool(frame_controller.call("is_reduced_quality")):
+		push_error("Three high-FPS windows must not restore the quality tier.")
+		return false
+	_feed_quality_window(frame_controller, 40)
+	for _window in range(3):
+		_feed_quality_window(frame_controller, 60)
+	if not bool(frame_controller.call("is_reduced_quality")):
+		push_error("A neutral window must reset the high-FPS recovery sequence.")
+		return false
+	_feed_quality_window(frame_controller, 60)
+	if frame_controller.call("get_quality_tier") != "quality" or not frame_light.shadow_enabled:
+		push_error("Four consecutive high-FPS windows must restore the quality tier.")
+		return false
+	_feed_quality_window(frame_controller, 20)
+	_feed_quality_window(frame_controller, 20)
+	frame_controller.call("reset_adaptive_state")
+	if frame_controller.call("get_quality_tier") != "quality" or not frame_light.shadow_enabled:
+		push_error("Reset must restore the default quality tier and shadows.")
+		return false
+	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 0.0):
+		push_error("Reset must clear stale FPS telemetry.")
+		return false
+
+	frame_controller.free()
+	frame_light.free()
 	controller.free()
 	key_light.free()
 	replacement_light.free()
 	return true
+
+
+func _feed_quality_window(controller: Node, fps: int) -> void:
+	var frame_count := fps * 2
+	var frame_delta := 2.0 / float(frame_count)
+	for _frame in range(frame_count):
+		controller.call("record_frame", frame_delta)
