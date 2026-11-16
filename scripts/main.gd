@@ -14,6 +14,7 @@ var _neon_skin
 var _build_document: Dictionary = {}
 var _part_selector: OptionButton
 var _paint_picker: ColorPickerButton
+var _build_summary_label: Label
 var _selected_part_id := "fuel_tank"
 const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
@@ -85,6 +86,8 @@ func _build_hud() -> void:
 	add_child(layer)
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.name = "HUDRoot"
+	layer.name = "GarageHUD"
 	layer.add_child(root)
 
 	var title := Label.new()
@@ -187,12 +190,30 @@ func _build_hud() -> void:
 	disclaimer.modulate = Color("#aab8c8")
 	root.add_child(disclaimer)
 
+	_build_summary_label = Label.new()
+	_build_summary_label.name = "BuildSummaryLabel"
+	_build_summary_label.anchor_left = 1.0
+	_build_summary_label.anchor_right = 1.0
+	_build_summary_label.offset_left = -390.0
+	_build_summary_label.offset_right = -24.0
+	_build_summary_label.offset_top = 20.0
+	_build_summary_label.offset_bottom = 130.0
+	_build_summary_label.add_theme_font_size_override("font_size", 14)
+	_build_summary_label.modulate = Color("#e6edf5")
+	_build_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	root.add_child(_build_summary_label)
+	_refresh_build_summary()
+
+	_refresh_build_summary()
+
 func _on_toggle_assembly() -> void:
 	_bike.toggle_exploded()
+	_refresh_build_summary()
 
 func _on_body_color_changed(color: Color) -> void:
 	if not _bike.set_part_color(_selected_part_id, color):
 		push_warning("Selected part does not support paint editing: " + _selected_part_id)
+	_refresh_build_summary()
 
 func _populate_part_selector() -> void:
 	_part_selector.clear()
@@ -215,6 +236,7 @@ func _on_part_selected(index: int) -> void:
 	_selected_part_id = str(_part_selector.get_item_metadata(index))
 	if is_instance_valid(_paint_picker):
 		_paint_picker.color = _bike.get_part_color(_selected_part_id)
+	_refresh_build_summary()
 
 func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: String) -> void:
 	var segment_button := Button.new()
@@ -247,6 +269,8 @@ func _on_glow_changed(value: float) -> void:
 func _on_save_neon_skin() -> void:
 	if not _save_build_document():
 		push_warning("Could not save the unified build document.")
+	else:
+		_refresh_build_summary()
 
 func _on_reset_camera() -> void:
 	_orbit_angle = 0.0
@@ -316,7 +340,22 @@ func _save_build_document() -> bool:
 	if not BuildDocumentStoreScript.save_document(candidate, BUILD_DOCUMENT_PATH):
 		return false
 	_build_document["revision"] = next_revision
+	_refresh_build_summary()
 	return true
+
+
+func _refresh_build_summary() -> void:
+	if not is_instance_valid(_build_summary_label):
+		return
+	var vehicle: Dictionary = _build_document.get("vehicle", {})
+	var customization: Dictionary = _build_document.get("customization", {})
+	var materials: Array = customization.get("materials", [])
+	var paint_color := "—"
+	if is_instance_valid(_bike) and _selected_part_id in _bike.get_part_ids():
+		paint_color = "#" + _bike.get_part_color(_selected_part_id).to_html(false).to_upper()
+	var assembly_mode := str(_build_document.get("assembly", {}).get("mode", "stock")).to_upper()
+	var neon_state := "ON" if bool(_build_document.get("render", {}).get("neon_enabled", true)) else "OFF"
+	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
