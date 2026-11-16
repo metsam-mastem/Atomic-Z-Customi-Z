@@ -91,7 +91,7 @@ func _run() -> void:
 		push_error("BuildDocument round-trip must restore per-segment visibility.")
 		quit(1)
 		return
-	if restored._build_document.get("render", {}).get("neon_enabled", true):
+	if restored.get_build_document_snapshot().get("render", {}).get("neon_enabled", true):
 		push_error("BuildDocument round-trip must restore global neon visibility.")
 		quit(1)
 		return
