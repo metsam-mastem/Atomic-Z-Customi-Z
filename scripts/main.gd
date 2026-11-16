@@ -292,3 +292,9 @@ func _save_build_document() -> bool:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
 	var rename_error := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary_path), ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
 	return rename_error == OK
+
+func get_build_document_snapshot() -> Dictionary:
+	return _build_document.duplicate(true)
+
+func save_project() -> bool:
+	return _save_build_document()
