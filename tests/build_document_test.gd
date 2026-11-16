@@ -42,6 +42,12 @@ func _initialize() -> void:
 	newer["revision"] = 2
 	_assert(StoreScript.save_document(newer, save_path), "A second valid document must replace the previous save.")
 	_assert(StoreScript.load_document(save_path) == newer, "The latest valid document must round-trip.")
+	_assert(FileAccess.file_exists(save_path + ".bak"), "The previous valid revision must remain available as a backup.")
+	var backup_file := FileAccess.open(save_path + ".bak", FileAccess.READ)
+	var backup_document: Dictionary = BuildDocumentScript.from_json(backup_file.get_as_text()) if backup_file != null else {}
+	if backup_file != null:
+		backup_file.close()
+	_assert(backup_document == initial, "The retained backup must contain the previous valid revision.")
 
 	_write_text(save_path, "{broken-json")
 	_write_text(save_path + ".bak", BuildDocumentScript.to_json(newer))
