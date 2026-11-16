@@ -62,3 +62,17 @@ A sensible sequence would be:
 ## Recommended near-term technical order
 
 For the existing garage, the highest-value transfers are not riding physics. They are: (a) pin and audit verified GLB model provenance, (b) complete the GLB surface catalogue and material workflows, (c) strengthen touch-first camera/selection ergonomics, (d) benchmark material and mesh budgets on Android, and (e) preserve the build-document/assembly contract through import/export. Riding prototype work should be a separately scoped next phase after the owner accepts a concrete gameplay brief.
+
+
+## Call of Duty source findings
+
+COD-related GitHub repositories do exist, but they are not one official, freely reusable Call of Duty source release:
+
+- Activision's official [Open Source page](https://research.activision.com/opensource) publishes versioned **Telescope: Activision Webkit** middleware source and paired licence archives for selected products. This is a Webkit component, not the game engine or gameplay source.
+- [OpenCOD2](https://github.com/opencod2/opencod2) is an incomplete independent C/CMake reconstruction. Its README says the build may crash or miss features, and its repository has no detected licence in the inspected tree. It requires lawful user-supplied CoD2 data.
+- [OpenCoD1](https://github.com/opencod1/opencod1) is an incomplete 2003 multiplayer reconstruction, requires original CoD 1.1 data and has no detected repository licence in the inspected tree.
+- [CoDWaW reverse-engineering notes](https://github.com/ItsNoahJ/codwaw-reverse-engineering) carry an MIT licence for the published notes/data, not rights to proprietary Activision binaries or game content. They are valuable for byte-exact evidence methodology.
+- [CoD-Research](https://github.com/primetime43/CoD-Research) is a GPL-3.0 community knowledge base for CoD4–CoD10, not game source.
+- [MW2 2009 reconstruction progress](https://mw2.momo5502.com/) is a mutable dashboard for a private source-level reconstruction; no public source checkout or licence was established.
+
+**Atomic-Z disposition:** no COD engine/source, shooter gameplay, maps, textures, audio or game data is a candidate for product integration. Only generic concepts such as subsystem separation, asset-loading boundaries and evidence-led reverse engineering are worth studying. The full source/rights distinctions are recorded in [COD_RECONSTRUCTION.md](sources/COD_RECONSTRUCTION.md).
