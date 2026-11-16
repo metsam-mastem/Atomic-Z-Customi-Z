@@ -121,6 +121,45 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 		"surface_inventory": inventory.get("surfaces", []).duplicate(true)
 	}
 
+## Switches the active document identity to the imported asset without retaining an
+## unrelated factory/model label. The former identity is preserved as unmapped provenance.
+static func prepare_document_for_import(document: Dictionary, asset_hash: String, display_name: String) -> Dictionary:
+	var document_validation: Dictionary = BuildDocumentScript.validate(document)
+	if not document_validation.get("ok", false):
+		return {"ok": false, "errors": document_validation.get("errors", [])}
+	var normalized_hash := asset_hash.to_lower()
+	if not _is_sha256(normalized_hash):
+		return _failure("A valid SHA-256 is required before assigning an imported vehicle identity.")
+	var imported_name := display_name.strip_edges()
+	if imported_name.is_empty():
+		return _failure("An imported asset display name is required.")
+
+	var candidate := document.duplicate(true)
+	var previous_vehicle: Dictionary = candidate.get("vehicle", {}).duplicate(true)
+	var previous_asset: Dictionary = candidate.get("asset", {}).duplicate(true)
+	var previous_hash := str(previous_asset.get("sha256", "")).to_lower()
+	if previous_hash != normalized_hash:
+		var extensions: Array = candidate.get("extensions", []).duplicate(true)
+		extensions.append({
+			"extension_id": "replaced_vehicle_identity",
+			"schema_version": 1,
+			"status": "preserved_unmapped",
+			"source_asset_sha256": previous_hash,
+			"payload": {
+				"vehicle": previous_vehicle
+			}
+		})
+		candidate["extensions"] = extensions
+
+	var next_vehicle: Dictionary = previous_vehicle.duplicate(true)
+	next_vehicle["vehicle_id"] = "imported-" + normalized_hash.substr(0, 16)
+	next_vehicle["display_name"] = imported_name
+	next_vehicle["model_year"] = null
+	next_vehicle["market"] = null
+	next_vehicle["variant"] = null
+	candidate["vehicle"] = next_vehicle
+	return {"ok": true, "errors": [], "document": candidate}
+
 static func _build_default_surface_manifest(inventory: Array) -> Array:
 	var node_leaf_ids: Dictionary = {}
 	var leaf_id_counts: Dictionary = {}
