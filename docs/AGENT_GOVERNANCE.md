@@ -1,3 +1,5 @@
+> **Current operational state:** use [docs/PROJECT_STATUS.md](PROJECT_STATUS.md) for the canonical resume checkpoint. The repository snapshot below is historical and must not be used as current state without a live GitHub refresh.
+
 # Multi-Agent Governance and Change Control
 
 ## Repository snapshot: 2026-11-16

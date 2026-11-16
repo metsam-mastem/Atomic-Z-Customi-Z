@@ -82,3 +82,12 @@ The accepted base vehicle in project decisions is Kawasaki Ninja ZX-25RR. The in
 ## Status vocabulary
 
 Use PASS / FAIL / NOT RUN / BLOCKED. Code presence or a green headless test is not proof of Android device performance, factory geometry, fitment or engineering validity.
+
+
+## Continue in a new chat or with another contributor
+
+The project is intentionally independent of any single chat or AI session. The repository is the durable source of truth; conversation history is optional context only.
+
+**Start here:** [Canonical Project Status / Resume Checkpoint](docs/PROJECT_STATUS.md).
+
+For a clean handoff, clone the repository and read `AGENTS.md`, then `docs/PROJECT_STATUS.md`, then the linked canonical specifications. Re-check live GitHub state before acting because the checkpoint is timestamped. At the end of each task, update the checkpoint through a reviewed PR.
