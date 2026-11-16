@@ -70,6 +70,8 @@ static func validate_request_target(provider: Dictionary, allow_local_http: bool
 	if has_api_key and scheme != "https":
 		return {"ok": false, "error": "Credentials must never be sent over cleartext HTTP."}
 	if kind == "ollama" and scheme == "http":
+		if is_android:
+			return {"ok": false, "error": "Android cleartext HTTP is disabled until native network policy and device QA are verified."}
 		if not allow_local_http:
 			return {"ok": false, "error": "Allow local HTTP explicitly before connecting to Ollama."}
 		if not _is_local_or_private_host(host):
