@@ -108,7 +108,29 @@ func _add_wheel(part_id: String, at: Vector3, radius: float, explode_offset: Vec
 	var wheel_material := StandardMaterial3D.new()
 	wheel_material.albedo_color = Color("#15191e")
 	wheel_material.roughness = 0.92
-	_add_mesh_part(part_id, wheel_mesh, at, wheel_material, explode_offset, Vector3(0.0, 0.0, PI / 2.0), false)
+	_add_mesh_part(part_id, wheel_mesh, at, wheel_material, explode_offset, Vector3(PI / 2.0, 0.0, 0.0), false)
+	var wheel_root: Node3D = _parts[part_id]["node"]
+	var rim_mesh := CylinderMesh.new()
+	rim_mesh.top_radius = radius * 0.62
+	rim_mesh.bottom_radius = radius * 0.62
+	rim_mesh.height = 0.18
+	var rim_material := StandardMaterial3D.new()
+	rim_material.albedo_color = Color("#8995a3")
+	rim_material.metallic = 0.88
+	rim_material.roughness = 0.24
+	var rim_visual := MeshInstance3D.new()
+	rim_visual.name = "RimVisual"
+	rim_visual.mesh = rim_mesh
+	rim_visual.rotation = Vector3(PI / 2.0, 0.0, 0.0)
+	rim_visual.material_override = rim_material
+	wheel_root.add_child(rim_visual)
+	_parts[part_id.replace("_wheel", "_rim")] = {
+		"node": wheel_root,
+		"mesh_instance": rim_visual,
+		"material": rim_material,
+		"home": at,
+		"explode": explode_offset
+	}
 
 func _add_box(part_id: String, dimensions: Vector3, at: Vector3, color: Color, metallic: float, roughness: float, explode_offset: Vector3, is_body: bool = false) -> void:
 	var box := BoxMesh.new()
