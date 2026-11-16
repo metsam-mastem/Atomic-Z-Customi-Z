@@ -68,7 +68,7 @@ func _run() -> void:
 	bike.configure_build_document(document)
 	root.add_child(bike)
 	await process_frame
-	_assert(bike.is_imported_model(), "A valid local GLB with matching SHA and catalog must replace procedural geometry.")
+	_assert(bike.is_imported_model(), "A valid local GLB with matching SHA must replace procedural geometry and generate its catalog.")
 	_assert(bike.get_part_ids() == ["body_panel", "front_wheel_rim"], "Imported mesh names must become stable part IDs for the existing garage selector.")
 	_assert(document.get("asset", {}).get("surface_catalog", []).size() == 2, "The runtime must auto-create and persist a stable surface catalog in BuildDocument.")
 	_assert(not bike.supports_exploded_view(), "Exploded mode must be unavailable until verified part pivots/offsets exist.")
@@ -83,7 +83,7 @@ func _run() -> void:
 	_assert(bike.set_part_color("front_wheel_rim", rim_color), "Imported front rim must be independently paintable.")
 	_assert(bike.get_part_color("body_panel").is_equal_approx(body_color), "Imported body color must update in the rendered scene.")
 	_assert(bike.get_part_color("front_wheel_rim").is_equal_approx(rim_color), "Imported rim color must update in the rendered scene.")
-	_assert(not bike.get_part_color("body_panel").is_equal_approx(bike.get_part_color("front_rim")), "Independent surface edits must not alias each other.")
+	_assert(not bike.get_part_color("body_panel").is_equal_approx(bike.get_part_color("front_wheel_rim")), "Independent surface edits must not alias each other.")
 
 	var body_surface_id := "body_panel.surface_0"
 	var edited_body_material := bike.call("_get_imported_surface_material", body_surface_id) as StandardMaterial3D
