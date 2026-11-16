@@ -1,19 +1,19 @@
 # Project Status — Canonical Resume Checkpoint
 
-**Purpose:** Resume work without relying on any ChatGPT conversation, account memory, or individual agent context.
-**Repository:** `metsam-mastem/Atomic-Z-Customi-Z`
-**Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.
-**Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.
-**Last verified:** 2026-11-16 03:11 UTC
-**Verified main:** `dccd4020f9feef522b94b36bf2b326380d6e7af1`
-**Checkpoint update branch:** `agent/governance/refresh-resume-checkpoint-after-pr16` (PR #17; documentation-only update)
+**Purpose:** Resume work without relying on any ChatGPT conversation, account memory, or individual agent context.  
+**Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
+**Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
+**Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
+**Last verified:** 2026-11-16 03:24 UTC  
+**Verified main:** `9780969ac432758f78f0928fab73e4e979aa1891`  
+**Latest main merge:** PR #17, canonical project-status and chat-independent continuity checkpoint.
 
 ## Resume rule
 
 This file is the operational starting point, not a substitute for live verification. A new contributor or a new chat must:
 1. Read `AGENTS.md`, this file, `docs/CONTEXT_INTEGRITY_PROTOCOL.md`, `docs/UNIFIED_SYSTEM_SPEC.md`, `docs/AGENT_GOVERNANCE.md`, `docs/ROADMAP.md` and `docs/RESEARCH_AND_DECISIONS.md`.
 2. Fetch the latest `main` SHA and re-check open PRs, issues, branches and CI. This checkpoint is a dated snapshot, never assumed current.
-3. Treat repository files, merged commits, approved decisions and exact-commit CI evidence as project memory. Conversation history is optional background only.
+3. Treat repository files, merged commits, approved decisions and CI results tied to exact commits as project memory. Conversation history is optional background only.
 4. Before finishing a task, update this checkpoint in the same PR or a dedicated docs PR with the resulting commit, tests, status changes, open work, decisions and next action.
 5. If context is incomplete, stop and reconstruct from GitHub. Never invent missing decisions or claim that an unrecorded conversation is authoritative.
 
@@ -32,74 +32,77 @@ This file is the operational starting point, not a substitute for live verificat
 
 ## Verified repository baseline
 
-- `main`: `dccd4020f9feef522b94b36bf2b326380d6e7af1`.
-- Latest merge: PR #16, “Make project continuity independent of chat history”.
-- PR #16 is merged. It adds this canonical checkpoint, mandatory chat-independent handoff rules in `AGENTS.md`, and README entry points.
-- PASS — exact main commit `dccd...` CI: Android Debug Export, Neon Simulator Tests and Smoke Test; workflow [#43793273703](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43793273703).
-- PASS — consolidated PR #20 head `39241192c66077e7e1daa82d65ad47680bd9e30b`: Godot import, smoke, neon runtime, BuildDocument contract, surface binder ownership test and HUD hydration test; Python simulator tests; Android Debug APK export, package metadata and signature verification. Exact PR workflow [#43795128113](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43795128113) completed with all three jobs successful.
-- PASS — companion push workflow [#43795120047](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43795120047) uploaded `atomic-z-android-debug` (26,815,218 bytes; SHA-256 `c3e2bb430e225148f47ec9484591790b2fdfc67ab2bbc6205444d36cba97f833`).
-- PR #20 is ready for review and mergeable, but remains unmerged. No self-merge or bypass of review is permitted.
-- PRs #7, #11, #18 and #19 were closed as superseded by PR #20. Their compatible binder, rendering guidance, verbose export diagnostics and HUD hydration changes were consolidated into the single main-based PR.
+- `main` is at `9780969ac432758f78f0928fab73e4e979aa1891`.
+- This is merge commit for PR #17, “[Governance] Refresh canonical resume checkpoint after PR 16”, merged on 2026-11-16 at 03:19 UTC. PR #17 is closed and merged.
+- PASS — exact source commit `9780969...` was exercised by Godot CI workflow [#43797564422](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43797564422): Godot smoke, Python simulator tests and Android Debug export all completed successfully. The workflow was triggered from the quality branch at the same exact commit SHA, not by a `main` push event.
+- PASS — PR #20 head `39241192c66077e7e1daa82d65ad47680bd9e30b`: Godot import, smoke, neon runtime, BuildDocument contract, surface binder ownership test and HUD hydration test; Python simulator tests; Android Debug APK export, package metadata and signature verification. Exact PR workflow [#43796301513](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43796301513) completed with all three jobs successful.
+- PASS — PR #21 head `e42f083b77481aa48f40bbbee21a2be02dc819bb`: Godot, Python and Android Debug export jobs all passed in exact-head workflow [#43795781816](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43795781816). The PR remains stacked on PR #20 and is not merged.
+- PASS — PR #23 head `e58aaa388f66d4f862e185d040fd83a19c839746`: Godot import/smoke/contract tests, Python simulator tests, Android Debug APK export, package metadata and signature checks all passed in exact-head workflow [#43797749406](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43797749406).
+- CLOSED / NOT MERGED — PR #22 was a parallel duplicate of PR #23 and was closed to leave one active adaptive-quality implementation path. Its head `f41205d40dd22a424618f794fe0bfd62bb79a5eb` independently passed all three CI jobs, including Android export, in [#43797651440](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43797651440). Its additional ideas (diagnostic getters/signal and long-pause sampling guard) were documented as suggestions on PR #23; no code from PR #22 was merged.
+- PR #20 is open, non-draft and reported mergeable/clean by GitHub, but its recorded base SHA is `dccd4020f9feef522b94b36bf2b326380d6e7af1`, behind current `main`. Re-check/update its base before merge.
+- PR #21 is open/draft and stacked on PR #20. GitHub currently reports its mergeability as dirty; reconcile conflicts after PR #20 is integrated.
 - Physical Redmi installation and runtime QA: NOT RUN.
-- Earlier merged work includes PR #3 (BuildDocument contract), #4 (Neon profile store), #6 (research audit), #9 (context integrity), #10 (part paint/safe persistence), #12 (Android export preflight/signature verification), #14 (project charter/visual asset handoff) and #16 (chat-independent continuity).
+- Production Kawasaki ZX-25RR geometry, verified UV/surface registration, mechanical fitment, structural/thermal validation and calibrated hardware mapping: NOT RUN.
+- Earlier merged work includes PR #2 (charter/workflow/catalog/manifesto/docs), #3 (BuildDocument contract), #4 (Neon profile store), #6 (research audit), #9 (context integrity), #10 (part paint/safe persistence), #12 (Android export preflight/signature verification), #14 (visual asset/charter handoff), #16 (chat-independent continuity) and #17 (canonical project checkpoint).
 
-## Open pull requests — live refresh 2026-11-16 03:11 UTC
+## Open pull requests — live refresh 2026-11-16 03:24 UTC
 
 | PR | Scope | Current state | Next action |
 |---|---|---|---|
-| #20 | Unified safe surface-material prototype and BuildDocument-driven neon HUD hydration | OPEN / READY FOR REVIEW; exact-head CI run #43796301513 completed successfully; mergeable | Independent code review; merge only through normal review process; physical-device QA remains separate |
-| #21 | Retire parallel neon profile persistence and migrate legacy profile into BuildDocument | OPEN / DRAFT; stacked on PR #20; exact PR-head CI run #43795781816 completed successfully | Do not retarget/merge before PR #20; review migration semantics and preserve legacy user data |
-| #17 | Refresh this canonical resume checkpoint | OPEN; documentation-only; exact-head CI run #43795689102 completed successfully | Review and merge this checkpoint update |
+| #20 | Safe surface-material binder and BuildDocument-driven neon HUD hydration | OPEN / READY FOR REVIEW; exact-head CI run #43796301513 passed; GitHub reports clean, but base SHA is behind current main | Independently review; update/reconcile with current main; merge only through normal review |
+| #21 | Retire parallel neon profile persistence and migrate legacy profile into BuildDocument | OPEN / DRAFT; stacked on PR #20; exact-head CI run #43795781816 passed; GitHub currently reports dirty | Wait for #20 integration, then rebase/reconcile; preserve source legacy user data |
+| #23 | Deterministic adaptive shadow-quality hysteresis and smoke regression test | OPEN / DRAFT; current base main SHA; exact-head CI run #43797749406 passed; GitHub reports clean | Review logic and decide whether to include diagnostic getters/telemetry and long-pause guard noted in PR comments |
 
-PRs #7, #8, #11, #18 and #19 are closed (superseded or diagnostic-only). PR #10, #12, #14 and #16 are merged. Re-fetch all PRs and CI before acting.
+PR #22 is closed without merge as a duplicate of #23. PRs #7, #8, #11, #18 and #19 are closed (superseded or diagnostic-only). PRs #2, #3, #4, #6, #9, #10, #12, #14, #16 and #17 are merged. Refresh all statuses before acting.
 
-## Open issues — live refresh 2026-11-16 03:11 UTC
+## Open issues — live refresh 2026-11-16 03:24 UTC
 
 - Issue #1: “[Architecture] Deliver the unified Atomic-Z-Customi-Z system”.
 - Issue #5: “[Research] Verify external engineering sources and sequence safe integration”.
 
-Re-fetch both and inspect comments/labels before selecting work.
+Both issues were confirmed open; inspect comments/labels again before selecting work.
 
 ## Current evidence and release gaps
 
 | Area | Status | Evidence / limitation |
 |---|---|---|
-| BuildDocument baseline | PASS | PR #3 merged; validate exact current implementation before schema changes |
-| Part paint and safe persistence | PASS | PR #10 merged; backup/recovery tests recorded in CI |
-| Main Android Debug CI export | PASS | Main commit `dccd402...`, run #43793273703 |
-| Integrated garage smoke, neon and BuildDocument contract tests | PASS | PR #20 exact head, run #43795128113 |
-| Surface binder ownership contract test | PASS on PR head | PR #20 run #43795128113; prototype is not yet connected to a verified production GLB asset |
-| Neon HUD state hydration | PASS on PR head | PR #20 run #43796301513; PR review/merge pending |
-| Python neon simulator tests | PASS | PR #20 exact head, run #43796301513 |
-| Android Debug APK export, package metadata and signature | PASS on PR head | PR #20 exact head, run #43796301513; prior artifact upload confirmed by run #43795120047 |
-| Legacy Neon profile migration to BuildDocument | PASS on PR #21 head | PR #21 exact head, run #43795781816; PR is stacked on #20 and remains draft |\n| GLB production asset/material integration | NOT RUN | No verified, provenance-tracked ZX-25RR model imported into the garage yet |
-| Physical Redmi installation/launch | NOT RUN | Requires target device test |
-| Production ZX-25RR GLB/CAD | NOT RUN | Current geometry remains placeholder |
-| Verified UV/surface mapping | NOT RUN | Do not claim body-aligned graphics |
-| Android performance/thermal profile | NOT RUN | Record exact device SKU/SoC/RAM/Android first |
-| Mechanical fitment / structural / road legality | NOT RUN | Requires authoritative data and specialist validation |
+| Canonical BuildDocument baseline | PASS | PR #3 merged; current contract and migrations still require exact-head regression tests |
+| Part-isolated paint and safe persistence | PASS | PR #10 merged; backup/recovery behavior covered in CI |
+| Main commit import/smoke/Python/Android CI | PASS | Exact source SHA `9780969...`, run #43797564422 (triggered from a branch at the same SHA) |
+| Integrated garage, neon and BuildDocument contract tests | PASS on PR head | PR #20 run #43796301513; PR review/base reconciliation pending |
+| Surface binder ownership contract test | PASS on PR head | PR #20 run #43796301513; still a prototype, not connected to a verified production GLB |
+| Neon HUD state hydration | PASS on PR head | PR #20 run #43796301513; PR review/base reconciliation pending |
+| Legacy profile migration and BuildDocument-only neon persistence | PASS on PR head | PR #21 run #43795781816; PR remains stacked/draft and dirty |
+| Adaptive shadow-quality hysteresis | PASS on PR head | PR #23 run #43797749406; only key-light shadows are controlled |
+| Android Debug APK export, package metadata and signature | PASS on PR heads | Exact PR runs #43796301513, #43795781816 and #43797749406; this is CI evidence, not physical-device QA |
+| Production ZX-25RR GLB/CAD and provenance | NOT RUN | Current runtime geometry is procedural placeholder |
+| Verified part IDs/pivots/material slots/UVs for production asset | NOT RUN | Surface binder prototype has no verified target asset |
+| Physical Redmi installation/launch and touch review | NOT RUN | Requires exact target device |
+| Android sustained FPS/frame-time/memory/thermal profiling | NOT RUN | Record exact phone SKU, SoC/GPU, RAM and Android version first |
+| Mechanical fitment, collision/interference, mass properties, structural/thermal/CFD and road legality | NOT RUN | Requires authoritative inputs, defined methods and specialist validation |
+| Calibrated LED/controller mapping | NOT RUN | Disabled until a controller and LED profile is calibrated and evidenced |
 
 ## Repository governance enforcement
 
-- The repository policy requires task branches and reviewed PRs; no direct-main writes, force pushes or self-merges.
-- Live branch listing showed `main` as **not protected**. Branch protection / required-review enforcement is therefore NOT ENFORCED at GitHub settings level in this snapshot. The written policy is active, but technical enforcement needs owner configuration.
-- Do not claim required checks or reviews are enforced until the repository settings confirm it.
+- Repository policy requires task branches and reviewed PRs; no direct-main writes, force pushes or self-merges.
+- The previous checkpoint recorded `main` as unprotected. A fresh branch-protection API read during this refresh returned 403 (Resource not accessible by integration), so current technical enforcement is **UNVERIFIED**. The repository owner must inspect Settings → Branches / Rulesets and configure required reviews/checks.
+- Do not claim required checks or reviews are enforced until repository settings confirm it.
 
 ## Priority next actions
 
-1. Review and merge PR #17 so this current portable checkpoint is committed to `main`.
-2. Complete independent code review of PR #20; merge only through normal review, then refresh PR #21's base and reconcile its stack.
-3. Review PR #21's migration/data-preservation semantics and ensure only the canonical BuildDocument remains writable.
+1. Independently review PR #20 and reconcile its base from `dccd402...` to current `main` before any merge decision.
+2. Review PR #23; consider whether the diagnostics and app-resume sampling guard suggested in the PR discussion improve the proposed controller without expanding beyond measured evidence.
+3. After PR #20 is integrated, reconcile PR #21's stacked base and dirty merge state; verify BuildDocument remains the only writable customization store and original legacy data remains preserved.
 4. Integrate the surface binder with the imported-asset manifest and canonical BuildDocument material records after the surface-ID/schema contract is reviewed.
 5. Obtain a licensed, provenance-tracked ZX-25RR model for a declared year/market, then validate part IDs, pivots, material slots, coordinate frame and UV/surface mapping.
 6. Run physical Redmi QA and record exact device identity, install/launch, touch, persistence, frame time, memory and thermals.
-7. Configure GitHub branch protection and required checks. Current `main` remains unprotected; the documented policy is not technically enforced.
-8. Update this file after every meaningful merged task.
+7. Owner: verify/configure GitHub branch protection and required checks; current integration permissions did not allow a fresh API read.
+8. Update this checkpoint after each meaningful merge or material status change.
 
 ## Decision and change control
 
 - Accepted architecture decisions live in `docs/RESEARCH_AND_DECISIONS.md` and `docs/UNIFIED_SYSTEM_SPEC.md`.
 - New product direction or unresolved ZX-25RR/year/market decisions require explicit product-owner approval; agents may propose but must not silently accept them.
-- Keep changes on a dedicated branch and PR. No direct writes to `main`, no force-push, no self-merge and no bypass of required checks.
+- Keep changes on a dedicated task branch and reviewed PR. No direct-main writes, force-push, self-merge or bypass of required checks.
 - Status vocabulary: PASS / FAIL / NOT RUN / BLOCKED. Every PASS must point to fresh evidence for the exact commit.
 - This checkpoint is the portable handoff. Do not depend on this chat, old chats, saved memory or an AI-generated recap.
