@@ -1,0 +1,14 @@
+{
+  "bike_model": "Kawasaki Ninja ZX-25R",
+  "skin_name": "Neon Cyberpunk",
+  "colors": {
+    "primary": "#00FFCC",
+    "secondary": "#FF00FF",
+    "glow_intensity": 0.8
+  },
+  "line_segments": [
+    {"id": "tail_underglow", "points": [[150, 400], [300, 350], [450, 360], [550, 400]], "width": 6, "color": "primary"},
+    {"id": "tank_accent", "points": [[200, 300], [350, 280], [500, 300], [600, 350]], "width": 4, "color": "secondary"},
+    {"id": "lower_fairing", "points": [[100, 450], [250, 420], [400, 430], [500, 480]], "width": 5, "color": "primary"}
+  ]
+}
