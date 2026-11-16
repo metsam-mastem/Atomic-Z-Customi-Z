@@ -106,7 +106,8 @@ Implementation status: PASS — headless import, garage smoke, neon and BuildDoc
 - [x] Stable surface IDs resolve to unique MeshInstance3D node paths and valid mesh surface indices.
 - [x] Applying a material changes only the selected surface and duplicates the source resource.
 - [x] Imported base PBR materials and unrelated surface overrides remain unchanged.
-- [x] Binder rejects duplicate IDs, aliased slots, missing nodes, invalid indices and global material_override conflicts atomically.
+- [x] Binder rejects duplicate IDs, aliased slots, missing nodes and global material_override conflicts atomically.
+- [ ] Binder rejects out-of-range surface indices atomically (covered by the new GLB catalog contract test).
 - [x] Binder refuses to replace or clear a surface override after ownership transfers to another component.
 - [x] The focused binder contract test runs in the pinned Godot 4.4.1 CI workflow.
 - [ ] Binder surface records are connected to imported-asset provenance and canonical BuildDocument material targets before the UI exposes full surface editing.
