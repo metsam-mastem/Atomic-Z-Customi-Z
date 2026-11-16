@@ -119,7 +119,7 @@ func _run_smoke_test() -> void:
 	bike.call("set_exploded", true)
 	var saved_exploded_tank_position: Vector3 = tank.position
 	var summary_label := scene.find_child("BuildSummaryLabel", true, false) as Label
-	if summary_label == null or not summary_label.text.contains("BUILD  /") or not summary_label.text.contains("fuel tank"):
+	if summary_label == null or not summary_label.text.contains("BUILD  /") or not summary_label.text.contains("FUEL TANK"):
 		push_error("Garage HUD must display the active BuildDocument and selected part.")
 		quit(1)
 		return
