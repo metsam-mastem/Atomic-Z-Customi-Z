@@ -24,6 +24,8 @@ if [[ "$SOURCE" == "--list" || "$SOURCE" == "-l" ]]; then
   printf '%s\n' "  openug2  (NOASSERTION; study-only)"
   printf '%s\n' "  rea  (MIT; official upstream)"
   printf '%s\n' "  roadkill  (NOASSERTION; study-only)"
+  printf '%s\n' "Study-only COD references intentionally excluded from source fetching: OpenCOD1, OpenCOD2, CoDWaW-RE, CoD-Research."
+  printf '%s\n' "Official Activision Telescope archives and private MW2 reconstruction are not Git repositories with a single pinned source checkout."
   printf '%s\n' "Not fetchable automatically: speed-re (revision not pinned), CC0 GLBs (download hash not yet recorded)."
   exit 0
 fi
