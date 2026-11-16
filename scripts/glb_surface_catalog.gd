@@ -39,7 +39,10 @@ static func validate_manifest(scene_root: Node, definitions: Array) -> Dictionar
 		if node_path_text.is_empty():
 			errors.append("Surface %s requires a root-relative node_path." % surface_id)
 			continue
-		if not (surface_index_value is int) or int(surface_index_value) < 0:
+		var surface_index_is_integer := surface_index_value is int
+		if surface_index_value is float:
+			surface_index_is_integer = is_equal_approx(float(surface_index_value), floorf(float(surface_index_value)))
+		if not surface_index_is_integer or float(surface_index_value) < 0.0:
 			errors.append("Surface %s requires a non-negative integer surface_index." % surface_id)
 			continue
 
