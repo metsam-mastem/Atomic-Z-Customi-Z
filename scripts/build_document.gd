@@ -22,7 +22,8 @@ static func create_default(vehicle_id: String = "vehicle-unassigned", display_na
 			"sha256": null,
 			"license": null,
 			"source": null,
-			"validation_status": "not_run"
+			"validation_status": "not_run",
+			"surface_catalog": []
 		},
 		"assembly": {"parts": []},
 		"customization": {
@@ -94,6 +95,37 @@ static func validate(document: Dictionary) -> Dictionary:
 		errors.append("vehicle must be an object.")
 	elif str(vehicle.get("vehicle_id", "")).strip_edges().is_empty():
 		errors.append("vehicle.vehicle_id is required.")
+	var asset: Variant = document.get("asset", null)
+	var known_surface_ids: Dictionary = {}
+	if not (asset is Dictionary):
+		errors.append("asset must be an object.")
+	else:
+		var surface_catalog: Variant = asset.get("surface_catalog", [])
+		if not (surface_catalog is Array):
+			errors.append("asset.surface_catalog must be an array.")
+		else:
+			var occupied_slots: Dictionary = {}
+			for surface_value in surface_catalog:
+				if not (surface_value is Dictionary):
+					errors.append("Every asset surface catalog entry must be an object.")
+					continue
+				var surface: Dictionary = surface_value
+				var surface_id := str(surface.get("surface_id", "")).strip_edges()
+				var node_path := str(surface.get("node_path", "")).strip_edges()
+				var surface_index: Variant = surface.get("surface_index", null)
+				if surface_id.is_empty() or known_surface_ids.has(surface_id):
+					errors.append("Asset surface IDs must be non-empty and unique.")
+				else:
+					known_surface_ids[surface_id] = true
+				if node_path.is_empty():
+					errors.append("Asset surface %s requires a node_path." % surface_id)
+				if not (surface_index is int) or int(surface_index) < 0:
+					errors.append("Asset surface %s requires a non-negative integer surface_index." % surface_id)
+				else:
+					var slot_key := node_path + "#" + str(surface_index)
+					if occupied_slots.has(slot_key):
+						errors.append("Asset surface catalog entries cannot alias the same mesh slot.")
+					occupied_slots[slot_key] = surface_id
 	var customization: Variant = document.get("customization", null)
 	if not (customization is Dictionary):
 		errors.append("customization must be an object.")
@@ -115,6 +147,28 @@ static func validate(document: Dictionary) -> Dictionary:
 					seen[layer_id] = true
 				if not (layer.get("color_token", "") in ["primary", "secondary"]):
 					errors.append("Neon layer color_token must reference the shared palette.")
+		var material_records: Variant = customization.get("materials", [])
+		if not (material_records is Array):
+			errors.append("customization.materials must be an array.")
+		else:
+			for material_value in material_records:
+				if not (material_value is Dictionary):
+					errors.append("Every material record must be an object.")
+					continue
+				var material_record: Dictionary = material_value
+				if material_record.has("target_surface_ids"):
+					var target_surface_ids: Variant = material_record.get("target_surface_ids", null)
+					if not (target_surface_ids is Array):
+						errors.append("Material target_surface_ids must be an array.")
+					else:
+						var seen_targets: Dictionary = {}
+						for target_value in target_surface_ids:
+							var target_id := str(target_value).strip_edges()
+							if target_id.is_empty() or seen_targets.has(target_id):
+								errors.append("Material surface targets must be non-empty and unique.")
+							elif not known_surface_ids.has(target_id):
+								errors.append("Material target_surface_id %s is not present in asset.surface_catalog." % target_id)
+							seen_targets[target_id] = true
 		var palette: Variant = customization.get("palette", {})
 		if not (palette is Dictionary):
 			errors.append("customization.palette must be an object.")
