@@ -34,8 +34,11 @@ Exit: product customization requires no external Tkinter/Python window.
 - Provenance/license/hash manifest.
 - Stable part IDs, pivots, mount points and material slots.
 - UV/surface registration for graphics.
+- Recursively inventory imported GLB nodes, mesh surfaces and source material slots.
+- Bind stable surface IDs to unique mesh/surface targets; duplicate materials before edits and preserve imported PBR resources.
+- Complete the bridge from verified asset metadata and surface bindings into BuildDocument material records and the existing garage selection flow.
 - Exact vehicle variant/year/market selection.
-Exit: asset validator passes; fitment claims limited to verified assets.
+Exit: asset validator passes; fitment claims limited to verified assets; isolated surface edits cannot mutate unrelated slots.
 
 ## Phase 4 — Rendering
 - PBR paint/material presets.
@@ -44,6 +47,7 @@ Exit: asset validator passes; fitment claims limited to verified assets.
 - Decals, textures and surface-bound curves.
 - Lighting presets and preview capture.
 - Frame-time telemetry and graceful quality reduction.
+- Keep emissive materials functional with glow disabled; profile Compatibility glow separately and use adaptive low-tier fallbacks.
 Exit: desktop visual review and Android profiling meet measured budgets.
 
 ## Phase 5 — Persistence and export
@@ -60,6 +64,7 @@ Exit: save-close-reopen preserves full state; exported document validates.
 - Collision/interference with known-answer fixtures.
 - Mass properties only with verified geometry and density.
 - Optional solver adapters with assumptions, versions and validation cases.
+- Riding physics remains outside the customization garage until an explicit product-scope decision authorizes a rideable simulator.
 - Separate fitment/legal evidence.
 Exit: each result has traceable input, units, assumptions and status.
 
