@@ -99,3 +99,9 @@ Status of these new gates: NOT RUN. Existing headless tests and CI history cover
 - [x] Godot 4.4.1 CI smoke and BuildDocument tests pass on the current feature head.
 
 Implementation status: PASS — headless import, garage smoke, neon and BuildDocument tests passed at commit `b773e6911fc30bf20693211ca745c8d7995beae3` in CI run [#43788490715](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788490715). Android Debug export passed after enabling ETC2/ASTC at commit `ced48a657dd688d683b9328a97081af7bfad52ac` in CI run [#43788240486](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788240486). Physical device acceptance remains NOT RUN.
+
+
+## BuildDocument-driven HUD hydration
+- [ ] On opening a saved build, the primary/secondary neon color pickers and glow slider display the values from the loaded BuildDocument.
+- [ ] Changing those controls updates the shared BuildDocument and save/reopen restores the same visible values.
+- Test: `godot --headless --path . --script res://tests/build_document_ui_state_test.gd`
