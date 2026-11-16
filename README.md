@@ -6,6 +6,11 @@ Atomic-Z-Customi-Z is a 3D motorcycle garage and customization workbench for veh
 
 **Asset honesty:** current motorcycle geometry is procedural placeholder geometry, not Kawasaki factory CAD, not a verified ZX-25RR replica and not an engineering-validated model.
 
+## Product concept illustration
+![Atomic-Z-Customi-Z product concept](assets/product-concept.svg)
+
+The illustration is an authored product/UI concept reference, not a runtime screenshot. A separate cinematic concept image was generated for visual presentation; runtime and device screenshots remain pending.
+
 ## The integrated experience
 - Vehicle identity and variant selection.
 - Named part assembly with Stock / Exploded views.
@@ -46,6 +51,14 @@ Read these before changing code:
 - docs/RESEARCH_AND_DECISIONS.md — GitHub, Build Your Own X, Nature research and ADRs.
 - docs/architecture.md — technical architecture.
 - docs/acceptance.md — testable acceptance gates.
+
+## Project charter, philosophy & handoff
+- [Project Charter](docs/PROJECT_CHARTER.md) — mission, scope, success criteria and governance.
+- [Manifesto & Philosophy](docs/MANIFESTO.md) — principles, product promise and creative philosophy.
+- [Product Catalog](docs/PRODUCT_CATALOG.md) — current capabilities versus roadmap; no overclaiming.
+- [Development Workflow](docs/DEVELOPMENT_WORKFLOW.md) — branch/PR flow, quality gates and debugging protocol.
+- [Product Handoff Presentation](docs/HANDOFF_PRESENTATION.md) — presentation-ready 10-slide handoff outline.
+- [Repository Audit & Work Report](docs/PROJECT_AUDIT_REPORT.md) — inspected files, gaps, work performed and validation status.
 
 ## Technology boundary
 Godot owns the product scene, UI, input, materials, effects, persistence and Android export. Blender to GLB/glTF 2.0 to validation to Godot is the preferred asset path. Python/Tkinter and ModernGL are reference/developer tools; useful controls and rendering ideas are ported into Godot, not shipped as parallel product runtimes.
