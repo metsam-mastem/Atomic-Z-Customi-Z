@@ -61,3 +61,49 @@ Then verify GLB with Khronos glTF Validator, inspect it in Blender, and map stab
 ## Asset decision
 
 The two Innerscene pages are the most promising low-risk visual starting points because their individual pages state CC0. The next step is to download only the chosen model, compute a SHA-256, validate it, and add its provenance to the existing asset register before any runtime import. Roadkill remains a gameplay/presentation study only until licence scope is clear.
+
+
+## 4. Additional CC0 motorcycle models and complete scene pack
+
+These are the exact Innerscene model pages that were mentioned earlier or surfaced during the expanded audit. They are distinct assets; do not confuse the 7.2 MB generic sport bike with the separate 19.1 MB naked-sport model.
+
+### Innerscene naked sport motorcycle
+
+- Page: https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-naked-sport-bike-fc4c9758
+- Format/size: GLB, 19.1 MB.
+- Stated licence: CC0 / public domain.
+- Page description: generic naked sport bike with inline-four exterior, trellis frame, fork, twin front discs, wheels, chain and side silencer.
+- Nominal overall dimensions: approximately 1.009 × 2.055 × 1.304 metres.
+- This is a visual reference model, not verified Kawasaki/Ninja CAD or mechanically complete.
+
+### Innerscene adventure motorcycle
+
+- Page: https://www.innerscene.com/tools/library/3d-parts/adventure-motorcycle-3de675e4
+- Format/size: GLB, 7.2 MB.
+- Stated licence: CC0 / public domain.
+- Nominal overall dimensions: approximately 2.275 × 0.922 × 1.405 metres.
+- Generic unbranded Adventure motorcycle; useful as a second form-factor/LOD/import test.
+
+### 3DAssets.dev — Motorcycle Racing and Street Bikes pack
+
+- Demo: https://3dassets.dev/demos/motorcycle-racing-and-street-bikes
+- Pack manifest: https://3dassets.dev/api/v1/packs/motorcycle-racing-and-street-bikes
+- Demo placement JSON: https://3dassets.dev/api/v1/demos/motorcycle-racing-and-street-bikes
+- The demo page describes 69 distinct GLB models, 202 placements and a walkable race paddock/workshop/hairpin scene.
+- Stated licence: CC0 1.0 Universal for the pack/models.
+- Documented scene axes/units: metres, +Y up.
+- The demo page says all 69 published pack designs are placed, and says colliders, navigation and gameplay are left for the consuming project to add.
+- Contents include road-bike archetypes, showroom/plinth pieces, paddock garages, workshop benches, bike transport, a hairpin, track timing equipment, racing bikes and small garage props.
+- Useful for a garage/paddock prototype, background dressing, visual benchmark and GLB import/instancing tests. Not a physics simulator or finished playable racing level.
+
+### Asset selection and mobile trade-offs
+
+| Candidate | Best role | Main caution |
+|---|---|---|
+| Innerscene Road Motorcycle (627 KB) | low-cost import/material and geometry tests | visual-only; working mechanical systems omitted |
+| Innerscene Sport Motorcycle (7.2 MB) | generic full-bike showroom placeholder | no OEM fitment proof |
+| Innerscene Adventure (7.2 MB) | alternate silhouette and scale/LOD test | different use case and geometry budget |
+| Innerscene Naked Sport (19.1 MB) | richer close-up customization/showcase candidate | materially heavier GLB; inspect polygon/texture budget |
+| 3DAssets Motorcycle Racing and Street Bikes | garage/paddock/workshop environment kit | 69 assets still require mobile LOD, collision, draw-call, texture and streaming budgets |
+
+Before any model enters Atomic-Z, acquire the exact GLB, hash the bytes, save the source page and CC0 snapshot, inspect in Blender and run Khronos glTF Validator. Record mesh/surface count, textures, UVs, scale, wheel centres, origins/pivots, polygon count, animation clips and dependencies. Only then create a BuildDocument-compatible surface catalogue. Do not enable the complete 69-model pack on mobile without a measured asset budget and staged loading plan.
