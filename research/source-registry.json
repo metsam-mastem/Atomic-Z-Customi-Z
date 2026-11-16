@@ -221,7 +221,7 @@
     },
     {
       "id": "rea",
-      "name": "REA — Reverse Engineer Anything",
+      "name": "REA — Reverse Engineer Anything (canonical upstream; commonly misnamed Reverse Engineering Everything)",
       "repository": "morluto/rea",
       "url": "https://github.com/morluto/rea",
       "revision": {
@@ -264,7 +264,21 @@
         "docs/development/reconstruction-readiness.md",
         "docs/getting-started/installation.md"
       ],
-      "atomic_z_decision": "Optional external research tool only; not installed and not part of Atomic-Z runtime. Use canonical upstream, not third-party forks, and analyze only authorized targets."
+      "atomic_z_decision": "Optional external research tool only; not installed and not part of Atomic-Z runtime. Use canonical upstream, not third-party forks, and analyze only authorized targets.",
+      "alias_and_fork_checks": [
+        {
+          "repository": "edaneshi/ReversEngineeringEverything",
+          "url": "https://github.com/edaneshi/ReversEngineeringEverything",
+          "relationship": "GitHub fork of morluto/rea",
+          "disposition": "not canonical; use upstream source and pinned revision"
+        },
+        {
+          "repository": "JunchaoMeiNCTS/Reverse-Engineering-Everything",
+          "url": "https://github.com/JunchaoMeiNCTS/Reverse-Engineering-Everything",
+          "relationship": "GitHub fork of morluto/rea",
+          "disposition": "not canonical; use upstream source and pinned revision"
+        }
+      ]
     },
     {
       "id": "roadkill",
