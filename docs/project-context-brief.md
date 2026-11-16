@@ -44,23 +44,15 @@ The current procedural motorcycle geometry is placeholder geometry. It is not fa
 
 ## 5. Repository implementation/evidence notes
 
-The root README and canonical specifications describe the intended product and developer workflow. Current source presence, historical PR descriptions and older CI runs must not be interpreted as proof that the current main commit passes all gates.
+The current repository state is authoritative. The following results are tied to named PR heads and CI runs, not a blanket claim that every current-main gate passes.
 
-Known evidence boundaries from inspected repository documentation and PR descriptions:
-
-- Godot headless import/smoke/neon/BuildDocument checks have been reported PASS on named historical runs; verify exact current commit before relying on them.
-- Android Debug export has been reported failing with a generic preset-configuration error. PR #8 adds verbose diagnostics; root cause and successful export are not established by that PR description.
-- Android installation and physical Redmi Note 13 Pro validation remain separate gates.
-- Surface-aligned neon paths require a verified model/UV/surface binding; approximate 2D-to-3D mapping is not fitment evidence.
-- No mechanical fitment, mass, stress, structural safety or road-legality claim is established by a visual model.
-
-## 6. Current GitHub snapshot — 2026-11-16
-
-- Default branch: `main`.
-- Branch search returned seven branches: `main`, `agent/integration/1-build-document-contract`, `agent/integration/5-android-export-diagnostics`, `agent/research/godot-mobile-rendering-integration`, `agent/research/5-verified-source-audit`, `docs/product-charter-workflows-handoff`, and `feat/commercial-neon-shader-skin-data`.
-- PR #7 and PR #8 were returned by the open-PR search.
-- PR #2, #3, #4 and #6 were returned by the closed-PR search; recent main history includes merge commits for #2, #3, #4 and #6.
-- This snapshot is temporary. Recheck GitHub before each task; do not rely on these branch/PR states indefinitely.
+- PR #10 is merged. It adds isolated part paint, BuildDocument persistence with backup/recovery, and the ETC2/ASTC Android export prerequisite.
+- Godot 4.4.1 import, smoke, neon, BuildDocument, Exploded reload and persistence failure/recovery tests passed on named PR #10 commits.
+- Android Debug APK export and artifact upload passed on PR #10 commit 253029faaecc358e7e3c98d52255a8cb63ee9db1 in workflow run 43788395328. Physical Redmi device installation and QA remain NOT RUN.
+- PR #7 remains open/draft. Its focused Surface Material Binder test and end-to-end GLB/BuildDocument/UI integration remain NOT RUN.
+- PR #8 is closed without merge. PR #11 and PR #12 remain open at the latest snapshot; re-evaluate their overlap with the Android export fix already merged through PR #10 before further action.
+- Current geometry remains procedural placeholder geometry. No verified factory CAD, ZX-25RR replica, physical fitment, engineering validity or road legality is established.
+- The only verified visual asset in the repository is assets/product-concept.svg. It is concept/UI artwork, not a runtime screenshot. See docs/VISUAL_ASSET_REGISTER.md.
 
 ## 7. Work sequence (dependency-aware)
 
