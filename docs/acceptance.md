@@ -67,3 +67,22 @@ No Godot editor/runtime, Android export or physical-device test has been run dur
 - [ ] 2D-to-3D paths are registered against an exact model-year/market asset before claiming panel alignment or fitment.
 
 - [ ] Save skin writes to `user://` and a fresh runtime instance can reload palette, glow and per-segment visibility without data loss.
+
+## Unified-system acceptance gates (2026-11-16)
+
+The following gates supersede any interpretation of the garage, material editor, neon design or renderer as separate products. They must be exercised as one end-to-end workflow in one Godot runtime.
+
+- [ ] One canonical versioned BuildDocument is the source of truth for vehicle, assembly, materials, graphic/neon layers, render settings and export metadata.
+- [ ] Legacy neon_skin_config.json imports through an explicit migration and does not create a competing writable state store.
+- [ ] Selecting a vehicle, switching Stock/Exploded, selecting a part, changing paint/neon, saving, reopening and exporting works without leaving the application.
+- [ ] Stable vehicle/part/surface/layer IDs survive edits, save/load and migration.
+- [ ] UI controls update the shared build state; renderer consumes that state; persistence/export serialize the same state.
+- [ ] Invalid or incompatible part/surface combinations are rejected before mutating the active build.
+- [ ] Undo/redo and reset restore the complete relevant state.
+- [ ] Neon/graphic paths are surface-bound to a verified model before any body-fitment claim.
+- [ ] Glow/bloom quality is configurable and profiled on Android; low tiers degrade gracefully.
+- [ ] Hardware mapping export is disabled unless a calibrated controller/LED profile is present and explicitly approved.
+- [ ] One integrated end-to-end test covers selection → edit → render-state update → save → reload → export round trip.
+- [ ] Agent collaboration follows AGENTS.md and docs/AGENT_GOVERNANCE.md; all future source changes use branches and reviewed PRs.
+
+Status of these new gates: NOT RUN. Existing headless tests and CI history cover only the specific behaviors named above in their original sections; they do not automatically satisfy this end-to-end contract.
