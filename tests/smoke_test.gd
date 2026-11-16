@@ -90,6 +90,27 @@ func _run_smoke_test() -> void:
 		push_error("Painting one part must not recolor another part.")
 		quit(1)
 		return
+	var available_parts: Array = bike.call("get_part_ids")
+	if not ("front_rim" in available_parts) or not ("rear_rim" in available_parts):
+		push_error("Front and rear rims must be independently selectable customization parts.")
+		quit(1)
+		return
+	var front_tire_color_before: Color = bike.call("get_part_color", "front_wheel")
+	var rim_paint := Color("#B58A32")
+	if not bike.call("set_part_color", "front_rim", rim_paint):
+		push_error("The front rim must accept an independent paint edit.")
+		quit(1)
+		return
+	var front_rim_color: Color = bike.call("get_part_color", "front_rim")
+	if not front_rim_color.is_equal_approx(rim_paint):
+		push_error("Front rim color edit did not reach the rim material.")
+		quit(1)
+		return
+	var front_tire_color_after: Color = bike.call("get_part_color", "front_wheel")
+	if not front_tire_color_after.is_equal_approx(front_tire_color_before):
+		push_error("Painting the rim must not recolor the tire.")
+		quit(1)
+		return
 
 	var project_color := Color(0.2, 0.4, 0.9, 1.0)
 	scene.call("_on_body_color_changed", project_color)
@@ -98,6 +119,11 @@ func _run_smoke_test() -> void:
 	scene.call("_on_neon_toggled", false)
 	bike.call("set_exploded", true)
 	var saved_exploded_tank_position: Vector3 = tank.position
+	var summary_label := scene.find_child("BuildSummaryLabel", true, false) as Label
+	if summary_label == null or not summary_label.text.contains("BUILD  /") or not summary_label.text.contains("FUEL TANK"):
+		push_error("Garage HUD must display the active BuildDocument and selected part.")
+		quit(1)
+		return
 	var document: Dictionary = scene.call("get_build_document_snapshot")
 	if document.get("schema_version") != 1:
 		push_error("Garage must expose the canonical BuildDocument.")
@@ -129,6 +155,10 @@ func _run_smoke_test() -> void:
 		return
 	if not scene.call("save_project"):
 		push_error("Unified BuildDocument must save successfully.")
+		quit(1)
+		return
+	if not summary_label.text.contains("REVISION  /  2"):
+		push_error("HUD must reflect the persisted BuildDocument revision after save.")
 		quit(1)
 		return
 	var saved := FileAccess.open("user://atomic_z_build.json", FileAccess.READ)
@@ -166,6 +196,11 @@ func _run_smoke_test() -> void:
 		return
 	if not restored_front_color.is_equal_approx(expected_test_color):
 		push_error("Saved paint for another part must remain independent after reload.")
+		quit(1)
+		return
+	var restored_rim_color: Color = restored_bike.get_part_color("front_rim")
+	if not restored_rim_color.is_equal_approx(Color("#B58A32")):
+		push_error("Saved alloy rim paint must be restored independently after reload.")
 		quit(1)
 		return
 	if not restored_tank_position.is_equal_approx(saved_exploded_tank_position):
