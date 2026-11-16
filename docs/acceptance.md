@@ -54,3 +54,14 @@ No Godot editor/runtime, Android export or physical-device test has been run dur
 - [ ] Glow slider changes layered stroke appearance.
 - [ ] Save/reload round-trips valid JSON without losing segment IDs or points.
 - [ ] A verified ZX-25R/ZX-25RR reference image and model-year/market mapping exist before claiming physical fitment.
+
+## Godot neon runtime gates
+
+- [ ] Valid JSON loads without changing stable segment IDs or palette values.
+- [ ] Duplicate IDs, malformed points, invalid hex colors, unknown named colors, non-positive widths and glow values outside [0, 1] are rejected.
+- [ ] Global neon visibility and each segment visibility can be controlled independently.
+- [ ] Primary/secondary palette updates rebuild only affected segment visuals.
+- [ ] Glow intensity updates emissive energy and remains clamped to [0, 1].
+- [ ] Headless Godot contract test passes in CI.
+- [ ] Visual appearance is reviewed on desktop and Android; no bloom or frame-rate claim before device verification.
+- [ ] 2D-to-3D paths are registered against an exact model-year/market asset before claiming panel alignment or fitment.
