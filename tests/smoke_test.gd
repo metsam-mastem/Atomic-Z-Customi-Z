@@ -425,7 +425,15 @@ func _test_touch_gestures() -> bool:
 	clamp_drag.position = Vector2(5000.0, 115.0)
 	gestures.handle_event(clamp_drag)
 	var clamped: Dictionary = gestures.get_camera_state()
-	if float(clamped.get("orbit_distance", 0.0)) > 8.0:
+	if not is_equal_approx(float(clamped.get("orbit_distance", 0.0)), 3.0):
+		push_error("Pinch zoom must respect the minimum camera distance.")
+		return false
+	var max_clamp_drag := InputEventScreenDrag.new()
+	max_clamp_drag.index = 1
+	max_clamp_drag.position = Vector2(150.0, 115.0)
+	gestures.handle_event(max_clamp_drag)
+	var max_clamped: Dictionary = gestures.get_camera_state()
+	if not is_equal_approx(float(max_clamped.get("orbit_distance", 0.0)), 8.0):
 		push_error("Pinch zoom must respect the maximum camera distance.")
 		return false
 
