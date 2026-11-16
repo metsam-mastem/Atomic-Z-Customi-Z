@@ -108,8 +108,8 @@ jobs:
 
       - name: Import project and export debug APK
         run: |
-          godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk
+          godot --headless --editor --path . --quit --verbose
+          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk --verbose
           test -s build/Atomic-Z-debug.apk
 
       - name: Upload Android debug APK
