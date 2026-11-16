@@ -60,7 +60,8 @@ This live list supersedes the older PR snapshot and statuses retained in earlier
 
 - Branch: `agent/research/atomic-z-reference-vault`.
 - Base SHA: `db532efa725e6f54df54a707ce7b5be585d589d6`.
-- Head SHA: `93797f5459a525ab7624e7b7c06728439792b586`.
+- Head SHA: `93797f5459a525ab7624e7b7c06728439792b586` (at the prior status snapshot).
+- Live diff at the prior snapshot: 46 commits ahead of main, 0 behind, 19 changed files.
 - Scope: source registry, per-project dossiers, integration map, reverse-engineering playbook, third-party policy, sparse local source retrieval helper and README/checkpoint references.
 - Registry: 23 unique sources, 16 pinned immutable Git revisions; statuses identify study-only, reuse-candidate, private/no-source and recheck items.
 - Research files: `research/README.md`, `research/source-registry.json`, `research/INTEGRATION_MAP.md`, `research/sources/`, `research/reverse-engineering/PLAYBOOK.md`.
@@ -85,6 +86,11 @@ The detailed, pinned audit lives in the [Atomic-Z Research Vault](../research/RE
 - Two Innerscene model pages state CC0, but no downloaded GLB, SHA-256 or import validation has been recorded. They are visual placeholder candidates, not OEM CAD or fitment evidence.
 - The previously cited `rishabhsinghio/Godot-Simple-Motorcycle-Physics` URL returned 404. The cited `alvariusgames/bearcycle` repository contents did not match a motorcycle project.
 
+
+- Seerban/godot-vehicle and ModuVehicle are additional pinned Godot vehicle references; the first is a four-wheel MIT car implementation on Godot 4.6 Forward+, the second a CC0 WIP C++ GDExtension for Godot 4.5+. Neither is a completed motorcycle solver.
+- KV Vehicle is study-only because no repository licence was established; MotoForge and VOLT R1 Showroom also lack a root repository licence. Their patterns inform fitment validation, build summaries, mobile lazy-loading, fallbacks and camera/telemetry, but no web runtime or code is imported.
+- The registry contains 23 entries / 16 pinned Git revisions. The helper provides six sparse checkouts only; other references with unresolved/mixed rights remain manual.
+
 No COD, NFS retail assets, executables, maps, sounds, textures, recovered game data or proprietary source are candidates for Atomic-Z integration.
 
 ## Current evidence and release gaps
@@ -94,7 +100,7 @@ No COD, NFS retail assets, executables, maps, sounds, textures, recovered game d
 | Canonical BuildDocument baseline | PASS (historical merged work) | Current exact-head regressions still required after integration branches merge |
 | Part-isolated paint and safe persistence | PASS (historical merged work) | Backup/recovery behaviour covered by prior CI; re-run on current integration chain |
 | Main Godot/Python/Android CI | PASS | Main SHA `db532efa...`, run #43814661860 |
-| Research Vault source registry and docs | PASS — structural validation | JSON parses; unique IDs and valid pinned SHAs; exact PR HEAD CI still in progress |
+| Research Vault source registry and docs | PASS — structural validation | JSON parses; 23 unique IDs and 16 valid pinned SHAs; exact PR HEAD CI queued |
 | Research fetch helper | NOT RUN | Pinned sparse-checkout helper exists; no external source checkout downloaded in this task |
 | Production ZX-25RR GLB/CAD and provenance | NOT RUN | Current runtime geometry is procedural placeholder |
 | Verified part IDs/pivots/material slots/UVs for production asset | NOT RUN | Surface binder prototype still needs verified production asset |
