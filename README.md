@@ -60,3 +60,30 @@ godot --headless --path . --script res://tests/smoke_test.gd
 ```
 
 GitHub Actions runs these checks on pushes and pull requests. A green CI run proves only the tested headless behaviors; it does not prove visual quality, Android export, device performance or engineering validity.
+
+
+## Neon Cyberpunk skin preview (Python / Tkinter)
+
+This is a separate 2D design-preview utility alongside the Godot 3D garage:
+- `neon_skin_config.json` is the editable, data-only skin definition. It stores the bike label, skin name, two palette colors, glow intensity and three polyline overlays.
+- `neon_simulator.py` reads that JSON and opens a desktop Tkinter window. It draws a stylized side-profile guide, renders the three neon line layers with stacked strokes to approximate glow, lets you toggle layers, change colors, adjust glow intensity, reload the JSON and save edits.
+- `tests/test_neon_simulator.py` validates the config, named color references and input ranges.
+
+### Run on Windows / macOS / Linux
+
+Python 3.10+ is recommended. Tkinter is normally included with the standard Python distribution.
+
+```bash
+python neon_simulator.py
+```
+
+Run automated checks:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
+python -m py_compile neon_simulator.py
+```
+
+The simulator is a 2D concept tool, not a 3D renderer, not a measured ZX-25R/ZX-25RR body template and not a factory CAD viewer. The supplied line coordinates are canvas pixels and must be aligned to a verified motorcycle side-view template before manufacturing or claiming model-specific fitment.
+
+**Model naming:** this skin JSON intentionally preserves the requested label `Kawasaki Ninja ZX-25R`. The main product brief currently targets ZX-25RR. These names must not be treated as interchangeable for exact fitment; the skin-to-vehicle compatibility remains unverified.
