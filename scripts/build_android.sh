@@ -41,6 +41,11 @@ echo "Output: $OUTPUT"
 [[ -s "$OUTPUT" ]] || { echo "Export produced no APK: $OUTPUT" >&2; exit 1; }
 
 VERIFY_ARGS=("$ROOT/scripts/verify_android_artifact.py" "$OUTPUT")
+if [[ -n "${ANDROID_HOME:-}" && -x "$ANDROID_HOME/build-tools/34.0.0/aapt" ]]; then
+  BADGING="$("$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$OUTPUT")"
+  grep -q "package: name='com.atomicz.customizationlab'" <<< "$BADGING"
+  grep -q "versionName='0.1.0'" <<< "$BADGING"
+fi
 if [[ -n "${ANDROID_HOME:-}" && -x "$ANDROID_HOME/build-tools/34.0.0/apksigner" ]]; then
   VERIFY_ARGS+=(--apksigner "$ANDROID_HOME/build-tools/34.0.0/apksigner" --require-signed)
 fi
