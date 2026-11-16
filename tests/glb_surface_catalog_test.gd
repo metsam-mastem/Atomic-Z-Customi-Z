@@ -64,17 +64,17 @@ func _run() -> void:
 	}]
 	_assert(not BuildDocumentScript.validate(invalid_target).get("ok", true), "Material records must not target unknown surface IDs.")
 
-	var duplicate_id := CatalogScript.validate_manifest(root_node, [
+	var duplicate_id: Dictionary = CatalogScript.validate_manifest(root_node, [
 		{"surface_id": "same", "node_path": "Body/VisualMesh", "surface_index": 0},
 		{"surface_id": "same", "node_path": "Body/VisualMesh", "surface_index": 1}
 	])
 	_assert(not duplicate_id.get("ok", true), "Duplicate stable surface IDs must be rejected.")
-	var duplicate_slot := CatalogScript.validate_manifest(root_node, [
+	var duplicate_slot: Dictionary = CatalogScript.validate_manifest(root_node, [
 		{"surface_id": "one", "node_path": "Body/VisualMesh", "surface_index": 0},
 		{"surface_id": "two", "node_path": "Body/VisualMesh", "surface_index": 0}
 	])
 	_assert(not duplicate_slot.get("ok", true), "Two IDs must not alias one mesh surface.")
-	var missing_surface := CatalogScript.validate_manifest(root_node, [
+	var missing_surface: Dictionary = CatalogScript.validate_manifest(root_node, [
 		{"surface_id": "missing", "node_path": "Body/VisualMesh", "surface_index": 9}
 	])
 	_assert(not missing_surface.get("ok", true), "Out-of-range surface indices must be rejected.")
@@ -82,7 +82,7 @@ func _run() -> void:
 	var binder = BinderScript.new()
 	var configured: Dictionary = binder.configure_from_build_document(root_node, document)
 	_assert(configured.get("ok", false), "Binder must consume the catalog from the canonical BuildDocument.")
-	var edited := binder.set_surface_color(document, "body.paint", Color("#ABCDEF"))
+	var edited: bool = binder.set_surface_color(document, "body.paint", Color("#ABCDEF"))
 	_assert(edited, "A valid surface color edit must update both the runtime surface and BuildDocument.")
 	_assert(document["customization"]["materials"].size() == 1, "Surface edit must create one canonical material record.")
 	_assert(document["customization"]["materials"][0].get("target_surface_ids") == ["body.paint"], "Material record must target the stable surface ID.")
