@@ -37,6 +37,7 @@ func _ready() -> void:
 	_neon_skin.name = "NeonSkinOverlay"
 	_neon_skin.configure_build_document(_build_document)
 	_neon_skin.position.z = 0.29
+	_neon_skin.visible = not _bike.is_imported_model()
 	add_child(_neon_skin)
 	_update_camera()
 	_build_hud()
@@ -115,7 +116,8 @@ func _build_hud() -> void:
 	controls.add_child(_part_selector)
 
 	var assembly_button := Button.new()
-	assembly_button.text = "EXPLODED / STOCK"
+	assembly_button.text = "EXPLODED / STOCK" if _bike.supports_exploded_view() else "EXPLODED VIEW N/A"
+	assembly_button.disabled = not _bike.supports_exploded_view()
 	assembly_button.pressed.connect(_on_toggle_assembly)
 	controls.add_child(assembly_button)
 
@@ -135,6 +137,8 @@ func _build_hud() -> void:
 	neon_button.text = "NEON ON / OFF"
 	neon_button.toggle_mode = true
 	neon_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
+	neon_button.disabled = _bike.is_imported_model()
+	neon_button.tooltip_text = "Neon preview stays disabled until paths are verified against imported GLB surfaces." if _bike.is_imported_model() else "Toggle neon preview"
 	neon_button.toggled.connect(_on_neon_toggled)
 	controls.add_child(neon_button)
 
@@ -153,6 +157,7 @@ func _build_hud() -> void:
 	primary_picker.color = Color.from_string(str(palette.get("primary", "#00FFCC")), Color("#00FFCC"))
 	primary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	primary_picker.tooltip_text = "Neon primary color"
+	primary_picker.disabled = _bike.is_imported_model()
 	primary_picker.color_changed.connect(_on_neon_primary_changed)
 	skin_controls.add_child(primary_picker)
 
@@ -161,6 +166,7 @@ func _build_hud() -> void:
 	secondary_picker.color = Color.from_string(str(palette.get("secondary", "#FF00FF")), Color("#FF00FF"))
 	secondary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	secondary_picker.tooltip_text = "Neon secondary color"
+	secondary_picker.disabled = _bike.is_imported_model()
 	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
 	skin_controls.add_child(secondary_picker)
 
@@ -172,6 +178,7 @@ func _build_hud() -> void:
 	glow_slider.step = 0.05
 	glow_slider.value = float(_build_document.get("render", {}).get("glow_intensity", 0.8))
 	glow_slider.tooltip_text = "Neon glow intensity"
+	glow_slider.editable = not _bike.is_imported_model()
 	glow_slider.value_changed.connect(_on_glow_changed)
 	skin_controls.add_child(glow_slider)
 
@@ -181,7 +188,7 @@ func _build_hud() -> void:
 	skin_controls.add_child(save_skin_button)
 
 	var disclaimer := Label.new()
-	disclaimer.text = "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
+	disclaimer.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / NEON UV MAPPING PENDING / NOT ENGINEERING-VALIDATED" if _bike.is_imported_model() else "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
 	disclaimer.anchor_left = 0.0
 	disclaimer.anchor_top = 1.0
 	disclaimer.anchor_right = 1.0
@@ -245,26 +252,32 @@ func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: S
 	segment_button.text = label_text
 	segment_button.toggle_mode = true
 	segment_button.button_pressed = _neon_skin.is_segment_visible(segment_id)
+	segment_button.disabled = _bike.is_imported_model()
 	segment_button.toggled.connect(_on_neon_segment_toggled.bind(segment_id))
 	parent.add_child(segment_button)
 
-func _on_neon_segment_toggled(enabled: bool, segment_id: String) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_segment_visible(segment_id, enabled)
 
-func _on_neon_primary_changed(color: Color) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("primary", color)
 
-func _on_neon_secondary_changed(color: Color) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("secondary", color)
 
-func _on_neon_toggled(enabled: bool) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_skin_visible(enabled)
 
-func _on_glow_changed(value: float) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_glow_intensity(value)
 
