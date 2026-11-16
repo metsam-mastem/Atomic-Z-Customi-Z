@@ -5,6 +5,7 @@ const AIModelRegistryScript = preload("res://scripts/ai_model_registry.gd")
 
 var _client: Node
 var _panel: PanelContainer
+var _backdrop: ColorRect
 var _provider_selector: OptionButton
 var _endpoint_input: LineEdit
 var _model_input: LineEdit
@@ -26,18 +27,23 @@ func _ready() -> void:
 	_panel.visible = false
 
 func open_panel() -> void:
+	_backdrop.visible = true
 	_panel.visible = true
 	_panel.grab_focus()
 
 func close_panel() -> void:
 	_client.cancel_active_request()
 	_panel.visible = false
+	_backdrop.visible = false
 
 func _build_panel() -> void:
-	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.015, 0.025, 0.04, 0.78)
-	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	_backdrop = ColorRect.new()
+	_backdrop.name = "AIBackdrop"
+	_backdrop.color = Color(0.015, 0.025, 0.04, 0.78)
+	_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_backdrop.visible = false
+	add_child(_backdrop)
 
 	_panel = PanelContainer.new()
 	_panel.name = "AIPanel"
