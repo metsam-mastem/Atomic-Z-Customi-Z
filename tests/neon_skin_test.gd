@@ -50,5 +50,13 @@ func _run() -> void:
 		push_error("Invalid color references must be rejected.")
 		quit(1)
 		return
+	if skin.load_skin("res://tests/fixtures/invalid_glow_skin.json"):
+		push_error("Out-of-range glow values must be rejected.")
+		quit(1)
+		return
+	if skin.get_segment_ids() != ["tail_underglow", "tank_accent", "lower_fairing"]:
+		push_error("Rejected config must not replace the last valid skin.")
+		quit(1)
+		return
 	print("PASS: neon skin JSON loading, stable IDs, palette editing, glow clamping and visibility.")
 	quit(0)
