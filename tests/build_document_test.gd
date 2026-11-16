@@ -71,6 +71,30 @@ func _initialize() -> void:
 	invalid["schema_version"] = 999
 	_assert(not BuildDocumentScript.validate(invalid).get("ok", true), "Unknown schema versions must be rejected.")
 
+	var legacy_profile := {
+		"schema_version": 1,
+		"color": "#224466FF",
+		"glow_intensity": 3.5,
+		"pulse_speed": 2.25
+	}
+	var profile_base := BuildDocumentScript.create_default("legacy-profile-bike", "Legacy Profile Bike")
+	var profile_migrated: Dictionary = BuildDocumentScript.from_legacy_skin_profile(legacy_profile, profile_base)
+	_assert(not profile_migrated.is_empty(), "A valid legacy shader profile must migrate.")
+	_assert(BuildDocumentScript.validate(profile_migrated).get("ok", false), "Migrated legacy shader profile must remain a valid BuildDocument.")
+	_assert(profile_migrated.get("customization", {}).get("palette", {}).get("primary") == "#224466FF", "Legacy profile color must migrate into the canonical primary palette.")
+	_assert(is_equal_approx(float(profile_migrated.get("render", {}).get("glow_intensity", -1.0)), float(profile_base["render"]["glow_intensity"])), "Legacy 0..10 shader intensity must not be silently reinterpreted as canonical 0..1 glow.")
+	var preserved_extensions: Array = profile_migrated.get("extensions", [])
+	_assert(preserved_extensions.size() == 1, "Legacy shader values must be preserved in one versioned extension.")
+	if preserved_extensions.size() == 1:
+		var payload: Dictionary = preserved_extensions[0].get("payload", {})
+		_assert(is_equal_approx(float(payload.get("glow_intensity_legacy_0_10", -1.0)), 3.5), "Legacy shader glow intensity must be preserved without unit conversion.")
+		_assert(is_equal_approx(float(payload.get("pulse_speed_legacy_0_10", -1.0)), 2.25), "Legacy shader pulse speed must be preserved without unit conversion.")
+	var profile_round_trip := BuildDocumentScript.from_json(BuildDocumentScript.to_json(profile_migrated))
+	_assert(profile_round_trip == profile_migrated, "Migrated legacy profile extension must survive BuildDocument JSON round-trip.")
+	var invalid_legacy_profile := legacy_profile.duplicate(true)
+	invalid_legacy_profile["glow_intensity"] = 11.0
+	_assert(BuildDocumentScript.from_legacy_skin_profile(invalid_legacy_profile, profile_base).is_empty(), "Out-of-range legacy profile values must be rejected without changing the source document.")
+
 	quit(0)
 
 func _assert(condition: bool, message: String) -> void:
