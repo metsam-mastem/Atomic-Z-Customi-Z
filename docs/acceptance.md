@@ -66,7 +66,7 @@ No Godot editor/runtime, Android export or physical-device test has been run dur
 - [ ] Visual appearance is reviewed on desktop and Android; no bloom or frame-rate claim before device verification.
 - [ ] 2D-to-3D paths are registered against an exact model-year/market asset before claiming panel alignment or fitment.
 
-- [ ] Save skin writes to `user://` and a fresh runtime instance can reload palette, glow and per-segment visibility without data loss.
+- [ ] Neon palette, normalized glow, global visibility and per-segment visibility round-trip through BuildDocument serialization; no runtime API writes a separate skin JSON file.
 
 ## Unified-system acceptance gates (2026-11-16)
 
@@ -114,3 +114,4 @@ Implementation status: PASS — headless import, garage smoke, neon and BuildDoc
 - [ ] A saved build reopened in a fresh garage scene displays the same visible HUD values as the canonical BuildDocument.
 
 Implementation status: implementation and focused test additions are present on the unified feature branch. Exact-head CI verification is pending. Android export does not imply physical-device acceptance.
+\n\n## Legacy profile migration acceptance\n- [ ] On first launch without a canonical BuildDocument, a valid `user://skin_profile.json` imports its color into the primary BuildDocument palette.\n- [ ] Legacy 0..10 glow and pulse values are preserved unchanged in a versioned `extensions` record; they are not silently coerced to the 0..1 render contract.\n- [ ] The canonical document is saved through `BuildDocumentStore`, and the original legacy profile file is retained.\n- [ ] A valid existing BuildDocument takes precedence over any stale legacy profile and the old file remains untouched.\n- [ ] Invalid legacy values are rejected without mutating the source profile or active document.\n- [ ] Godot contract and first-launch migration tests run in the pinned 4.4.1 CI workflow.\n
