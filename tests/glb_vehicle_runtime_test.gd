@@ -79,6 +79,12 @@ func _run() -> void:
 
 	var body_before := bike.get_part_color("body_panel")
 	var rim_before := bike.get_part_color("front_wheel_rim")
+	print("GLB_DIAG part_ids=", bike.get_part_ids())
+	print("GLB_DIAG catalog=", JSON.stringify(document.get("asset", {}).get("surface_catalog", [])))
+	print("GLB_DIAG body_color=", body_before, " rim_color=", rim_before)
+	var body_source_material = bike.call("_get_imported_surface_material", "body_panel.surface_0")
+	var rim_source_material = bike.call("_get_imported_surface_material", "front_wheel_rim.surface_0")
+	print("GLB_DIAG body_material=", body_source_material, " rim_material=", rim_source_material)
 	_assert(body_before.is_equal_approx(Color(0.2, 0.35, 0.65, 1.0)), "Imported body PBR base color must load.")
 	_assert(rim_before.is_equal_approx(Color(0.65, 0.68, 0.72, 1.0)), "Imported rim PBR base color must load.")
 	var body_color := Color("#AABBCC")
