@@ -6,6 +6,11 @@ Atomic-Z-Customi-Z is a 3D motorcycle garage and customization workbench for veh
 
 **Asset honesty:** current motorcycle geometry is procedural placeholder geometry, not Kawasaki factory CAD, not a verified ZX-25RR replica and not an engineering-validated model.
 
+## Product concept illustration
+![Atomic-Z-Customi-Z product concept](assets/product-concept.svg)
+
+The illustration is an authored product/UI concept reference, not a runtime screenshot. A separate cinematic concept image was generated for visual presentation; runtime and device screenshots remain pending.
+
 ## The integrated experience
 - Vehicle identity and variant selection.
 - Named part assembly with Stock / Exploded views.
