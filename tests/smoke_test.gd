@@ -71,6 +71,21 @@ func _run_smoke_test() -> void:
 		quit(1)
 		return
 
+	var front_color_before: Color = bike.call("get_part_color", "front_fairing")
+	var isolated_paint := Color("#2A7BDA")
+	if not bike.call("set_part_color", "fuel_tank", isolated_paint):
+		push_error("A known part must accept an isolated paint edit.")
+		quit(1)
+		return
+	if not (bike.call("get_part_color", "fuel_tank") as Color).is_equal_approx(isolated_paint):
+		push_error("Selected part must receive the requested paint color.")
+		quit(1)
+		return
+	if not (bike.call("get_part_color", "front_fairing") as Color).is_equal_approx(front_color_before):
+		push_error("Painting one part must not recolor another part.")
+		quit(1)
+		return
+
 	var project_color := Color(0.2, 0.4, 0.9, 1.0)
 	scene.call("_on_body_color_changed", project_color)
 	scene.call("_on_neon_primary_changed", Color("#123456"))
