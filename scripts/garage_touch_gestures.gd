@@ -19,6 +19,9 @@ var _touch_points: Dictionary = {}
 func handle_event(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
+		if touch.canceled:
+			_touch_points.erase(touch.index)
+			return
 		if touch.pressed:
 			_touch_points[touch.index] = touch.position
 		else:
