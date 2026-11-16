@@ -103,14 +103,30 @@ Implementation status: PASS — headless import, garage smoke, neon and BuildDoc
 
 ## GLB surface material binding and unified HUD
 
-- [ ] Stable surface IDs resolve to unique MeshInstance3D node paths and valid mesh surface indices.
-- [ ] Applying a material changes only the selected surface and duplicates the source resource.
-- [ ] Imported base PBR materials and unrelated surface overrides remain unchanged.
-- [ ] Binder rejects duplicate IDs, aliased slots, missing nodes, invalid indices and global material_override conflicts atomically.
-- [ ] Binder refuses to replace or clear a surface override after ownership transfers to another component.
-- [ ] The focused binder contract test runs in the pinned Godot 4.4.1 CI workflow.
+- [x] Stable surface IDs resolve to unique MeshInstance3D node paths and valid mesh surface indices.
+- [x] Applying a material changes only the selected surface and duplicates the source resource.
+- [x] Imported base PBR materials and unrelated surface overrides remain unchanged.
+- [x] Binder rejects duplicate IDs, aliased slots, missing nodes, invalid indices and global material_override conflicts atomically.
+- [x] Binder refuses to replace or clear a surface override after ownership transfers to another component.
+- [x] The focused binder contract test runs in the pinned Godot 4.4.1 CI workflow.
 - [ ] Binder surface records are connected to imported-asset provenance and canonical BuildDocument material targets before the UI exposes full surface editing.
-- [ ] Primary/secondary neon color pickers and glow slider hydrate from the active BuildDocument on garage startup.
-- [ ] A saved build reopened in a fresh garage scene displays the same visible HUD values as the canonical BuildDocument.
+- [x] Primary/secondary neon color pickers and glow slider hydrate from the active BuildDocument on garage startup.
+- [x] A saved build reopened in a fresh garage scene displays the same visible HUD values as the canonical BuildDocument.
 
-Implementation status: implementation and focused test additions are present on the unified feature branch. Exact-head CI verification is pending. Android export does not imply physical-device acceptance.
+Implementation status: PASS — binder ownership and HUD hydration tests passed on PR #20 exact head `39241192c66077e7e1daa82d65ad47680bd9e30b` in CI run [#43795128113](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43795128113). The PR is merged. This does not prove production GLB integration or physical-device acceptance.
+
+
+## GLB surface catalog and canonical BuildDocument integration
+
+- [ ] Recursively inventory every imported MeshInstance3D and mesh surface with root-relative node path, exact surface index and source material metadata.
+- [ ] Validate stable surface IDs against actual scene nodes and surface indices.
+- [ ] Reject duplicate IDs, aliased mesh slots, missing nodes, invalid indices and global material overrides without partial catalog updates.
+- [ ] Attach the validated surface catalog atomically to the BuildDocument asset record.
+- [ ] Preserve backward compatibility for existing BuildDocument documents without a surface catalog.
+- [ ] Reject material records whose target_surface_ids are absent from the canonical asset surface catalog.
+- [ ] Configure SurfaceMaterialBinder from BuildDocument rather than a parallel mapping store.
+- [ ] Surface color edits update the same BuildDocument material record and only the selected runtime surface.
+- [ ] Imported source StandardMaterial3D PBR resources and unselected surfaces remain unchanged.
+- [ ] The catalog integration test runs in the pinned Godot 4.4.1 CI workflow.
+
+Implementation status: implementation submitted in stacked PR #29. Initial test-first CI confirmed the new contract was not implemented; final acceptance awaits green exact-head CI. No production ZX-25RR GLB, verified UV map or fitment is claimed.
