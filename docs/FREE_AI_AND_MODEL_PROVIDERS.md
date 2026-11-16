@@ -15,10 +15,11 @@ There is no paid dependency or bundled model. Hosted provider free tiers and quo
 
 1. Install and run Ollama on a trusted computer on your local network.
 2. From Android, find the computer's private LAN IPv4 address; do not enter `127.0.0.1` or `localhost`.
-3. Open **AI ASSIST** in the garage, choose Ollama, enter `http://<private-lan-ip>:11434` and a model ID that is already installed.
+3. On desktop, open **AI ASSIST**, choose Ollama, enter `http://127.0.0.1:11434` or a trusted private-LAN URL and a model ID that is already installed.
 4. Enable the explicit private-LAN HTTP consent checkbox only when you trust that network. Cleartext traffic is not encrypted; never expose the Ollama port to the public internet.
-5. For hosted OpenAI-compatible endpoints, enter an HTTPS URL. Desktop development builds may read an API key from an environment-variable name; the key itself is never persisted in project files, BuildDocument or preferences.
-6. Android hosted API keys are deliberately disabled until a secure backend or platform credential design exists. Do not put a hosted key in the APK or user config.
+5. On Android, provider endpoints must use HTTPS. Cleartext LAN HTTP is deliberately blocked until the Android manifest/network policy and target-device behavior are verified. If using a LAN Ollama server, expose it through a properly authenticated/trusted HTTPS endpoint.
+6. For hosted OpenAI-compatible endpoints, enter an HTTPS URL. Desktop development builds may read an API key from an environment-variable name; the key itself is never persisted in project files, BuildDocument or preferences.
+7. Android hosted API keys are deliberately disabled until a secure backend or platform credential design exists. Do not put a hosted key in the APK or user config.
 
 ## Data and privacy boundary
 
