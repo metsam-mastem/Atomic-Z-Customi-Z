@@ -147,20 +147,22 @@ Keep evidence classes separate: source presence, static/import checks, headless 
 
 This procedure repairs the working context and repository documentation. It does not modify or delete previous conversation messages.
 
-## 12. Repository snapshot — 2026-11-16
+## 12. Repository snapshot — 2026-11-16 handoff refresh
 
-Snapshot taken during the context-recovery documentation task; refresh before future work.
+Snapshot refreshed after PR #9, #10 and #14 were merged. Latest verified main commit: c1a25db35112dc7b1a69c945e2c789c9a99cfe11.
 
-- Repository visibility: private; connected GitHub access returned the repository.
-- Default branch: `main`.
-- Branch search returned: `main`, `agent/integration/1-build-document-contract`, `agent/integration/5-android-export-diagnostics`, `agent/research/godot-mobile-rendering-integration`, `agent/research/5-verified-source-audit`, `docs/product-charter-workflows-handoff`, and `feat/commercial-neon-shader-skin-data`.
-- PR search returned PR #7 (GLB material/mobile neon rendering guidance) and PR #8 (Android export diagnostics) as open at snapshot time. PRs #2, #3, #4 and #6 appeared in closed results; recent main commits include merge commits for #2, #3, #4 and #6.
-- PR #8 documents a generic Android Debug export configuration failure and adds verbose diagnostics; it does not claim a root-cause fix.
-- README identifies Godot 4 as the sole product runtime and describes current motorcycle geometry as procedural placeholder, not verified factory CAD.
-- PR descriptions and historical CI links are not substitutes for checking the current PR state and current commit's CI.
+- PR #9 merged: project context integrity and recovery controls.
+- PR #10 merged: part-level paint, canonical BuildDocument persistence with backup/recovery, and Android Debug export fix.
+- PR #14 merged: README and Project Charter visual presentation plus Visual Asset Register.
+- PR #7 remains open/draft; focused binder test and end-to-end integration are NOT RUN.
+- PR #8 is closed without merge. PR #11 and #12 remain open and require overlap/relevance review against the Android export fix already merged in PR #10.
+- PR #10 CI evidence: Godot 4.4.1 import/smoke/neon/BuildDocument/persistence tests PASS; Android Debug APK export and artifact upload PASS on commit 253029faaecc358e7e3c98d52255a8cb63ee9db1, workflow run 43788395328.
+- Physical Android installation and Redmi device QA remain NOT RUN.
+- Only verified visual asset: assets/product-concept.svg. It is a concept/UI illustration, not a runtime screenshot or factory motorcycle render. The README and Project Charter embed it; docs/VISUAL_ASSET_REGISTER.md records the inventory.
+- No transferable user-uploaded or generated image attachment from the current chat was available during the visual handoff audit.
 
-This is a point-in-time snapshot, not a permanent truth. Re-query GitHub before relying on branch, PR or CI status.
-
+This is a point-in-time snapshot. Re-query GitHub before relying on branch, PR or CI status.
 ## 13. Change log
 
 - 2026-11-16: Initial context-integrity protocol added. No runtime source, project settings, schemas, assets or CI workflows changed.
+- 2026-11-16: Handoff snapshot refreshed after PR #9, #10 and #14 merges; recorded Android export evidence and visual asset inventory.
