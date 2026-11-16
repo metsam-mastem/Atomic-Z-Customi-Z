@@ -49,6 +49,28 @@ func get_segment_ids() -> Array[String]:
 func get_glow_intensity() -> float:
 	return _glow_intensity
 
+func is_segment_visible(segment_id: String) -> bool:
+	if not _segments.has(segment_id):
+		return false
+	return bool(_segments[segment_id]["visible"])
+
+func save_skin(path: String = "user://neon_skin_config.json") -> bool:
+	if _config.is_empty():
+		return false
+	var colors: Dictionary = _config["colors"]
+	colors["primary"] = "#" + _palette["primary"].to_html(false).to_upper()
+	colors["secondary"] = "#" + _palette["secondary"].to_html(false).to_upper()
+	colors["glow_intensity"] = _glow_intensity
+	for segment in _config["line_segments"]:
+		var segment_id := str(segment["id"])
+		segment["visible"] = bool(_segments[segment_id]["visible"])
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(_config, "\t"))
+	file.close()
+	return true
+
 func get_segment_color(segment_id: String) -> Color:
 	if not _segments.has(segment_id):
 		return Color.TRANSPARENT
@@ -113,6 +135,8 @@ func _validate_config(value: Variant) -> bool:
 		seen[segment_id] = true
 		if not segment.has("color") or not (str(segment["color"]) in ["primary", "secondary"]):
 			return false
+		if segment.has("visible") and not (segment["visible"] is bool):
+			return false
 		if not segment.has("width") or not (segment["width"] is int or segment["width"] is float):
 			return false
 		if float(segment["width"]) <= 0.0 or float(segment["width"]) > 40.0:
@@ -145,7 +169,7 @@ func _rebuild_segments() -> void:
 			"points": segment["points"],
 			"width": float(segment["width"]),
 			"color": str(segment["color"]),
-			"visible": true,
+			"visible": bool(segment.get("visible", true)),
 			"nodes": []
 		}
 		_build_segment_visuals(segment_id)
