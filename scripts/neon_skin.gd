@@ -60,27 +60,13 @@ func get_segment_ids() -> Array[String]:
 func get_glow_intensity() -> float:
 	return _glow_intensity
 
+func get_build_document_snapshot() -> Dictionary:
+	return _build_document.duplicate(true)
+
 func is_segment_visible(segment_id: String) -> bool:
 	if not _segments.has(segment_id):
 		return false
 	return bool(_segments[segment_id]["visible"])
-
-func save_skin(path: String = "user://neon_skin_config.json") -> bool:
-	if _config.is_empty():
-		return false
-	var colors: Dictionary = _config["colors"]
-	colors["primary"] = "#" + _palette["primary"].to_html(false).to_upper()
-	colors["secondary"] = "#" + _palette["secondary"].to_html(false).to_upper()
-	colors["glow_intensity"] = _glow_intensity
-	for segment in _config["line_segments"]:
-		var segment_id := str(segment["id"])
-		segment["visible"] = bool(_segments[segment_id]["visible"])
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify(_config, "\t"))
-	file.close()
-	return true
 
 func get_segment_color(segment_id: String) -> Color:
 	if not _segments.has(segment_id):
