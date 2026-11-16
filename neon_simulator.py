@@ -219,7 +219,7 @@ class NeonSimulator:
                                     smooth=True, capstyle=tk.ROUND, joinstyle=tk.ROUND)
             self.canvas.create_line(*points, fill=color, width=max(1, width * 0.65),
                                     smooth=True, capstyle=tk.ROUND, joinstyle=tk.ROUND)
-            self.canvas.create_text(points[0], text=segment["id"].replace("_", " "),
+            self.canvas.create_text(points[0], points[1], text=segment["id"].replace("_", " "),
                                     fill="#d9f7f1", anchor="sw",
                                     font=("Segoe UI", 8))
 
