@@ -101,3 +101,5 @@ godot --headless --path . --script res://tests/neon_skin_test.gd
 ```
 
 The test verifies config loading, stable segment IDs, named color resolution, visibility control and rejection of an invalid color reference.
+
+The garage controls also expose independent TAIL / TANK / LOWER visibility toggles, primary and secondary color pickers, a glow slider and SAVE SKIN. Saving writes to Godot's writable `user://neon_skin_config.json` location rather than attempting to modify the read-only packaged `res://` asset. Layer visibility, palette colors and glow intensity are included in the saved JSON.
