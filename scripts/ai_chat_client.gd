@@ -46,6 +46,8 @@ func chat(provider: Dictionary, model_id: String, messages: Array[Dictionary], a
 	var api_key := OS.get_environment(key_name) if not key_name.is_empty() else ""
 	if not key_name.is_empty() and api_key.is_empty():
 		return _fail("The requested desktop environment variable is not set.")
+	if not api_key.is_empty() and str(provider.get("kind", "")) == "ollama":
+		return _fail("Do not send hosted API keys to a local Ollama endpoint.")
 	var target_check: Dictionary = AIModelRegistryScript.validate_request_target(
 		provider,
 		allow_local_http,
@@ -118,15 +120,15 @@ func chat(provider: Dictionary, model_id: String, messages: Array[Dictionary], a
 		return _fail("Provider response was not a JSON object.")
 	var answer := ""
 	if kind == "ollama":
-		var message_value: Variant = parsed.get("message", {})
-		if message_value is Dictionary:
-			answer = str(message_value.get("content", ""))
+		var ollama_message_value: Variant = parsed.get("message", {})
+		if ollama_message_value is Dictionary:
+			answer = str(ollama_message_value.get("content", ""))
 	else:
 		var choices_value: Variant = parsed.get("choices", [])
 		if choices_value is Array and not choices_value.is_empty() and choices_value[0] is Dictionary:
-			var message_value: Variant = choices_value[0].get("message", {})
-			if message_value is Dictionary:
-				answer = str(message_value.get("content", ""))
+			var choice_message_value: Variant = choices_value[0].get("message", {})
+			if choice_message_value is Dictionary:
+				answer = str(choice_message_value.get("content", ""))
 	if answer.strip_edges().is_empty():
 		return _fail("No text content found in provider response.")
 	response_received.emit(answer)
