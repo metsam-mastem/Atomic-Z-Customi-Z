@@ -53,26 +53,7 @@ func _run() -> void:
 		quit(1)
 		return
 
-	var definitions: Array = []
-	for surface_value in surfaces:
-		var surface: Dictionary = surface_value
-		var node_path := str(surface.get("node_path", ""))
-		var part_id := ""
-		var stable_surface_id := ""
-		if node_path.contains("BodyPanel"):
-			part_id = "body_panel"
-			stable_surface_id = "fixture.body.paint"
-		elif node_path.contains("FrontWheelRim"):
-			part_id = "front_rim"
-			stable_surface_id = "fixture.front_rim.paint"
-		_assert(not part_id.is_empty(), "Fixture mesh nodes must retain deterministic names through GLB import.")
-		if not part_id.is_empty():
-			definitions.append({
-				"surface_id": stable_surface_id,
-				"node_path": node_path,
-				"surface_index": int(surface.get("surface_index", -1)),
-				"part_id": part_id
-			})
+	source_scene.free()
 
 	var document := BuildDocumentScript.create_default("fixture-bike", "Synthetic GLB Test Bike")
 	document["asset"]["uri"] = FIXTURE_PATH
@@ -80,15 +61,7 @@ func _run() -> void:
 	document["asset"]["license"] = "CC0-1.0"
 	document["asset"]["source"] = "Atomic-Z-Customi-Z synthetic GLB test fixture"
 	document["asset"]["validation_status"] = "test_fixture"
-	var attached: Dictionary = GlbSurfaceCatalogScript.attach_to_document(document, source_scene, definitions)
-	_assert(attached.get("ok", false), "Generated stable surface definitions must attach to BuildDocument.")
-	source_scene.free()
-	if not attached.get("ok", false):
-		_cleanup()
-		quit(1)
-		return
-	document = attached["document"]
-	_assert(BuildDocumentScript.validate(document).get("ok", false), "Pinned local GLB document must satisfy the canonical schema.")
+	_assert(BuildDocumentScript.validate(document).get("ok", false), "Pinned local GLB document with an empty catalog must satisfy the canonical schema.")
 
 	var bike := BikeAssemblyScript.new()
 	bike.name = "ImportedFixtureBike"
@@ -96,22 +69,23 @@ func _run() -> void:
 	root.add_child(bike)
 	await process_frame
 	_assert(bike.is_imported_model(), "A valid local GLB with matching SHA and catalog must replace procedural geometry.")
-	_assert(bike.get_part_ids() == ["body_panel", "front_rim"], "Imported part IDs must be exposed to the existing garage selector.")
+	_assert(bike.get_part_ids() == ["body_panel", "front_wheel_rim"], "Imported mesh names must become stable part IDs for the existing garage selector.")
+	_assert(document.get("asset", {}).get("surface_catalog", []).size() == 2, "The runtime must auto-create and persist a stable surface catalog in BuildDocument.")
 	_assert(not bike.supports_exploded_view(), "Exploded mode must be unavailable until verified part pivots/offsets exist.")
 
 	var body_before := bike.get_part_color("body_panel")
-	var rim_before := bike.get_part_color("front_rim")
+	var rim_before := bike.get_part_color("front_wheel_rim")
 	_assert(body_before.is_equal_approx(Color(0.2, 0.35, 0.65, 1.0)), "Imported body PBR base color must load.")
 	_assert(rim_before.is_equal_approx(Color(0.65, 0.68, 0.72, 1.0)), "Imported rim PBR base color must load.")
 	var body_color := Color("#AABBCC")
 	var rim_color := Color("#B58A32")
 	_assert(bike.set_part_color("body_panel", body_color), "Imported body panel must be independently paintable.")
-	_assert(bike.set_part_color("front_rim", rim_color), "Imported front rim must be independently paintable.")
+	_assert(bike.set_part_color("front_wheel_rim", rim_color), "Imported front rim must be independently paintable.")
 	_assert(bike.get_part_color("body_panel").is_equal_approx(body_color), "Imported body color must update in the rendered scene.")
-	_assert(bike.get_part_color("front_rim").is_equal_approx(rim_color), "Imported rim color must update in the rendered scene.")
+	_assert(bike.get_part_color("front_wheel_rim").is_equal_approx(rim_color), "Imported rim color must update in the rendered scene.")
 	_assert(not bike.get_part_color("body_panel").is_equal_approx(bike.get_part_color("front_rim")), "Independent surface edits must not alias each other.")
 
-	var body_surface_id := "fixture.body.paint"
+	var body_surface_id := "body_panel.surface_0"
 	var edited_body_material := bike.call("_get_imported_surface_material", body_surface_id) as StandardMaterial3D
 	_assert(edited_body_material != null, "Imported surface edits must create an owned StandardMaterial3D override.")
 	if edited_body_material != null:
@@ -127,7 +101,7 @@ func _run() -> void:
 	await process_frame
 	_assert(restored_bike.is_imported_model(), "A saved GLB reference and catalog must restore the imported model.")
 	_assert(restored_bike.get_part_color("body_panel").is_equal_approx(body_color), "Saved imported body paint must be reapplied on reopen.")
-	_assert(restored_bike.get_part_color("front_rim").is_equal_approx(rim_color), "Saved imported rim paint must be reapplied on reopen.")
+	_assert(restored_bike.get_part_color("front_wheel_rim").is_equal_approx(rim_color), "Saved imported rim paint must be reapplied on reopen.")
 
 	var tampered_document: Dictionary = restored_document.duplicate(true)
 	tampered_document["asset"]["sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
