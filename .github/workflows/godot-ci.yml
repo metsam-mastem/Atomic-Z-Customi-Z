@@ -37,6 +37,9 @@ jobs:
       - name: Run GLB surface catalog and BuildDocument integration test
         run: godot --headless --path . --script res://tests/glb_surface_catalog_test.gd
 
+      - name: Run verified GLB runtime and BuildDocument round-trip test
+        run: godot --headless --path . --script res://tests/glb_vehicle_runtime_test.gd
+
       - name: Run BuildDocument UI hydration test
         run: godot --headless --path . --script res://tests/build_document_ui_state_test.gd
 
