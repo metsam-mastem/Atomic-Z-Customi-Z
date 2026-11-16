@@ -114,5 +114,31 @@ func _run() -> void:
 		quit(1)
 		return
 
+	var reapply: Material = binder.apply_material("body.paint", requested)
+	if reapply == null:
+		push_error("A valid registered surface must accept a second binder-owned override.")
+		quit(1)
+		return
+	var external_override := StandardMaterial3D.new()
+	external_override.albedo_color = Color.MAGENTA
+	mesh_instance.set_surface_override_material(0, external_override)
+	if binder.clear_material_override("body.paint"):
+		push_error("Binder must not clear a surface override replaced by another owner.")
+		quit(1)
+		return
+	if mesh_instance.get_surface_override_material(0) != external_override:
+		push_error("External surface override must remain untouched.")
+		quit(1)
+		return
+	mesh_instance.set_surface_override_material(0, null)
+
+	mesh_instance.material_override = StandardMaterial3D.new()
+	var apply_conflict := binder.apply_material("body.paint", requested)
+	if apply_conflict != null or mesh_instance.get_surface_override_material(0) != null:
+		push_error("Apply must fail closed if a global material_override appears after configuration.")
+		quit(1)
+		return
+	mesh_instance.material_override = null
+
 	print("PASS: stable surface binding, isolated overrides, base material preservation and atomic validation.")
 	quit(0)
