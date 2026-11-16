@@ -40,6 +40,7 @@ func _build_panel() -> void:
 	add_child(backdrop)
 
 	_panel = PanelContainer.new()
+	_panel.name = "AIPanel"
 	_panel.anchor_left = 0.04
 	_panel.anchor_top = 0.05
 	_panel.anchor_right = 0.96
