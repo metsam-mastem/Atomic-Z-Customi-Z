@@ -8,7 +8,7 @@
 **Verified main:** `db532efa725e6f54df54a707ce7b5be585d589d6`  
 **Current research branch:** `agent/research/atomic-z-reference-vault`  
 **Current research PR:** [#40 — Pinned reverse-engineering and source vault](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/40)  
-**Research PR HEAD:** `93797f5459a525ab7624e7b7c06728439792b586`
+**Research PR HEAD:** always resolve the live head from [PR #40](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/40); this checkpoint is part of that PR and its own update creates a new commit
 
 ## Resume rule
 
@@ -60,8 +60,7 @@ This live list supersedes the older PR snapshot and statuses retained in earlier
 
 - Branch: `agent/research/atomic-z-reference-vault`.
 - Base SHA: `db532efa725e6f54df54a707ce7b5be585d589d6`.
-- Head SHA: `93797f5459a525ab7624e7b7c06728439792b586` (at the prior status snapshot).
-- Live diff at the prior snapshot: 46 commits ahead of main, 0 behind, 19 changed files.
+- Head SHA and ahead/behind counts: resolve live from PR #40 immediately before action; earlier snapshots are historical and go stale as this checkpoint is updated.
 - Scope: source registry, per-project dossiers, integration map, reverse-engineering playbook, third-party policy, sparse local source retrieval helper and README/checkpoint references.
 - Registry: 23 unique sources, 16 pinned immutable Git revisions; statuses identify study-only, reuse-candidate, private/no-source and recheck items.
 - Research files: `research/README.md`, `research/source-registry.json`, `research/INTEGRATION_MAP.md`, `research/sources/`, `research/reverse-engineering/PLAYBOOK.md`.
