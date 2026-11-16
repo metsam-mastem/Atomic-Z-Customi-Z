@@ -300,15 +300,35 @@ func _load_initial_build_document() -> Dictionary:
 	var restored := BuildDocumentStoreScript.load_document(BUILD_DOCUMENT_PATH)
 	if not restored.is_empty():
 		return restored
-	var legacy_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
-	if legacy_file != null:
-		var parsed: Variant = JSON.parse_string(legacy_file.get_as_text())
-		legacy_file.close()
-		if parsed is Dictionary:
-			var migrated: Dictionary = BuildDocumentScript.from_legacy_neon(parsed)
-			if BuildDocumentScript.validate(migrated).get("ok", false):
-				return migrated
-	return BuildDocumentScript.create_default()
+
+	var document := BuildDocumentScript.create_default()
+	var legacy_neon_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
+	if legacy_neon_file != null:
+		var legacy_neon: Variant = JSON.parse_string(legacy_neon_file.get_as_text())
+		legacy_neon_file.close()
+		if legacy_neon is Dictionary:
+			var migrated_neon: Dictionary = BuildDocumentScript.from_legacy_neon(legacy_neon)
+			if BuildDocumentScript.validate(migrated_neon).get("ok", false):
+				document = migrated_neon
+
+	# Import the retired user profile only when no valid canonical BuildDocument exists.
+	# The original profile remains untouched; canonical persistence is the only write path.
+	var legacy_profile_file := FileAccess.open("user://skin_profile.json", FileAccess.READ)
+	if legacy_profile_file != null:
+		var legacy_profile: Variant = JSON.parse_string(legacy_profile_file.get_as_text())
+		legacy_profile_file.close()
+		if legacy_profile is Dictionary:
+			var migrated_profile: Dictionary = BuildDocumentScript.from_legacy_skin_profile(legacy_profile, document)
+			if not migrated_profile.is_empty():
+				document = migrated_profile
+				if not BuildDocumentStoreScript.save_document(document, BUILD_DOCUMENT_PATH):
+					push_warning("Legacy skin profile was imported in memory but canonical BuildDocument save failed; original profile retained.")
+				else:
+					print("Legacy skin profile migrated into canonical BuildDocument; original profile retained.")
+			else:
+				push_warning("Legacy skin profile failed validation and was left untouched.")
+
+	return document
 
 func _save_build_document() -> bool:
 	if not BuildDocumentScript.validate(_build_document).get("ok", false):
