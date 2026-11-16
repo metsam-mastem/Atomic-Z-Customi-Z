@@ -30,7 +30,7 @@ func _initialize() -> void:
 	_assert(document.get("migration", {}).get("source_vehicle_label") == "Kawasaki Ninja ZX-25R", "Legacy source vehicle label must be retained as provenance.")
 	_assert(str(document.get("migration", {}).get("mapping_note", "")).contains("geometry"), "Migration must state that legacy customization does not validate model geometry.")
 	_assert(document.get("schema_version") == 1, "Migration must stamp schema version 1.")
-	_assert(document.get("vehicle", {}).get("vehicle_id") == "kawasaki-ninja-zx-25r", "Migration must create a stable vehicle ID.")
+	_assert(document.get("vehicle", {}).get("vehicle_id") == "kawasaki-ninja-zx-25rr-2026", "Legacy settings must migrate into the selected 2026 ZX-25RR reference identity.")
 	_assert(document.get("customization", {}).get("neon_layers", []).size() == 1, "Migration must preserve neon segments.")
 	_assert(BuildDocumentScript.validate(document).get("ok", false), "Migrated document must validate.")
 
