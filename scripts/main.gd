@@ -151,6 +151,11 @@ func _build_hud() -> void:
 	glow_slider.value_changed.connect(_on_glow_changed)
 	skin_controls.add_child(glow_slider)
 
+	var save_skin_button := Button.new()
+	save_skin_button.text = "SAVE SKIN"
+	save_skin_button.pressed.connect(_on_save_neon_skin)
+	skin_controls.add_child(save_skin_button)
+
 	var disclaimer := Label.new()
 	disclaimer.text = "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
 	disclaimer.anchor_left = 0.0
@@ -198,6 +203,10 @@ func _on_neon_toggled(enabled: bool) -> void:
 func _on_glow_changed(value: float) -> void:
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_glow_intensity(value)
+
+func _on_save_neon_skin() -> void:
+	if is_instance_valid(_neon_skin) and not _neon_skin.save_skin():
+		push_warning("Could not save neon skin to user data directory.")
 
 func _on_reset_camera() -> void:
 	_orbit_angle = 0.0
