@@ -223,7 +223,7 @@ func _add_wheel(part_id: String, at: Vector3, radius: float, explode_offset: Vec
 	var rim_visual := MeshInstance3D.new()
 	rim_visual.name = "RimVisual"
 	rim_visual.mesh = rim_mesh
-	rim_visual.rotation = Vector3(PI / 2.0, 0.0, 0.0)
+	rim_visual.rotation = Vector3.ZERO
 	rim_visual.material_override = rim_material
 	wheel_root.add_child(rim_visual)
 	_parts[part_id.replace("_wheel", "_rim")] = {
