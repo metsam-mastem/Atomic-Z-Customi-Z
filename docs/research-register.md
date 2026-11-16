@@ -146,3 +146,17 @@ Important corrections and dispositions:
 - Two Innerscene motorcycle GLB pages state CC0, but no model was downloaded or committed; file hashes and import validation remain pending.
 
 Do not treat the older unverified candidate entries above this section as licence approval. The Research Vault is the current source of truth for this source-audit pass.
+
+
+### Call of Duty source audit — 2026-11-16
+
+Call of Duty has more open research material than a blanket “no source exists” statement suggests, but none is a complete official game-source release suitable for Atomic-Z:
+
+- Activision's [official Open Source page](https://research.activision.com/opensource) publishes versioned Telescope: Activision Webkit middleware archives and matching licence archives for selected titles. Telescope is not the Call of Duty game engine/source.
+- [OpenCOD2](https://github.com/opencod2/opencod2) is an incomplete independent C engine reconstruction; its inspected repository has no detected licence file and requires legally owned CoD2 content.
+- [OpenCoD1](https://github.com/opencod1/opencod1) is an incomplete independent CoD 1.1 multiplayer reconstruction; no repository licence file was detected.
+- [CoDWaW reverse-engineering notes](https://github.com/ItsNoahJ/codwaw-reverse-engineering) are MIT-licensed research notes/data, not Activision game source or game assets; the byte-verification methodology is the transferable part.
+- [CoD-Research](https://github.com/primetime43/CoD-Research) is a GPL-3.0 community wiki for CoD4–CoD10, not game source.
+- [MW2 reconstruction dashboard](https://mw2.momo5502.com/) tracks a private source-level reconstruction; no public code repository or licence was established.
+
+See the [COD dossier](../research/sources/COD_RECONSTRUCTION.md) and the updated [source registry](../research/source-registry.json). No COD code, proprietary assets or game data have been imported.
