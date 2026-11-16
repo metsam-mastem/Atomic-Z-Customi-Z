@@ -34,6 +34,9 @@ jobs:
       - name: Run surface material binder ownership test
         run: godot --headless --path . --script res://tests/surface_material_binder_test.gd
 
+      - name: Run GLB surface catalog and BuildDocument integration test
+        run: godot --headless --path . --script res://tests/glb_surface_catalog_test.gd
+
       - name: Run BuildDocument UI hydration test
         run: godot --headless --path . --script res://tests/build_document_ui_state_test.gd
 
