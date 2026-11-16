@@ -100,6 +100,18 @@ func _run() -> void:
 		{"surface_id": "fractional", "node_path": "Body/VisualMesh", "surface_index": 0.5}
 	])
 	_assert(not fractional_surface.get("ok", true), "Fractional surface indices must be rejected.")
+	var invalid_id: Dictionary = CatalogScript.validate_manifest(root_node, [
+		{"surface_id": "Body Paint", "node_path": "Body/VisualMesh", "surface_index": 0}
+	])
+	_assert(not invalid_id.get("ok", true), "Unstable surface IDs must be rejected.")
+	var absolute_path: Dictionary = CatalogScript.validate_manifest(root_node, [
+		{"surface_id": "body.absolute", "node_path": "/root/Body/VisualMesh", "surface_index": 0}
+	])
+	_assert(not absolute_path.get("ok", true), "Absolute node paths must be rejected.")
+	var parent_path: Dictionary = CatalogScript.validate_manifest(root_node, [
+		{"surface_id": "body.escape", "node_path": "../Body/VisualMesh", "surface_index": 0}
+	])
+	_assert(not parent_path.get("ok", true), "Parent traversal outside the imported scene root must be rejected.")
 	var binder = BinderScript.new()
 	var configured: Dictionary = binder.configure_from_build_document(root_node, document)
 	_assert(configured.get("ok", false), "Binder must consume the catalog from the canonical BuildDocument.")
