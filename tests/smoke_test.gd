@@ -6,6 +6,14 @@ func _initialize() -> void:
 	call_deferred("_run_smoke_test")
 
 func _run_smoke_test() -> void:
+	_remove_file_if_exists("user://atomic_z_build.json")
+	_remove_file_if_exists("user://atomic_z_build.json.tmp")
+	_remove_file_if_exists("user://atomic_z_build.json.bak")
+	_remove_file_if_exists("user://atomic_z_build.json.recovery.tmp")
+	var stale_backup_directory := ProjectSettings.globalize_path("user://atomic_z_build.json.bak")
+	if DirAccess.dir_exists_absolute(stale_backup_directory):
+		DirAccess.remove_absolute(stale_backup_directory)
+
 	var packed_scene: PackedScene = load("res://scenes/main.tscn")
 	if packed_scene == null:
 		push_error("Main scene could not be loaded.")
