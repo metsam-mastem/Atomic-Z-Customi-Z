@@ -67,6 +67,7 @@ func _add_mesh_part(part_id: String, mesh: Mesh, at: Vector3, material: Standard
 	part_root.position = at
 	part_root.rotation = rotation
 	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = "VisualMesh"
 	mesh_instance.mesh = mesh
 	mesh_instance.material_override = material
 	part_root.add_child(mesh_instance)
