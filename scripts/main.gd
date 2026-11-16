@@ -4,6 +4,7 @@ const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
+const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
 
 var _bike
 var _camera: Camera3D
@@ -259,13 +260,9 @@ func _update_camera() -> void:
 	_camera.look_at(target, Vector3.UP)
 
 func _load_initial_build_document() -> Dictionary:
-	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
-		var saved := FileAccess.open(BUILD_DOCUMENT_PATH, FileAccess.READ)
-		if saved != null:
-			var restored := BuildDocumentScript.from_json(saved.get_as_text())
-			saved.close()
-			if not restored.is_empty():
-				return restored
+	var restored := BuildDocumentStoreScript.load_document(BUILD_DOCUMENT_PATH)
+	if not restored.is_empty():
+		return restored
 	var legacy_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
 	if legacy_file != null:
 		var parsed: Variant = JSON.parse_string(legacy_file.get_as_text())
@@ -280,18 +277,13 @@ func _save_build_document() -> bool:
 	if not BuildDocumentScript.validate(_build_document).get("ok", false):
 		push_warning("BuildDocument validation failed; save was refused.")
 		return false
-	_build_document["revision"] = int(_build_document.get("revision", 0)) + 1
-	var temporary_path := BUILD_DOCUMENT_PATH + ".tmp"
-	var file := FileAccess.open(temporary_path, FileAccess.WRITE)
-	if file == null:
+	var next_revision := int(_build_document.get("revision", 0)) + 1
+	var candidate := _build_document.duplicate(true)
+	candidate["revision"] = next_revision
+	if not BuildDocumentStoreScript.save_document(candidate, BUILD_DOCUMENT_PATH):
 		return false
-	file.store_string(BuildDocumentScript.to_json(_build_document))
-	file.flush()
-	file.close()
-	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
-	var rename_error := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary_path), ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
-	return rename_error == OK
+	_build_document["revision"] = next_revision
+	return true
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
