@@ -53,7 +53,7 @@ Required domains:
 - validation: evidence references, checks, timestamps, tool versions and status
 - extensions: versioned IDs and declared capabilities
 
-The existing neon_skin_config.json is a legacy skin document. Migrate it explicitly and test round-trip behavior. Do not create competing writers. During transition, a single compatibility adapter may read/write the legacy format.
+The existing `neon_skin_config.json` is a read-only legacy migration input. Migrate it explicitly and test round-trip behavior; product code must not write it. All subsequent neon edits are stored only in the canonical BuildDocument through the unified persistence path.
 
 IDs—not display names or array positions—identify vehicles, parts, surfaces, layers, presets, assets and capabilities. IDs are immutable once published.
 
