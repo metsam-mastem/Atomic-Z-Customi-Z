@@ -500,8 +500,8 @@ func _update_imported_model_controls() -> void:
 	for control in _neon_editor_controls:
 		if not is_instance_valid(control):
 			continue
-		if control is Range:
-			(control as Range).set("editable", false)
+		if control is HSlider:
+			(control as HSlider).editable = false
 		else:
 			control.set("disabled", true)
 	if is_instance_valid(_disclaimer_label):
