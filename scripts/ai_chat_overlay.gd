@@ -145,11 +145,11 @@ func _on_provider_selected(index: int) -> void:
 	var provider: Dictionary = _providers[index]
 	var is_ollama := str(provider.get("kind", "")) == "ollama"
 	_endpoint_input.text = ""
-	_endpoint_input.placeholder_text = "Ollama private LAN URL (e.g. http://192.168.1.20:11434)" if is_ollama else "HTTPS provider URL"
+	_endpoint_input.placeholder_text = ("HTTPS Ollama endpoint (Android cleartext is disabled)" if OS.has_feature("android") else "Ollama private LAN URL (e.g. http://192.168.1.20:11434)") if is_ollama else "HTTPS provider URL"
 	_model_input.text = ""
-	_allow_local_http.visible = is_ollama
+	_allow_local_http.visible = is_ollama and not OS.has_feature("android")
 	_key_env_input.visible = not is_ollama and not OS.has_feature("android")
-	_status_label.text = "Ollama is local-first; enter the server address and model ID." if is_ollama else "Hosted providers must use HTTPS."
+	_status_label.text = ("Android requires HTTPS for Ollama; cleartext LAN transport is disabled pending device verification." if OS.has_feature("android") else "Ollama is local-first; enter the server address and model ID.") if is_ollama else "Hosted providers must use HTTPS."
 
 func _on_send_pressed() -> void:
 	if _client.is_busy():
