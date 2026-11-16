@@ -10,6 +10,45 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	await _test_imported_gltf_fixture()
+
+func _test_imported_gltf_fixture() -> void:
+	var packed_scene := load("res://tests/fixtures/minimal_multi_surface.gltf") as PackedScene
+	_assert(packed_scene != null, "A real glTF fixture must import as a PackedScene.")
+	if packed_scene == null:
+		return
+	var imported_root := packed_scene.instantiate()
+	root.add_child(imported_root)
+	var inventory: Dictionary = CatalogScript.inspect_scene(imported_root)
+	_assert(inventory.get("ok", false), "Imported glTF scene must be inspectable.")
+	var surfaces: Array = inventory.get("surfaces", [])
+	_assert(surfaces.size() == 2, "Imported glTF fixture must preserve its two material surfaces.")
+	var material_names: Array[String] = []
+	for surface_value in surfaces:
+		if surface_value is Dictionary:
+			material_names.append(str(surface_value.get("source_material_name", "")))
+	_assert(material_names.has("FixturePrimaryPaint"), "Imported glTF primary material name must be retained.")
+	_assert(material_names.has("FixtureTrim"), "Imported glTF trim material name must be retained.")
+
+	var definitions: Array[Dictionary] = []
+	for index in range(surfaces.size()):
+		var surface: Dictionary = surfaces[index]
+		definitions.append({
+			"surface_id": "fixture.surface.%d" % index,
+			"node_path": str(surface.get("node_path", "")),
+			"surface_index": int(surface.get("surface_index", -1))
+		})
+	var attached: Dictionary = CatalogScript.attach_to_document(
+		BuildDocumentScript.create_target_default(), imported_root, definitions
+	)
+	_assert(attached.get("ok", false), "Imported glTF surfaces must attach to the canonical target BuildDocument.")
+	if attached.get("ok", false):
+		var binder = BinderScript.new()
+		var configured: Dictionary = binder.configure_from_build_document(imported_root, attached.get("document", {}))
+		_assert(configured.get("ok", false), "The imported glTF surface catalog must configure the runtime binder.")
+	imported_root.queue_free()
+	await process_frame
+
 	var root_node := Node3D.new()
 	root_node.name = "ImportedBike"
 	root.add_child(root_node)
