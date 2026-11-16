@@ -193,19 +193,19 @@
       "url": "https://github.com/troikoss/speed-re",
       "revision": {
         "branch": "main",
-        "commit": null,
-        "pinned": false,
-        "note": "Repository is visible on GitHub but an immutable commit could not be retrieved through the connected GitHub API during this audit."
+        "commit": "892e5c31d77c751acd123330eda15c157c4f1b1f",
+        "pinned": true,
+        "observed_at": "2026-11-16"
       },
       "metadata": {
         "language": "C/C++",
         "scope": "incomplete reconstruction of EA Black Box SPEED engine; NFSU2 PC v1.2 first target"
       },
       "licence": {
-        "spdx": "MIT-limited",
-        "scope": "README says MIT applies to original project contributions only; recovered NFSU2 code, game data, retail assets and third-party content are excluded; repository is not licensed as a whole"
+        "spdx": "MIT-LIMITED",
+        "scope": "LICENSE applies only to original contributions (analysis tools, scaffolding, build support, modding infrastructure and docs). It expressly excludes recovered/reconstructed NFSU2 program code, recovered data, embedded game material, retail assets, and third-party imports."
       },
-      "status": "NEEDS_RECHECK",
+      "status": "STUDY_ONLY",
       "relevance": [
         "subsystem-level reconstruction",
         "byte matching vs bounded behavioural comparisons",
@@ -217,7 +217,7 @@
         "NOTICE link",
         "docs index (repository page)"
       ],
-      "atomic_z_decision": "Study README/methodology only. No source import, no automated fetch and no original game binaries/assets/disassembly."
+      "atomic_z_decision": "Pin the repository for review, but never vendor it wholesale. Original project scaffolding may be separately evaluated file-by-file; recovered NFSU2 code/data and retail assets are excluded from the MIT grant. Current native demo is incomplete and requires a lawful PC v1.2 install."
     },
     {
       "id": "rea",
