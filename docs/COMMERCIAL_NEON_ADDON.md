@@ -6,8 +6,8 @@
 ## Current disposition
 
 - `shaders/neon_glow.gdshader` is an experimental visual shader. It is not currently wired into the garage's `NeonSkin` runtime, has no verified surface binding, and has not passed target-Android visual/performance acceptance.
-- The former `scripts/skin_profile_store.gd` writer has been retired and removed. Do not recreate it as an Autoload, introduce `user://skin_profile.json` as an active save path, or create a parallel skin database.
-- Editable neon palette, visibility, and normalized glow state belong to the canonical `BuildDocument`, saved through `BuildDocumentStore`.
+- The former `scripts/skin_profile_store.gd` writer has been retired and removed. The old `NeonSkin.save_skin()` method, which wrote `neon_skin_config.json`/a separate user JSON, has also been removed. Do not recreate either writer as an Autoload or active save path.
+- Editable neon palette, visibility, and normalized glow state belong to the canonical `BuildDocument`, exposed by the runtime snapshot API and saved through `BuildDocumentStore`. `neon_skin_config.json` is read-only migration input.
 - Hardware mapping/export remains blocked until a calibrated controller profile, validated mapping, and explicit hardware acceptance exist.
 
 ## Legacy user-data handling
