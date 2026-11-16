@@ -38,6 +38,12 @@ func _initialize() -> void:
 	_assert(not StoreScript.save_document(invalid_for_save, save_path), "An invalid document must not overwrite a valid save.")
 	_assert(StoreScript.load_document(save_path) == initial, "A rejected save must preserve the previous valid document.")
 
+	var backup_directory := ProjectSettings.globalize_path(save_path + ".bak")
+	_assert(DirAccess.make_dir_absolute(backup_directory) == OK, "A conflicting backup directory fixture must be created.")
+	_assert(not StoreScript.save_document(initial, save_path), "A failed backup rotation must reject the new save.")
+	_assert(StoreScript.load_document(save_path) == initial, "A failed backup rotation must preserve the last valid primary save.")
+	DirAccess.remove_absolute(backup_directory)
+
 	var newer := initial.duplicate(true)
 	newer["revision"] = 2
 	_assert(StoreScript.save_document(newer, save_path), "A second valid document must replace the previous save.")
