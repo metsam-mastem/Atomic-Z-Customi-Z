@@ -159,11 +159,11 @@ func _build_segment_visuals(segment_id: String) -> void:
 			old_node.queue_free()
 	segment["nodes"] = []
 	var color: Color = _palette[segment["color"]]
-	var energy := 1.0 + _glow_intensity * 4.0
+	var energy := 0.5 + _glow_intensity * 4.0
 	var passes := [
-		{"width": 3.6, "alpha": 0.10},
-		{"width": 2.0, "alpha": 0.22},
-		{"width": 1.0, "alpha": 1.0}
+		{"width": 3.6, "alpha": 0.10 * _glow_intensity, "z": 0.0},
+		{"width": 2.0, "alpha": 0.22 * _glow_intensity, "z": 0.001},
+		{"width": 1.0, "alpha": 1.0, "z": 0.002}
 	]
 	for pass_data in passes:
 		var material := StandardMaterial3D.new()
@@ -175,7 +175,7 @@ func _build_segment_visuals(segment_id: String) -> void:
 		material.emission_energy_multiplier = energy
 		var mesh := ImmediateMesh.new()
 		mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, material)
-		_append_ribbon(mesh, segment["points"], float(segment["width"]) * float(pass_data["width"]) * 0.0028)
+		_append_ribbon(mesh, segment["points"], float(segment["width"]) * float(pass_data["width"]) * 0.0028, float(pass_data["z"]))
 		mesh.surface_end()
 		var visual := MeshInstance3D.new()
 		visual.name = segment_id + "_glow_" + str(segment["width"])
@@ -185,7 +185,7 @@ func _build_segment_visuals(segment_id: String) -> void:
 		segment["nodes"].append(visual)
 	_segments[segment_id] = segment
 
-func _append_ribbon(mesh: ImmediateMesh, points: Array, half_width: float) -> void:
+func _append_ribbon(mesh: ImmediateMesh, points: Array, half_width: float, z_offset: float) -> void:
 	for index in range(points.size() - 1):
 		var a := _map_point(points[index])
 		var b := _map_point(points[index + 1])
@@ -193,10 +193,10 @@ func _append_ribbon(mesh: ImmediateMesh, points: Array, half_width: float) -> vo
 		if direction.length_squared() < 0.000001:
 			continue
 		var normal := Vector2(-direction.y, direction.x).normalized() * half_width
-		var a_left := Vector3(a.x + normal.x, a.y + normal.y, SIDE_Z)
-		var a_right := Vector3(a.x - normal.x, a.y - normal.y, SIDE_Z)
-		var b_left := Vector3(b.x + normal.x, b.y + normal.y, SIDE_Z)
-		var b_right := Vector3(b.x - normal.x, b.y - normal.y, SIDE_Z)
+		var a_left := Vector3(a.x + normal.x, a.y + normal.y, SIDE_Z + z_offset)
+		var a_right := Vector3(a.x - normal.x, a.y - normal.y, SIDE_Z + z_offset)
+		var b_left := Vector3(b.x + normal.x, b.y + normal.y, SIDE_Z + z_offset)
+		var b_right := Vector3(b.x - normal.x, b.y - normal.y, SIDE_Z + z_offset)
 		mesh.surface_add_vertex(a_left)
 		mesh.surface_add_vertex(a_right)
 		mesh.surface_add_vertex(b_left)
