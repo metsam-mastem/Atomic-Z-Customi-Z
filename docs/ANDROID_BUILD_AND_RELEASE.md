@@ -30,14 +30,16 @@ Run:
 
 The script imports the project, exports with the Android Debug preset and validates the resulting APK. Output: build/Atomic-Z-debug.apk.
 
-For the signed release preset:
+For the signed release preset, provide the three values from a secure secret manager:
 
     export GODOT_ANDROID_KEYSTORE_RELEASE_PATH=/secure/path/release.keystore
     export GODOT_ANDROID_KEYSTORE_RELEASE_USER=release_alias
     export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD='provided-by-secret-manager'
     bash scripts/build_android.sh release
 
-Release signing values must come from a secure secret store. They are never stored in Git. The release export is not equivalent to store readiness: package identity, versioning, privacy, permissions, licensing, crash behavior and device QA remain separate gates.
+The build entrypoint copies the project into an isolated temporary directory, injects the signing values into that copy's `export_presets.cfg` with owner-only file permissions, and removes the temporary directory on exit. The tracked export preset is never modified; the secret values are never committed or printed. The CI release-path test uses a disposable keystore and is not a production signing identity.
+
+Release signing values must come from a secure secret store. The release export is not equivalent to store readiness: package identity, versioning, privacy, permissions, licensing, crash behavior and device QA remain separate gates.
 
 ## 4. Artifact contract
 
