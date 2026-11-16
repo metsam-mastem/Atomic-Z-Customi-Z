@@ -31,6 +31,9 @@ jobs:
       - name: Run canonical BuildDocument contract test
         run: godot --headless --path . --script res://tests/build_document_test.gd
 
+      - name: Run BuildDocument UI hydration test
+        run: godot --headless --path . --script res://tests/build_document_ui_state_test.gd
+
   neon-simulator-tests:
     runs-on: ubuntu-latest
     steps:
