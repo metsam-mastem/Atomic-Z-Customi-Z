@@ -128,3 +128,21 @@ The official Japanese-market 2027 FAQ identifies the Ninja ZX-25RR as a distinct
 These specification sheets are authoritative identity/specification references, not CAD geometry, part-surface topology, mounting coordinates or engineering drawings. They may seed a cited spec sheet and validation checklist, but they do not validate the procedural placeholder mesh or any fitment.
 
 A third-party parts-catalogue listing was also found, but it is hosted on a document-sharing site and is not the preferred provenance source. Do not copy or redistribute the catalogue. Prefer manufacturer-issued parts documentation and legally obtained model-specific material.
+
+
+## Motorcycle and game-source research vault — 2026-11-16
+
+The detailed, pinned audit now lives in the [Atomic-Z Research Vault](../research/README.md), including individual source dossiers, immutable revisions, licence scope, compatibility notes, rejected leads and a sparse fetch helper. Use [source-registry.json](../research/source-registry.json) as the machine-readable index.
+
+Important corrections and dispositions:
+- `ssebs/DankNooner` is a substantial Godot 4.7 / Forward+ motorcycle game, but AGPL-3.0 and about 1.19 GB; study architecture only.
+- `ssebs/moto-player-controller-godot` is an AGPL-3.0 predecessor on Godot 4.5 / Forward+; it is not a current plug-in.
+- `OpenNFS` is MIT-licensed C++/Bullet car-engine research; EA game assets/data and bundled dependencies are separate rights. It is not a Godot motorcycle solver.
+- `OpenUG2` has no clear SPDX licence grant established; study clean-room methods only.
+- `troikoss/speed-re` has a limited MIT statement applying to original contributions, with recovered NFSU2 code/data and retail assets expressly excluded; the revision remains unpinned in this audit.
+- The correct official REA project is `morluto/rea`; similarly named forks are not authoritative.
+- `nicolasbize/roadkill` is a confirmed Godot pseudo-3D racing/fighting game, but GitHub reports `NOASSERTION` despite the itch page's MIT/CC claim.
+- The previously cited `rishabhsinghio/Godot-Simple-Motorcycle-Physics` URL returned 404. The cited `alvariusgames/bearcycle` contents did not match a motorcycle project.
+- Two Innerscene motorcycle GLB pages state CC0, but no model was downloaded or committed; file hashes and import validation remain pending.
+
+Do not treat the older unverified candidate entries above this section as licence approval. The Research Vault is the current source of truth for this source-audit pass.
