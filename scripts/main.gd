@@ -119,18 +119,21 @@ func _build_hud() -> void:
 	root.add_child(controls)
 
 	_part_selector = OptionButton.new()
+	_part_selector.name = "PartSelector"
 	_part_selector.custom_minimum_size = Vector2(180.0, 42.0)
 	_populate_part_selector()
 	_part_selector.item_selected.connect(_on_part_selected)
 	controls.add_child(_part_selector)
 
 	_assembly_button = Button.new()
+	_assembly_button.name = "AssemblyModeButton"
 	_assembly_button.text = "EXPLODED / STOCK" if _bike.supports_exploded_view() else "EXPLODED VIEW N/A"
 	_assembly_button.disabled = not _bike.supports_exploded_view()
 	_assembly_button.pressed.connect(_on_toggle_assembly)
 	controls.add_child(_assembly_button)
 
 	_paint_picker = ColorPickerButton.new()
+	_paint_picker.name = "PaintPicker"
 	_paint_picker.color = _bike.get_part_color(_selected_part_id)
 	_paint_picker.custom_minimum_size = Vector2(54.0, 42.0)
 	_paint_picker.tooltip_text = "Paint selected part"
@@ -143,6 +146,7 @@ func _build_hud() -> void:
 	controls.add_child(reset_button)
 
 	_neon_toggle_button = Button.new()
+	_neon_toggle_button.name = "NeonToggleButton"
 	_neon_toggle_button.text = "NEON ON / OFF"
 	_neon_toggle_button.toggle_mode = true
 	_neon_toggle_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
@@ -206,6 +210,7 @@ func _build_hud() -> void:
 	skin_controls.add_child(save_skin_button)
 
 	_disclaimer_label = Label.new()
+	_disclaimer_label.name = "AssetDisclaimer"
 	_disclaimer_label.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / NEON UV MAPPING PENDING / NOT ENGINEERING-VALIDATED" if _bike.is_imported_model() else "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
 	_disclaimer_label.anchor_left = 0.0
 	_disclaimer_label.anchor_top = 1.0
@@ -490,8 +495,12 @@ func _update_imported_model_controls() -> void:
 		_neon_toggle_button.disabled = true
 		_neon_toggle_button.tooltip_text = "Neon preview is disabled until its paths are mapped to verified GLB surfaces."
 	for control in _neon_editor_controls:
-		if is_instance_valid(control):
-			control.set("disabled", true) if control is Button or control is ColorPickerButton else control.set("editable", false)
+		if not is_instance_valid(control):
+			continue
+		if control is Range:
+			(control as Range).set("editable", false)
+		else:
+			control.set("disabled", true)
 	if is_instance_valid(_disclaimer_label):
 		_disclaimer_label.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / UV MAPPING PENDING / NOT ENGINEERING-VALIDATED"
 
@@ -610,7 +619,10 @@ func _refresh_build_summary() -> void:
 		paint_color = "#" + _bike.get_part_color(_selected_part_id).to_html(false).to_upper()
 	var assembly_mode := str(_build_document.get("assembly", {}).get("mode", "stock")).to_upper()
 	var neon_state := "ON" if bool(_build_document.get("render", {}).get("neon_enabled", true)) else "OFF"
-	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
+	var asset_state := "IMPORTED GLB" if _bike.is_imported_model() else "PLACEHOLDER"
+	if _bike.is_imported_model():
+		neon_state = "DISABLED — UV PENDING"
+	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nASSET  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), asset_state, _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
