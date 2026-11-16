@@ -65,3 +65,5 @@ No Godot editor/runtime, Android export or physical-device test has been run dur
 - [ ] Headless Godot contract test passes in CI.
 - [ ] Visual appearance is reviewed on desktop and Android; no bloom or frame-rate claim before device verification.
 - [ ] 2D-to-3D paths are registered against an exact model-year/market asset before claiming panel alignment or fitment.
+
+- [ ] Save skin writes to `user://` and a fresh runtime instance can reload palette, glow and per-segment visibility without data loss.
