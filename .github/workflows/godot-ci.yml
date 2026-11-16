@@ -24,3 +24,20 @@ jobs:
 
       - name: Run vertical-slice smoke test
         run: godot --headless --path . --script res://tests/smoke_test.gd
+
+  neon-simulator-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run neon simulator unit tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Compile simulator
+        run: python -m py_compile neon_simulator.py
