@@ -160,3 +160,16 @@ Call of Duty has more open research material than a blanket “no source exists�
 - [MW2 reconstruction dashboard](https://mw2.momo5502.com/) tracks a private source-level reconstruction; no public code repository or licence was established.
 
 See the [COD dossier](../research/sources/COD_RECONSTRUCTION.md) and the updated [source registry](../research/source-registry.json). No COD code, proprietary assets or game data have been imported.
+
+
+### Godot vehicle systems and configurator sources — 2026-11-16
+
+The expanded source review includes five additional pinned repositories. Full implementation notes and exact file links are in [Godot vehicle systems](../research/sources/GODOT_VEHICLE_SYSTEMS.md) and [Motorcycle configurators](../research/sources/MOTORCYCLE_CONFIGURATORS.md).
+
+- `Seerban/godot-vehicle`: MIT Godot 4.6 Forward+ four-wheel RigidBody/raycast racing car, with suspension/grip, VehicleData resources and ghost replay. Useful architecture reference, not motorcycle dynamics.
+- `Kurtzmusch/kv-vehicle`: Godot 4 modular vehicle addon with engine, gearbox, clutch, tire response, suspension, ABS and anti-roll. No root licence found; README documents straight-line suspension, shapecast origin sensitivity and feedback oscillations. Study-only.
+- `AurickMikleton/ModuVehicle`: CC0 C++ GDExtension prototype, Godot 4.5+, with swappable vehicle resources and a combined slip/tyre-force model, traction control, wheel integration and suspension damping. WIP; no complete motorcycle solver; no GDExtension imported.
+- `Whauv/MotoForge`: Next.js/Three.js + FastAPI/SQLite configurator. Useful part-fitment relations, duplicate-safe quote calculation and GLB asset alignment conventions. No repository-level licence; no code reuse.
+- `rohithyv/3D-Motorcycle-Showroom`: fictional VOLT R1 Three.js showroom. Useful mobile opt-in/lazy GLB loading, fallback, camera choreography and performance telemetry. No repository-level licence; product figures are fictional and must not be treated as engineering facts.
+
+The machine-readable [registry](../research/source-registry.json) now includes 23 entries and 16 pinned Git commits. Only six pinned repositories with an identified licence are exposed by the local sparse-fetch helper (the two new entries are Godot Vehicle and ModuVehicle). Sources with unclear or mixed rights remain manual-reference only.
