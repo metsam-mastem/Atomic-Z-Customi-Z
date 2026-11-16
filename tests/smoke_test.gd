@@ -150,11 +150,13 @@ func _run_smoke_test() -> void:
 	await process_frame
 	var restored_tank_color: Color = restored_bike.get_part_color("fuel_tank")
 	var restored_front_color: Color = restored_bike.get_part_color("front_fairing")
-	if not restored_tank_color.is_equal_approx(project_color):
+	var expected_project_color := Color.from_string("#" + project_color.to_html(false).to_upper(), Color.WHITE)
+	var expected_test_color := Color.from_string("#" + test_color.to_html(false).to_upper(), Color.WHITE)
+	if not restored_tank_color.is_equal_approx(expected_project_color):
 		push_error("Saved selected-part paint must be restored into the 3D assembly.")
 		quit(1)
 		return
-	if not restored_front_color.is_equal_approx(test_color):
+	if not restored_front_color.is_equal_approx(expected_test_color):
 		push_error("Saved paint for another part must remain independent after reload.")
 		quit(1)
 		return
