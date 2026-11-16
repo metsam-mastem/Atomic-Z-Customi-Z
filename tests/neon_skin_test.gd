@@ -29,6 +29,19 @@ func _run() -> void:
 		push_error("Existing segment visibility must be controllable.")
 		quit(1)
 		return
+	if not skin.set_palette_color("primary", Color("#112233")):
+		push_error("Known palette entries must be editable.")
+		quit(1)
+		return
+	if skin.get_segment_color("tail_underglow") != Color("#112233"):
+		push_error("Palette edits must propagate to linked segments.")
+		quit(1)
+		return
+	skin.set_glow_intensity(2.0)
+	if not is_equal_approx(skin.get_glow_intensity(), 1.0):
+		push_error("Glow intensity must clamp to the normalized range.")
+		quit(1)
+		return
 	if skin.set_segment_visible("missing_segment", false):
 		push_error("Unknown segment IDs must be rejected.")
 		quit(1)
@@ -37,5 +50,5 @@ func _run() -> void:
 		push_error("Invalid color references must be rejected.")
 		quit(1)
 		return
-	print("PASS: neon skin JSON loading, stable IDs, color mapping and visibility.")
+	print("PASS: neon skin JSON loading, stable IDs, palette editing, glow clamping and visibility.")
 	quit(0)
