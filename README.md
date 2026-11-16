@@ -87,3 +87,17 @@ python -m py_compile neon_simulator.py
 The simulator is a 2D concept tool, not a 3D renderer, not a measured ZX-25R/ZX-25RR body template and not a factory CAD viewer. The supplied line coordinates are canvas pixels and must be aligned to a verified motorcycle side-view template before manufacturing or claiming model-specific fitment.
 
 **Model naming:** this skin JSON intentionally preserves the requested label `Kawasaki Ninja ZX-25R`. The main product brief currently targets ZX-25RR. These names must not be treated as interchangeable for exact fitment; the skin-to-vehicle compatibility remains unverified.
+
+## Godot neon runtime
+
+The same `neon_skin_config.json` is now consumed by `scripts/neon_skin.gd` in the garage scene. The runtime validates the palette, normalized glow range, unique segment IDs, point arrays, named color references and positive stroke widths before building emissive ribbon geometry. The garage HUD exposes a global neon visibility toggle and glow-intensity control.
+
+The current Godot importer maps the supplied 2D canvas coordinates onto a deliberately generic side-plane preview. This is a visualization scaffold only: it is not UV-mapped to body panels, does not conform to the motorcycle mesh, and does not establish ZX-25R/ZX-25RR fitment. The stacked emissive ribbons approximate a neon halo; no platform-wide bloom guarantee is made. The renderer uses Godot's built-in mesh/material pipeline and does not add Macroquad as a second runtime engine.
+
+Run the Godot neon contract test:
+
+```bash
+godot --headless --path . --script res://tests/neon_skin_test.gd
+```
+
+The test verifies config loading, stable segment IDs, named color resolution, visibility control and rejection of an invalid color reference.
