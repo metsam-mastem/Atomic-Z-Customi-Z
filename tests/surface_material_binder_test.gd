@@ -41,12 +41,8 @@ func _run() -> void:
 	var requested := StandardMaterial3D.new()
 	requested.albedo_color = Color.GREEN
 	var applied: Material = binder.apply_material("body.paint", requested)
-	if applied == null:
-		push_error("Known surface ID must accept a material.")
-		quit(1)
-		return
-	if applied == requested:
-		push_error("Per-build material edits must duplicate the supplied resource.")
+	if applied == null or applied == requested:
+		push_error("Known surface must receive an isolated material duplicate.")
 		quit(1)
 		return
 	if mesh_instance.get_surface_override_material(0) != applied:
@@ -61,6 +57,16 @@ func _run() -> void:
 		push_error("Imported base PBR materials must remain unchanged.")
 		quit(1)
 		return
+	var applied_standard := applied as StandardMaterial3D
+	applied_standard.albedo_color = Color.YELLOW
+	if requested.albedo_color != Color.GREEN:
+		push_error("Editing the per-build duplicate must not mutate the source material.")
+		quit(1)
+		return
+	if not binder.clear_material_override("body.paint") or mesh_instance.get_surface_override_material(0) != null:
+		push_error("Clearing an override must affect only the selected surface.")
+		quit(1)
+		return
 
 	var duplicate_result: Dictionary = binder.configure(root_node, [
 		{"surface_id": "duplicate", "node_path": "Body", "surface_index": 0},
@@ -68,6 +74,10 @@ func _run() -> void:
 	])
 	if duplicate_result.get("ok", true):
 		push_error("Duplicate stable surface IDs must be rejected.")
+		quit(1)
+		return
+	if not binder.has_surface("body.paint"):
+		push_error("Rejected reconfiguration must preserve the last valid binding table.")
 		quit(1)
 		return
 
@@ -78,6 +88,10 @@ func _run() -> void:
 		push_error("Unknown mesh node paths must be rejected.")
 		quit(1)
 		return
+	if not binder.has_surface("body.trim"):
+		push_error("Failed configuration must not replace previously valid bindings.")
+		quit(1)
+		return
 
-	print("PASS: stable surface binding, isolated overrides, base material preservation and invalid binding rejection.")
+	print("PASS: stable surface binding, isolated overrides, base material preservation and atomic validation.")
 	quit(0)
