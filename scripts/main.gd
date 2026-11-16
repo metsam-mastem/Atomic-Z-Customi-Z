@@ -5,6 +5,7 @@ const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
+const GarageTouchGesturesScript = preload("res://scripts/garage_touch_gestures.gd")
 
 var _bike
 var _camera: Camera3D
@@ -29,10 +30,13 @@ const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
+var _camera_target_offset := Vector3.ZERO
+var _touch_gestures
 var _dragging := false
 var _last_pointer := Vector2.ZERO
 
 func _ready() -> void:
+	_touch_gestures = GarageTouchGesturesScript.new()
 	_build_document = _load_initial_build_document()
 	_build_world()
 	_bike = BikeAssemblyScript.new()
@@ -518,18 +522,20 @@ func _on_save_neon_skin() -> void:
 		_refresh_build_summary()
 
 func _on_reset_camera() -> void:
+	if is_instance_valid(_touch_gestures):
+		_touch_gestures.reset()
+	_camera_target_offset = Vector3.ZERO
 	_orbit_angle = 0.0
 	_orbit_pitch = 0.16
 	_orbit_distance = 5.3
 	_update_camera()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch:
-		_dragging = event.pressed
-		_last_pointer = event.position
-	elif event is InputEventScreenDrag and _dragging:
-		_apply_orbit_drag(event.position)
-	elif event is InputEventMouseButton:
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		_touch_gestures.handle_event(event)
+		_apply_touch_camera_state()
+		return
+	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_dragging = event.pressed
 			_last_pointer = event.position
@@ -542,6 +548,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _dragging:
 		_apply_orbit_drag(event.position)
 
+func _apply_touch_camera_state() -> void:
+	var state: Dictionary = _touch_gestures.get_camera_state()
+	_orbit_angle = float(state.get("orbit_angle", _orbit_angle))
+	_orbit_pitch = float(state.get("orbit_pitch", _orbit_pitch))
+	_orbit_distance = float(state.get("orbit_distance", _orbit_distance))
+	_camera_target_offset = Vector3(state.get("target_offset", _camera_target_offset))
+	_update_camera()
+
 func _apply_orbit_drag(pointer: Vector2) -> void:
 	var delta := pointer - _last_pointer
 	_last_pointer = pointer
@@ -552,7 +566,7 @@ func _apply_orbit_drag(pointer: Vector2) -> void:
 func _update_camera() -> void:
 	if not is_instance_valid(_camera):
 		return
-	var target := Vector3(0.0, 0.92, 0.0)
+	var target := Vector3(0.0, 0.92, 0.0) + _camera_target_offset
 	var horizontal := cos(_orbit_pitch) * _orbit_distance
 	_camera.position = target + Vector3(
 		sin(_orbit_angle) * horizontal,
