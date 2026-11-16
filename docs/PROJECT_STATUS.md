@@ -4,7 +4,7 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.
-**Last verified:** 2026-11-16 02:59 UTC
+**Last verified:** 2026-11-16 03:11 UTC
 **Verified main:** `dccd4020f9feef522b94b36bf2b326380d6e7af1`
 **Checkpoint update branch:** `agent/governance/refresh-resume-checkpoint-after-pr16` (PR #17; documentation-only update)
 
@@ -43,16 +43,17 @@ This file is the operational starting point, not a substitute for live verificat
 - Physical Redmi installation and runtime QA: NOT RUN.
 - Earlier merged work includes PR #3 (BuildDocument contract), #4 (Neon profile store), #6 (research audit), #9 (context integrity), #10 (part paint/safe persistence), #12 (Android export preflight/signature verification), #14 (project charter/visual asset handoff) and #16 (chat-independent continuity).
 
-## Open pull requests — live refresh 2026-11-16 02:59 UTC
+## Open pull requests — live refresh 2026-11-16 03:11 UTC
 
 | PR | Scope | Current state | Next action |
 |---|---|---|---|
-| #20 | Unified safe surface-material prototype and BuildDocument-driven neon HUD hydration | OPEN / READY FOR REVIEW; exact-head Godot, Python and Android CI PASS; mergeable | Independent code review, then merge through normal review process; physical-device QA remains separate |
-| #17 | Refresh this canonical resume checkpoint | OPEN; documentation-only; mergeable | Review and merge this checkpoint update |
+| #20 | Unified safe surface-material prototype and BuildDocument-driven neon HUD hydration | OPEN / READY FOR REVIEW; exact-head CI run #43796301513 completed successfully; mergeable | Independent code review; merge only through normal review process; physical-device QA remains separate |
+| #21 | Retire parallel neon profile persistence and migrate legacy profile into BuildDocument | OPEN / DRAFT; stacked on PR #20; exact PR-head CI run #43795781816 completed successfully | Do not retarget/merge before PR #20; review migration semantics and preserve legacy user data |
+| #17 | Refresh this canonical resume checkpoint | OPEN; documentation-only; exact-head CI run #43795689102 completed successfully | Review and merge this checkpoint update |
 
-PRs #7, #11, #18 and #19 are closed as superseded by PR #20. PR #8 was closed without merge. PR #10, #12, #14 and #16 are merged. Always refresh states before acting.
+PRs #7, #8, #11, #18 and #19 are closed (superseded or diagnostic-only). PR #10, #12, #14 and #16 are merged. Re-fetch all PRs and CI before acting.
 
-## Open issues — live refresh 2026-11-16 02:50 UTC
+## Open issues — live refresh 2026-11-16 03:11 UTC
 
 - Issue #1: “[Architecture] Deliver the unified Atomic-Z-Customi-Z system”.
 - Issue #5: “[Research] Verify external engineering sources and sequence safe integration”.
@@ -68,10 +69,10 @@ Re-fetch both and inspect comments/labels before selecting work.
 | Main Android Debug CI export | PASS | Main commit `dccd402...`, run #43793273703 |
 | Integrated garage smoke, neon and BuildDocument contract tests | PASS | PR #20 exact head, run #43795128113 |
 | Surface binder ownership contract test | PASS on PR head | PR #20 run #43795128113; prototype is not yet connected to a verified production GLB asset |
-| Neon HUD state hydration | PASS on PR head | PR #20 run #43795128113; PR review/merge pending |
-| Python neon simulator tests | PASS | PR #20 exact head, run #43795128113 |
-| Android Debug APK export, package metadata and signature | PASS on PR head | PR #20 run #43795128113; artifact upload confirmed by run #43795120047 |
-| GLB production asset/material integration | NOT RUN | No verified, provenance-tracked ZX-25RR model imported into the garage yet |
+| Neon HUD state hydration | PASS on PR head | PR #20 run #43796301513; PR review/merge pending |
+| Python neon simulator tests | PASS | PR #20 exact head, run #43796301513 |
+| Android Debug APK export, package metadata and signature | PASS on PR head | PR #20 exact head, run #43796301513; prior artifact upload confirmed by run #43795120047 |
+| Legacy Neon profile migration to BuildDocument | PASS on PR #21 head | PR #21 exact head, run #43795781816; PR is stacked on #20 and remains draft |\n| GLB production asset/material integration | NOT RUN | No verified, provenance-tracked ZX-25RR model imported into the garage yet |
 | Physical Redmi installation/launch | NOT RUN | Requires target device test |
 | Production ZX-25RR GLB/CAD | NOT RUN | Current geometry remains placeholder |
 | Verified UV/surface mapping | NOT RUN | Do not claim body-aligned graphics |
@@ -86,13 +87,14 @@ Re-fetch both and inspect comments/labels before selecting work.
 
 ## Priority next actions
 
-1. Review and merge PR #17 so this refreshed checkpoint becomes part of `main`.
-2. Complete independent code review of PR #20 and merge only through the normal reviewed process; do not self-merge.
-3. Integrate the surface binder with the imported-asset manifest and canonical BuildDocument material records, after the surface-ID/schema contract is reviewed by the integration and data-contract owners.
-4. Obtain a licensed, provenance-tracked ZX-25RR model for a declared year/market, then validate part IDs, pivots, material slots, coordinate frame and UV/surface mapping.
-5. Run physical Redmi QA and record exact device identity, install/launch, touch, persistence, frame time, memory and thermals.
-6. Configure GitHub branch protection and required checks. Current `main` remains unprotected; the documented policy is not technically enforced.
-7. Update this file after every meaningful merged task.
+1. Review and merge PR #17 so this current portable checkpoint is committed to `main`.
+2. Complete independent code review of PR #20; merge only through normal review, then refresh PR #21's base and reconcile its stack.
+3. Review PR #21's migration/data-preservation semantics and ensure only the canonical BuildDocument remains writable.
+4. Integrate the surface binder with the imported-asset manifest and canonical BuildDocument material records after the surface-ID/schema contract is reviewed.
+5. Obtain a licensed, provenance-tracked ZX-25RR model for a declared year/market, then validate part IDs, pivots, material slots, coordinate frame and UV/surface mapping.
+6. Run physical Redmi QA and record exact device identity, install/launch, touch, persistence, frame time, memory and thermals.
+7. Configure GitHub branch protection and required checks. Current `main` remains unprotected; the documented policy is not technically enforced.
+8. Update this file after every meaningful merged task.
 
 ## Decision and change control
 
