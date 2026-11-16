@@ -17,16 +17,15 @@ EOF
 }
 
 if [[ "$SOURCE" == "--list" || "$SOURCE" == "-l" ]]; then
-  printf '%s\n' "Pinned IDs:"
-  printf '%s\n' "  danknooner  (AGPL-3.0; study-only)"
-  printf '%s\n' "  moto-controller  (AGPL-3.0; study-only)"
-  printf '%s\n' "  opennfs  (MIT code; EA assets excluded)"
-  printf '%s\n' "  openug2  (NOASSERTION; study-only)"
-  printf '%s\n' "  rea  (MIT; official upstream)"
-  printf '%s\n' "  roadkill  (NOASSERTION; study-only)"
-  printf '%s\n' "Study-only COD references intentionally excluded from source fetching: OpenCOD1, OpenCOD2, CoDWaW-RE, CoD-Research."
-  printf '%s\n' "Official Activision Telescope archives and private MW2 reconstruction are not Git repositories with a single pinned source checkout."
-  printf '%s\n' "Not fetchable automatically: speed-re (revision not pinned), CC0 GLBs (download hash not yet recorded)."
+  printf '%s\n' "Pinned and licence-identified IDs:"
+  printf '%s\n' "  danknooner       (AGPL-3.0; study-only, no runtime import)"
+  printf '%s\n' "  moto-controller  (AGPL-3.0; study-only, no runtime import)"
+  printf '%s\n' "  opennfs          (MIT original code; EA assets excluded)"
+  printf '%s\n' "  rea              (MIT canonical upstream; optional analysis tool)"
+  printf '%s\n' "Manual-reference only, not auto-fetched: OpenUG2, Roadkill, SPEED RE (unresolved/limited rights or revision)."
+  printf '%s\n' "COD repositories without a detected reuse licence are intentionally excluded: OpenCOD1, OpenCOD2, CoD-Research."
+  printf '%s\n' "Official Activision Telescope archives require per-version licence review; private MW2 reconstruction has no public source checkout."
+  printf '%s\n' "CC0 GLBs are not auto-fetched until the downloaded file hash and provenance are recorded."
   exit 0
 fi
 
@@ -54,26 +53,14 @@ case "$SOURCE" in
     REF="main"
     PATHS=("/src/Physics/" "/src/Camera/" "/src/Race/" "/src/Renderer/" "/README.md" "/BUILDING.md" "/LICENSE")
     ;;
-  openug2)
-    REPO="whoismept/OpenUG2"
-    SHA="a66dc198bca3629f616684093b8d0743f20bd6a6"
-    REF="main"
-    PATHS=("/docs/cleanroom-driving-physics/" "/docs/VEHICLE_CUSTOMIZATION.md" "/src/drivetrain.c" "/src/drivetrain.h" "/README.md")
-    ;;
   rea)
     REPO="morluto/rea"
     SHA="a10037ef10516cf92653596512932b15f190a5c0"
     REF="main"
     PATHS=("/docs/guides/native/" "/docs/guides/android/" "/docs/development/reconstruction-readiness.md" "/docs/getting-started/installation.md" "/skill-src/reverse-engineer-anything/" "/README.md" "/LICENSE")
     ;;
-  roadkill)
-    REPO="nicolasbize/roadkill"
-    SHA="76fcf2b06c2fd1575e7211820f6e3864cd619603"
-    REF="main"
-    PATHS=("/README.md" "/game.gd" "/mobile_game.gd" "/scripts/" "/scenes/ui/screens/" "/scenes/world/" )
-    ;;
   *)
-    printf 'Unknown or unpinned source ID: %s\n' "$SOURCE" >&2
+    printf 'Unknown, unpinned or rights-unreviewed source ID: %s\n' "$SOURCE" >&2
     usage >&2
     exit 2
     ;;
