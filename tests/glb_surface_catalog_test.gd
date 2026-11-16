@@ -59,6 +59,15 @@ func _run() -> void:
 	var document: Dictionary = attached.get("document", {})
 	_assert(document.get("asset", {}).get("surface_catalog", []).size() == 2, "BuildDocument must contain the canonical surface catalog.")
 	_assert(BuildDocumentScript.validate(document).get("ok", false), "The document with a valid surface catalog must validate.")
+	var legacy_document := document.duplicate(true)
+	legacy_document["asset"].erase("surface_catalog")
+	_assert(BuildDocumentScript.validate(legacy_document).get("ok", false), "Older BuildDocuments without surface_catalog must remain valid.")
+	var before_rejected_attach := document.duplicate(true)
+	var rejected_attach: Dictionary = CatalogScript.attach_to_document(document, root_node, [
+		{"surface_id": "bad", "node_path": "Body/VisualMesh", "surface_index": 99}
+	])
+	_assert(not rejected_attach.get("ok", true), "Invalid catalog attachment must be rejected.")
+	_assert(document == before_rejected_attach, "Rejected catalog attachment must not mutate the original BuildDocument.")
 
 	var invalid_target := document.duplicate(true)
 	invalid_target["customization"]["materials"] = [{
