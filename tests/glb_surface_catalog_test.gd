@@ -11,6 +11,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	await _test_imported_gltf_fixture()
+	await _run_synthetic_catalog_test()
 
 func _test_imported_gltf_fixture() -> void:
 	var packed_scene := load("res://tests/fixtures/minimal_multi_surface.gltf") as PackedScene
@@ -49,6 +50,7 @@ func _test_imported_gltf_fixture() -> void:
 	imported_root.queue_free()
 	await process_frame
 
+func _run_synthetic_catalog_test() -> void:
 	var root_node := Node3D.new()
 	root_node.name = "ImportedBike"
 	root.add_child(root_node)
