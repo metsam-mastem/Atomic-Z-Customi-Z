@@ -31,6 +31,9 @@ jobs:
       - name: Run canonical BuildDocument contract test
         run: godot --headless --path . --script res://tests/build_document_test.gd
 
+      - name: Run surface material binder ownership test
+        run: godot --headless --path . --script res://tests/surface_material_binder_test.gd
+
   neon-simulator-tests:
     runs-on: ubuntu-latest
     steps:
