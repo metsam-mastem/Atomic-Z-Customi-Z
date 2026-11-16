@@ -122,6 +122,15 @@ func _run() -> void:
 	var external_override := StandardMaterial3D.new()
 	external_override.albedo_color = Color.MAGENTA
 	mesh_instance.set_surface_override_material(0, external_override)
+	var overwrite_attempt: Material = binder.apply_material("body.paint", requested)
+	if overwrite_attempt != null:
+		push_error("Binder must reject an apply operation when another owner controls the surface override.")
+		quit(1)
+		return
+	if mesh_instance.get_surface_override_material(0) != external_override:
+		push_error("Apply must preserve an externally-owned surface override.")
+		quit(1)
+		return
 	if binder.clear_material_override("body.paint"):
 		push_error("Binder must not clear a surface override replaced by another owner.")
 		quit(1)
