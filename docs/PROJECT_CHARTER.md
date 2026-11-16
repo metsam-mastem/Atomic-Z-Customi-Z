@@ -19,7 +19,7 @@ Make motorcycle customization expressive, inspectable, and reproducible: a user 
 - Godot 4 as the single product runtime.
 - Responsive garage HUD and camera interaction.
 - Modular motorcycle placeholder assembly with explicit concept status.
-- Data-driven neon segments, palette, glow controls, and skin persistence.
+- Data-driven neon segments, palette, glow controls, and BuildDocument-backed persistence.
 - Versioned BuildDocument and migration path from legacy neon skin JSON.
 - Quality tiers, measurable performance targets, automated validation, CI.
 - Documentation: charter, architecture, workflows, catalog, handoff, manifesto, reports.
