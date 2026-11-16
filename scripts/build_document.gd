@@ -84,6 +84,63 @@ static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 	}
 	return document
 
+static func from_legacy_skin_profile(profile: Dictionary, source_document: Dictionary) -> Dictionary:
+	if not validate(source_document).get("ok", false):
+		return {}
+	if not (profile.get("schema_version", null) is int) or int(profile.get("schema_version", -1)) != 1:
+		return {}
+
+	var color_text := str(profile.get("color", "")).strip_edges()
+	if not _is_hex_color(color_text):
+		return {}
+
+	var glow_value: Variant = profile.get("glow_intensity", null)
+	var pulse_value: Variant = profile.get("pulse_speed", null)
+	if not (glow_value is int or glow_value is float):
+		return {}
+	if not (pulse_value is int or pulse_value is float):
+		return {}
+
+	var legacy_glow := float(glow_value)
+	var legacy_pulse := float(pulse_value)
+	if not is_finite(legacy_glow) or not is_finite(legacy_pulse):
+		return {}
+	if legacy_glow < 0.0 or legacy_glow > 10.0 or legacy_pulse < 0.0 or legacy_pulse > 10.0:
+		return {}
+
+	var extension_values: Variant = source_document.get("extensions", [])
+	if not (extension_values is Array):
+		return {}
+	var extensions: Array = extension_values.duplicate(true)
+	for extension_value in extensions:
+		if not (extension_value is Dictionary):
+			return {}
+		if str(extension_value.get("extension_id", "")) == "legacy_neon_shader_profile":
+			return {}
+
+	var migrated := source_document.duplicate(true)
+	var customization: Dictionary = migrated.get("customization", {}).duplicate(true)
+	var palette: Dictionary = customization.get("palette", {}).duplicate(true)
+	palette["primary"] = color_text.to_upper()
+	customization["palette"] = palette
+	migrated["customization"] = customization
+
+	extensions.append({
+		"extension_id": "legacy_neon_shader_profile",
+		"schema_version": 1,
+		"status": "preserved_unmapped",
+		"source_format": "skin_profile",
+		"source_path": "user://skin_profile.json",
+		"payload": {
+			"color_legacy": color_text.to_upper(),
+			"glow_intensity_legacy_0_10": legacy_glow,
+			"pulse_speed_legacy_0_10": legacy_pulse,
+			"mapping_note": "Legacy shader intensity and pulse speed are preserved without conversion because their 0..10 contract is not the canonical BuildDocument 0..1 render contract."
+		}
+	})
+	migrated["extensions"] = extensions
+	return migrated if validate(migrated).get("ok", false) else {}
+
 static func validate(document: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
 	if int(document.get("schema_version", -1)) != SCHEMA_VERSION:
