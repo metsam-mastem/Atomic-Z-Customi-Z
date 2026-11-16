@@ -6,6 +6,7 @@ const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
 const GarageTouchGesturesScript = preload("res://scripts/garage_touch_gestures.gd")
+const AIChatOverlayScript = preload("res://scripts/ai_chat_overlay.gd")
 
 var _bike
 var _camera: Camera3D
@@ -23,6 +24,7 @@ var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
 var _camera_target_offset := Vector3.ZERO
 var _touch_gestures
+var _ai_overlay: CanvasLayer
 var _dragging := false
 var _last_pointer := Vector2.ZERO
 
@@ -210,6 +212,19 @@ func _build_hud() -> void:
 	_build_summary_label.modulate = Color("#e6edf5")
 	_build_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_build_summary_label)
+
+	var ai_button := Button.new()
+	ai_button.name = "AIAssistantButton"
+	ai_button.text = "AI ASSIST"
+	ai_button.anchor_left = 1.0
+	ai_button.anchor_right = 1.0
+	ai_button.offset_left = -154.0
+	ai_button.offset_right = -24.0
+	ai_button.offset_top = 146.0
+	ai_button.offset_bottom = 188.0
+	ai_button.tooltip_text = "Open the optional multi-model AI assistant"
+	ai_button.pressed.connect(_open_ai_assistant)
+	root.add_child(ai_button)
 	_refresh_build_summary()
 
 func _on_toggle_assembly() -> void:
@@ -395,6 +410,13 @@ func _refresh_build_summary() -> void:
 	var assembly_mode := str(_build_document.get("assembly", {}).get("mode", "stock")).to_upper()
 	var neon_state := "ON" if bool(_build_document.get("render", {}).get("neon_enabled", true)) else "OFF"
 	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
+
+func _open_ai_assistant() -> void:
+	if not is_instance_valid(_ai_overlay):
+		_ai_overlay = AIChatOverlayScript.new()
+		_ai_overlay.name = "OptionalAIAssistant"
+		add_child(_ai_overlay)
+	_ai_overlay.open_panel()
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
