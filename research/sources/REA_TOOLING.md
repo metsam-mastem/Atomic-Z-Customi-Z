@@ -66,3 +66,8 @@ Pinned links:
 - [Android APK analysis guide](https://github.com/morluto/rea/blob/a10037ef10516cf92653596512932b15f190a5c0/docs/guides/android/android-analysis.md)
 - [Reconstruction readiness guide](https://github.com/morluto/rea/blob/a10037ef10516cf92653596512932b15f190a5c0/docs/development/reconstruction-readiness.md)
 - [Installation guide](https://github.com/morluto/rea/blob/a10037ef10516cf92653596512932b15f190a5c0/docs/getting-started/installation.md)
+
+
+## Name resolution: "Reverse Engineering Everything"
+
+The repositories `edaneshi/ReversEngineeringEverything` and `JunchaoMeiNCTS/Reverse-Engineering-Everything` were checked and both identify as GitHub forks of `morluto/rea`. The upstream project calls itself **REA — Reverse Engineer Anything**. Use the canonical upstream URL and pinned commit above; forks may be stale, incomplete or carry a README copied from upstream. A fork name does not make it the official project.
