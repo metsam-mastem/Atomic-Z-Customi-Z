@@ -410,6 +410,25 @@ func _test_touch_gestures() -> bool:
 		push_error("Two-finger centroid movement must pan the garage camera target.")
 		return false
 
+	var distance_after_zoom_in: float = float(pinched.get("orbit_distance", 0.0))
+	var pinch_in := InputEventScreenDrag.new()
+	pinch_in.index = 1
+	pinch_in.position = Vector2(175.0, 115.0)
+	gestures.handle_event(pinch_in)
+	var zoomed_out: Dictionary = gestures.get_camera_state()
+	if not float(zoomed_out.get("orbit_distance", 0.0)) > distance_after_zoom_in:
+		push_error("Two-finger pinch-in must zoom the garage camera out.")
+		return false
+
+	var clamp_drag := InputEventScreenDrag.new()
+	clamp_drag.index = 1
+	clamp_drag.position = Vector2(5000.0, 115.0)
+	gestures.handle_event(clamp_drag)
+	var clamped: Dictionary = gestures.get_camera_state()
+	if float(clamped.get("orbit_distance", 0.0)) > 8.0:
+		push_error("Pinch zoom must respect the maximum camera distance.")
+		return false
+
 	var second_up := InputEventScreenTouch.new()
 	second_up.index = 1
 	second_up.pressed = false
