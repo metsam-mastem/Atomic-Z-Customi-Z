@@ -1,0 +1,981 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-11-16",
+  "atomic_z_baseline": {
+    "repository": "metsam-mastem/Atomic-Z-Customi-Z",
+    "base_branch": "main",
+    "base_commit": "db532efa725e6f54df54a707ce7b5be585d589d6",
+    "product_runtime": "Godot 4 / GDScript",
+    "renderer_baseline": "Compatibility",
+    "canonical_editable_state": "BuildDocument",
+    "audit_type": "public repository metadata, README/license/docs, tree inventory and targeted source inspection",
+    "not_performed": [
+      "full line-by-line inspection of every file in the 1.19 GB DankNooner repository",
+      "runtime execution of external games or binaries",
+      "dynamic tracing of proprietary game executables",
+      "Android device profiling",
+      "legal opinion",
+      "third-party source or asset import into Atomic-Z"
+    ]
+  },
+  "policy": {
+    "default": "study-only until exact licence scope, provenance, compatibility and project approval are established",
+    "no_game_assets": "Do not commit EA/Activision game assets, retail executables, game data tables, proprietary audio, textures, fonts or decompilation dumps.",
+    "no_second_runtime": "External engines/runtimes are reference material only; Godot remains Atomic-Z's sole product runtime.",
+    "pinning": "Use immutable commit IDs. Mutable branch links are not considered reproducible evidence.",
+    "asset_provenance": "Record source page, per-asset licence, acquisition date, file hash, dimensions, scale, coordinate convention and validation result."
+  },
+  "sources": [
+    {
+      "id": "danknooner",
+      "name": "DankNooner",
+      "repository": "ssebs/DankNooner",
+      "url": "https://github.com/ssebs/DankNooner",
+      "revision": {
+        "branch": "main",
+        "commit": "85bb82f1afe88d6baa564a77ab04b0d7aab3429b",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4.7",
+        "renderer": "Forward+",
+        "approx_size_kib": 1190532,
+        "tree_entries": 15646,
+        "gdscript_files": 590
+      },
+      "licence": {
+        "spdx": "AGPL-3.0",
+        "scope": "repository licence; bundled assets/dependencies may have independent terms"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "motorcycle movement",
+        "gearbox/RPM/clutch",
+        "tricks and crash logic",
+        "camera/IK/audio",
+        "game modes",
+        "multiplayer rollback"
+      ],
+      "reviewed_paths": [
+        "v2/player/player_entity.gd",
+        "v2/player/controllers/movement_controller.gd",
+        "v2/player/controllers/trick_controller.gd",
+        "v2/player/controllers/crash_controller.gd",
+        "v2/player/controllers/camera_controller.gd",
+        "v2/player/controllers/boost_controller.gd",
+        "v2/player/controllers/gearing_controller.gd",
+        "v2/resources/bikes/bike_skin_definition.gd",
+        "v2/planning_docs/PlayerController.md",
+        "v2/planning_docs/ComboAndBoost.md",
+        "v2/planning_docs/Architecture.md",
+        "v2/planning_docs/Testing.md"
+      ],
+      "atomic_z_decision": "Architecture and behaviour reference only. Do not copy AGPL code or bundled game assets; engine and renderer targets do not match Atomic-Z."
+    },
+    {
+      "id": "moto-controller",
+      "name": "moto-player-controller-godot",
+      "repository": "ssebs/moto-player-controller-godot",
+      "url": "https://github.com/ssebs/moto-player-controller-godot",
+      "revision": {
+        "branch": "main",
+        "commit": "a5bd7699cb58b73dd8f9a79a6e871587693b7604",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4.5",
+        "renderer": "Forward+"
+      },
+      "licence": {
+        "spdx": "AGPL-3.0",
+        "scope": "repository licence; assets and add-ons require separate notices"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "component-oriented CharacterBody motorcycle controller",
+        "input/state/physics/gear/trick/crash components",
+        "rider/camera separation"
+      ],
+      "reviewed_paths": [
+        "scenes/bike/player_controller.gd",
+        "scenes/bike/components/bike_input.gd",
+        "scenes/bike/components/bike_state.gd",
+        "scenes/bike/components/bike_physics.gd",
+        "scenes/bike/components/bike_gearing.gd",
+        "scenes/bike/components/bike_tricks.gd",
+        "scenes/bike/components/bike_crash.gd"
+      ],
+      "atomic_z_decision": "Predecessor reference; not an approved plug-in. AGPL and Godot version/renderer mismatch. Movement model is arcade-oriented, not a validated two-wheel rigid-body solver."
+    },
+    {
+      "id": "opennfs",
+      "name": "OpenNFS",
+      "repository": "OpenNFS/OpenNFS",
+      "url": "https://github.com/OpenNFS/OpenNFS",
+      "revision": {
+        "branch": "main",
+        "commit": "dcd9197033272f8be307a839105e74185809f9f9",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C++",
+        "engine": "custom desktop OpenGL",
+        "physics": "Bullet3",
+        "tree_entries": 320,
+        "cpp_files": 178
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "original repository code only; bundled dependencies and EA game assets/data remain under separate rights"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "vehicle parameter data structures",
+        "raycast wheel contact",
+        "suspension impulses",
+        "wheel slip/rotation",
+        "race/camera/render subsystem boundaries"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "BUILDING.md",
+        "src/Physics/NFS4VehiclePhysics.cpp",
+        "src/Physics/RaycastVehicle.cpp"
+      ],
+      "atomic_z_decision": "Study and selectively reimplement concepts in Godot. No C++ engine import; four-wheel car physics is not a motorcycle model. Never import EA assets/data."
+    },
+    {
+      "id": "openug2",
+      "name": "OpenUG2",
+      "repository": "whoismept/OpenUG2",
+      "url": "https://github.com/whoismept/OpenUG2",
+      "revision": {
+        "branch": "main",
+        "commit": "a66dc198bca3629f616684093b8d0743f20bd6a6",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C/C++",
+        "tree_entries": 677,
+        "approx_source_files": 270
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no clear repository-wide reuse grant established"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "clean-room reverse-engineering workflow",
+        "provenance ledger",
+        "behavioural specs",
+        "review gates",
+        "test vectors and verification limits"
+      ],
+      "reviewed_paths": [
+        "docs/cleanroom-driving-physics/PROVENANCE.md",
+        "docs/cleanroom-driving-physics/REVIEW.md",
+        "docs/cleanroom-driving-physics/SPEC.md",
+        "docs/cleanroom-driving-physics/QUESTIONS.md",
+        "docs/VEHICLE_CUSTOMIZATION.md"
+      ],
+      "atomic_z_decision": "Use process/methodology only. Do not copy code, recovered game data, binary-derived implementation or assets."
+    },
+    {
+      "id": "speed-re",
+      "name": "SPEED RE — NFS Underground 2 source reconstruction",
+      "repository": "troikoss/speed-re",
+      "url": "https://github.com/troikoss/speed-re",
+      "revision": {
+        "branch": "main",
+        "commit": "892e5c31d77c751acd123330eda15c157c4f1b1f",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C/C++",
+        "scope": "incomplete reconstruction of EA Black Box SPEED engine; NFSU2 PC v1.2 first target",
+        "tree_entries": 1003,
+        "reviewed_documents": [
+          "docs/pc-vehicle-physics.md",
+          "docs/pc-wheel-physics.md",
+          "docs/pc-physics-parameters.md",
+          "docs/pc-controls.md",
+          "docs/pc-camera.md",
+          "docs/pc-collision-notifications.md",
+          "docs/NATIVE_DEMO.md",
+          "docs/DECOMPILATION_SCOPE.md",
+          "docs/NATIVE_REPLACEMENT_INVENTORY.md"
+        ],
+        "subsystems": [
+          "vehicle update and substeps",
+          "wheel force/slip",
+          "drivetrain and upgrade records",
+          "collision/GJK/impulses",
+          "camera and controls",
+          "native integration/plugin SDK",
+          "verification oracles"
+        ]
+      },
+      "licence": {
+        "spdx": "MIT-LIMITED",
+        "scope": "LICENSE applies only to original contributions (analysis tools, scaffolding, build support, modding infrastructure and docs). It expressly excludes recovered/reconstructed NFSU2 program code, recovered data, embedded game material, retail assets, and third-party imports."
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "subsystem-level reconstruction",
+        "byte matching vs bounded behavioural comparisons",
+        "evidence-led docs and limitations"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "LICENSE link",
+        "NOTICE link",
+        "docs index (repository page)"
+      ],
+      "atomic_z_decision": "Pin the repository for review, but never vendor it wholesale. Original project scaffolding may be separately evaluated file-by-file; recovered NFSU2 code/data and retail assets are excluded from the MIT grant. Current native demo is incomplete and requires a lawful PC v1.2 install."
+    },
+    {
+      "id": "rea",
+      "name": "REA — Reverse Engineer Anything (canonical upstream; commonly misnamed Reverse Engineering Everything)",
+      "repository": "morluto/rea",
+      "url": "https://github.com/morluto/rea",
+      "revision": {
+        "branch": "main",
+        "commit": "a10037ef10516cf92653596512932b15f190a5c0",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "TypeScript",
+        "approx_size_kib": 176982,
+        "interfaces": [
+          "MCP",
+          "CLI"
+        ],
+        "analysis_domains": [
+          "native binaries",
+          "Android APK",
+          "JavaScript/Electron",
+          "managed code",
+          ".NET",
+          "web/runtime"
+        ]
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "REA original project code; dependencies/submodules retain their own licences"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "evidence-oriented reverse-engineering workflows",
+        "Ghidra/Hopper/IDA provider integration",
+        "Android/JADX static inspection",
+        "evidence bundles and limitations"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "docs/guides/native/native-investigation.md",
+        "docs/guides/android/android-analysis.md",
+        "docs/development/reconstruction-readiness.md",
+        "docs/getting-started/installation.md"
+      ],
+      "atomic_z_decision": "Optional external research tool only; not installed and not part of Atomic-Z runtime. Use canonical upstream, not third-party forks, and analyze only authorized targets.",
+      "alias_and_fork_checks": [
+        {
+          "repository": "edaneshi/ReversEngineeringEverything",
+          "url": "https://github.com/edaneshi/ReversEngineeringEverything",
+          "relationship": "GitHub fork of morluto/rea",
+          "disposition": "not canonical; use upstream source and pinned revision"
+        },
+        {
+          "repository": "JunchaoMeiNCTS/Reverse-Engineering-Everything",
+          "url": "https://github.com/JunchaoMeiNCTS/Reverse-Engineering-Everything",
+          "relationship": "GitHub fork of morluto/rea",
+          "disposition": "not canonical; use upstream source and pinned revision"
+        }
+      ]
+    },
+    {
+      "id": "roadkill",
+      "name": "Roadkill — pseudo-3D Road Rash-style game",
+      "repository": "nicolasbize/roadkill",
+      "url": "https://github.com/nicolasbize/roadkill",
+      "revision": {
+        "branch": "main",
+        "commit": "76fcf2b06c2fd1575e7211820f6e3864cd619603",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot",
+        "approx_size_kib": 4900,
+        "style": "pseudo-3D 64x64 pixel racing/fighting",
+        "tracks": 4,
+        "unlockable_bikes": 5
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "itch.io game page claims MIT/CC for code/art/music/SFX, but repository metadata does not establish a matching GitHub licence file/scope"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "mobile arcade control surface",
+        "track selection and race flow",
+        "pseudo-3D road rendering",
+        "bike selection and enemy/traffic processors"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "game.gd",
+        "mobile_game.gd",
+        "scripts/camera/road_camera.gd",
+        "scripts/data/bike_definition.gd",
+        "scripts/entities/player_bike.gd",
+        "scripts/renderers/road_renderer.gd",
+        "scripts/track/track.gd"
+      ],
+      "atomic_z_decision": "Presentation/game-loop inspiration only until licence scope is verified; not realistic 3D motorcycle physics."
+    },
+    {
+      "id": "innerscene-sport-bike",
+      "name": "Innerscene Sport Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-e21e8303",
+      "revision": {
+        "page_id": "e21e8303",
+        "pinned": false,
+        "note": "Asset page is mutable; downloaded file hash not yet recorded."
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_mb": 7.2,
+        "nominal_dimensions_m": [
+          2.084,
+          0.782,
+          1.18
+        ],
+        "brand": "unbranded original model"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page states public domain CC0; confirm source page at acquisition"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "visual placeholder",
+        "GLB importer and material/surface tests"
+      ],
+      "atomic_z_decision": "Acquire later only after recording downloaded SHA-256 and validating in Blender/Khronos validator; not OEM CAD or fitment evidence."
+    },
+    {
+      "id": "innerscene-road-bike",
+      "name": "Innerscene Road Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/road-motorcycle-f2519759",
+      "revision": {
+        "page_id": "f2519759",
+        "pinned": false,
+        "note": "Asset page is mutable; downloaded file hash not yet recorded."
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_kib": 627,
+        "wheelbase_mm": 1450,
+        "tire_outer_diameter_mm": 660,
+        "nominal_seat_height_mm": 885
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page states public domain CC0; confirm source page at acquisition"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "lightweight visual placeholder",
+        "GLB surface/transform validation"
+      ],
+      "atomic_z_decision": "Asset page states working suspension, transmission, wiring and powertrain internals are omitted; not an engineering model."
+    },
+    {
+      "id": "activision-telescope-webkit",
+      "name": "Telescope: Activision Webkit (official middleware sources)",
+      "repository": null,
+      "url": "https://research.activision.com/opensource",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "kind": "official versioned source archives; each product version has a paired license archive"
+      },
+      "metadata": {
+        "publisher": "Activision Research",
+        "scope": "open-source Webkit component included in some Activision games",
+        "listed_products": [
+          "Call of Duty: Black Ops 6",
+          "Call of Duty: Modern Warfare III",
+          "Call of Duty: Modern Warfare II",
+          "Call of Duty: Vanguard",
+          "Call of Duty: Black Ops Cold War",
+          "Call of Duty: Warzone"
+        ]
+      },
+      "licence": {
+        "spdx": "MIXED",
+        "scope": "official page lists BSD, MPL-1.1, LGPL-2.0, LGPL-2.1 or other open-source licences; use the matching per-version telescope.license archive"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "third-party middleware provenance and mixed licence handling",
+        "webview integration only if a concrete need emerges"
+      ],
+      "atomic_z_decision": "Not Call of Duty game or engine source. No current Atomic-Z need; evaluate exact archive, version licence, dependency graph, Android compatibility and security separately before any use."
+    },
+    {
+      "id": "opencod2",
+      "name": "OpenCOD2 — independent Call of Duty 2 engine reconstruction",
+      "repository": "opencod2/opencod2",
+      "url": "https://github.com/opencod2/opencod2",
+      "revision": {
+        "branch": "main",
+        "commit": "410342a82da1b2e8286c290274aeb0f1731a6859",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C",
+        "build": "CMake, SDL2/OpenGL, native x86",
+        "status": "incomplete work in progress; builds/boots but may crash or omit features",
+        "tree_entries": 1039,
+        "modules": [
+          "client_mp",
+          "server_mp",
+          "game_mp",
+          "cgame_mp",
+          "qcommon",
+          "renderer",
+          "EffectsCore",
+          "xanim",
+          "script",
+          "botlib",
+          "cod2rad"
+        ],
+        "build_targets": [
+          "Linux native x86",
+          "Windows MinGW/MSVC",
+          "WebAssembly"
+        ],
+        "x64_port": "compile-only/in progress; no link/run yet"
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file or GitHub-detected licence in inspected source tree/API metadata"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "legacy engine/client/server/renderer separation",
+        "native build and content-loading architecture"
+      ],
+      "atomic_z_decision": "Not Atomic-Z code: not Godot, not Android-first, incomplete and licence unresolved. README requires users to supply lawful game data; none is included."
+    },
+    {
+      "id": "opencod1",
+      "name": "OpenCoD1 — Call of Duty (2003) multiplayer reconstruction",
+      "repository": "opencod1/opencod1",
+      "url": "https://github.com/opencod1/opencod1",
+      "revision": {
+        "branch": "main",
+        "commit": "718e994af62ca2cbc79d911bab73c445637b94e7",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C",
+        "build": "Premake/Visual Studio, Windows",
+        "status": "incomplete; engine, server and game/cgame/UI modules build/link, effects system still in progress",
+        "tree_entries": 405,
+        "modules": [
+          "client_mp",
+          "server_mp",
+          "game_mp",
+          "cgame_mp",
+          "ui_mp",
+          "qcommon",
+          "renderer",
+          "EffectsCore",
+          "xanim",
+          "botlib",
+          "script",
+          "zlib"
+        ],
+        "build_targets": [
+          "Windows/Visual Studio client",
+          "dedicated server",
+          "game/cgame/UI modules"
+        ]
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file or GitHub-detected licence in inspected source tree/API metadata"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "legacy multiplayer client/server/game-module boundaries"
+      ],
+      "atomic_z_decision": "No direct reuse: licence unresolved, Windows native C, incomplete and requires legally owned Call of Duty 1.1 game assets."
+    },
+    {
+      "id": "codwaw-re",
+      "name": "Call of Duty: World at War T4 reverse-engineering notes",
+      "repository": "ItsNoahJ/codwaw-reverse-engineering",
+      "url": "https://github.com/ItsNoahJ/codwaw-reverse-engineering",
+      "revision": {
+        "branch": "main",
+        "commit": "a329baa38fd8595ee8fd5d0b800f29af29b903fe",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "documentation and machine-readable research tables",
+        "target": "CoD: World at War T4 SP 1.7.1263",
+        "focus": [
+          "crypto stack",
+          "DemonWare deltas",
+          "MSVC8 toolchain",
+          "byte-exact verification methodology"
+        ],
+        "tree_entries": 20,
+        "contents": [
+          "CSV function/object inventories",
+          "crypto-stack analysis",
+          "MSVC8 toolchain forensics",
+          "methodology and byte-match verifier design",
+          "FastFile/asset-pool/script-layer notes"
+        ]
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "original repository documentation/data tables only; upstream libraries and Activision game binaries/content retain separate rights"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "byte-match evidence tiers",
+        "compiler/toolchain forensics",
+        "reproducible analysis and explicit unknowns"
+      ],
+      "atomic_z_decision": "Methodology reference only. Repository README says proprietary Activision code, game assets and executable bytes are not redistributed; no shooter subsystem is relevant to current Atomic-Z scope."
+    },
+    {
+      "id": "cod-research",
+      "name": "CoD-Research community technical wiki",
+      "repository": "primetime43/CoD-Research",
+      "url": "https://github.com/primetime43/CoD-Research",
+      "revision": {
+        "branch": "main",
+        "commit": "133813620e28c997fd57cc149b3f1d81c03f9b94",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "HTML/Markdown documentation",
+        "scope": "community research for CoD4 through CoD10",
+        "tree_entries": 182,
+        "contents": [
+          "FastFile and Zone schemas",
+          "asset type documentation",
+          "platform-specific structs and offsets",
+          "DemonWare interfaces and wire format notes"
+        ]
+      },
+      "licence": {
+        "spdx": "GPL-3.0",
+        "scope": "repository documentation"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "technical topic discovery and source/reference pointers"
+      ],
+      "atomic_z_decision": "Do not copy wiki text or code into Atomic-Z. Use links and concise factual references only; not game source."
+    },
+    {
+      "id": "mw2-private-reconstruction",
+      "name": "MW2 2009 private source-level reconstruction progress",
+      "repository": null,
+      "url": "https://mw2.momo5502.com/",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "kind": "mutable progress dashboard; no public source repository established"
+      },
+      "metadata": {
+        "target": "Call of Duty: Modern Warfare 2 (2009) multiplayer",
+        "visibility": "private source project; public progress dashboard only"
+      },
+      "licence": {
+        "spdx": "UNKNOWN",
+        "scope": "no public source code or licence grant established"
+      },
+      "status": "PRIVATE_NO_SOURCE",
+      "relevance": [
+        "progress taxonomy separating byte-exact, decompiled-not-exact and unattempted functions"
+      ],
+      "atomic_z_decision": "Research case study only. Dashboard counts are mutable project-reported progress, not independent proof of game completeness and not a source download."
+    },
+    {
+      "id": "innerscene-naked-sport-bike",
+      "name": "Innerscene Naked Sport Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-naked-sport-bike-fc4c9758",
+      "revision": {
+        "page_id": "fc4c9758",
+        "pinned": false,
+        "note": "asset page is mutable; downloaded GLB hash not recorded"
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_mb": 19.1,
+        "nominal_dimensions_m": [
+          1.009,
+          2.055,
+          1.304
+        ],
+        "model": "generic naked sport bike with inline-four exterior and trellis frame"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page explicitly states public-domain CC0"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "high-detail generic bike for showroom and close-up surface/UV evaluation"
+      ],
+      "atomic_z_decision": "Potential visual placeholder only; heavier 19.1 MB GLB needs polygon/texture profiling and hashed provenance before import. Not OEM or Kawasaki CAD."
+    },
+    {
+      "id": "innerscene-adventure-bike",
+      "name": "Innerscene Adventure Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/adventure-motorcycle-3de675e4",
+      "revision": {
+        "page_id": "3de675e4",
+        "pinned": false,
+        "note": "asset page is mutable; downloaded GLB hash not recorded"
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_mb": 7.2,
+        "nominal_dimensions_m": [
+          2.275,
+          0.922,
+          1.405
+        ],
+        "model": "generic unbranded adventure motorcycle"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page explicitly states public-domain CC0"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "alternate silhouette and import/LOD benchmarking"
+      ],
+      "atomic_z_decision": "Potential visual placeholder; validate mesh/material/scale and compute file hash before import. Not engineering CAD."
+    },
+    {
+      "id": "3dassets-motorcycle-racing-pack",
+      "name": "3DAssets.dev Motorcycle Racing and Street Bikes pack",
+      "repository": null,
+      "url": "https://3dassets.dev/demos/motorcycle-racing-and-street-bikes",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "note": "pack manifest and downloadable files must be acquired and hashed before vendor import"
+      },
+      "metadata": {
+        "format": "69 GLB models",
+        "reported_scene_placements": 202,
+        "pack_reported_size_mb": 10,
+        "units": "metres",
+        "up_axis": "+Y",
+        "components": [
+          "motorcycle archetypes",
+          "showroom",
+          "paddock garages",
+          "workshop",
+          "transport trailers",
+          "hairpin track",
+          "pit equipment"
+        ]
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "demo page states CC0 1.0 Universal for the pack and models"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "garage/paddock environment kit",
+        "showroom props",
+        "mobile GLB import/instancing benchmark"
+      ],
+      "atomic_z_decision": "The demo provides layout and assets, not gameplay, physics, colliders or navigation. Measure mobile LOD, draw calls, textures and streaming before use; pin exact downloaded file hashes."
+    },
+    {
+      "id": "godot-vehicle",
+      "name": "Seerban/godot-vehicle",
+      "repository": "Seerban/godot-vehicle",
+      "url": "https://github.com/Seerban/godot-vehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "935e24c0942df0c0b907dc61512c37b6d64d4f57",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4.6",
+        "renderer": "Forward Plus",
+        "tree_entries": 844,
+        "approx_size_kib": 132035,
+        "vehicle_type": "four-wheel racing car"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "repository LICENSE; bundled addons and assets/dependencies may have separate notices"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "RigidBody + RayCast wheel contact",
+        "spring/damping and grip split",
+        "VehicleData resource composition",
+        "controller contract",
+        "ghost replay/checkpoints"
+      ],
+      "reviewed_paths": [
+        "Scripts/vehicle/Vehicle.gd",
+        "Scripts/vehicle/Wheel.gd",
+        "Scripts/controller/VehicleController.gd",
+        "Resources/VehicleData.gd",
+        "Scripts/sprint/GhostPlayer.gd",
+        "README.md",
+        "project.godot",
+        "LICENSE"
+      ],
+      "atomic_z_decision": "MIT-licensed car reference only. Godot 4.6 Forward+ and four-wheel topology do not match Atomic-Z baseline or motorcycle dynamics. No source/assets imported; use architecture lessons only."
+    },
+    {
+      "id": "kv-vehicle",
+      "name": "Kurtzmusch/kv-vehicle",
+      "repository": "Kurtzmusch/kv-vehicle",
+      "url": "https://github.com/Kurtzmusch/kv-vehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "e37b7ea335a45a2f6d220a4fea3603a248aaac08",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4",
+        "tree_entries": 150,
+        "modules": [
+          "engine",
+          "drivetrain",
+          "clutch",
+          "limited-slip differential",
+          "ABS brakes",
+          "tire response",
+          "suspension",
+          "anti-roll",
+          "input",
+          "Ackermann"
+        ]
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE found in inspected tree"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "modular wheel/vehicle addon structure",
+        "surface-dependent tire friction and audio",
+        "tire response resources and bump sampling"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "addons/kv-vehicle/README.md",
+        "addons/kv-vehicle/TireResponse.gd",
+        "addons/kv-vehicle/scene/instantiable/kv-wheel.gd"
+      ],
+      "atomic_z_decision": "No code reuse until rights are clarified. README documents limitations: straight-line suspension travel, shapecast origin sensitivity and wheel/engine feedback oscillations."
+    },
+    {
+      "id": "modu-vehicle",
+      "name": "AurickMikleton/ModuVehicle",
+      "repository": "AurickMikleton/ModuVehicle",
+      "url": "https://github.com/AurickMikleton/ModuVehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "618e43db7578dcf9d4ca4640d832b45a94ef1ddc",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C++17",
+        "engine": "Godot 4.5+ GDExtension",
+        "tree_entries": 137,
+        "build": "CMake + godot-cpp submodule",
+        "status": "work in progress"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "repository LICENSE; godot-cpp and third-party submodule/dependencies retain their own terms"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "modular vehicle Resource graph",
+        "tire combined-force model",
+        "slip ratio/angle",
+        "traction control",
+        "wheel inertia integration",
+        "compression/rebound suspension damping"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "CMakeLists.txt",
+        "src/car.cpp",
+        "src/components/wheel.cpp",
+        "src/components/transmission.cpp",
+        "src/math/tire_math.cpp",
+        "src/math/suspension_math.cpp",
+        "src/resources/vehicle_assembly.cpp",
+        "LICENSE"
+      ],
+      "atomic_z_decision": "CC0 source is available but it is an unfinished C++ GDExtension for Godot 4.5+, not a complete motorcycle solver. Do not add native build matrix now; study algorithms and data boundaries."
+    },
+    {
+      "id": "moto-forge",
+      "name": "Whauv/MotoForge motorcycle configurator",
+      "repository": "Whauv/MotoForge",
+      "url": "https://github.com/Whauv/MotoForge",
+      "revision": {
+        "branch": "main",
+        "commit": "f21a554256dff308dcafc069a666c13b1b56de25",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "TypeScript/JavaScript + Python",
+        "tree_entries": 120,
+        "stack": [
+          "Next.js 14",
+          "React Three Fiber",
+          "FastAPI",
+          "SQLAlchemy",
+          "SQLite"
+        ],
+        "features": [
+          "mod-part catalogue",
+          "compatibility relation",
+          "quote/HP/weight deltas",
+          "GLB asset manifest",
+          "URL-shared build"
+        ]
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file found"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "motorcycle parts compatibility modelling",
+        "idempotent quote calculation",
+        "shareable configurations",
+        "GLB alignment/asset manifest conventions"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "apps/api/app/models/compatibility.py",
+        "apps/api/app/models/mod_part.py",
+        "apps/api/app/services/parts_service.py",
+        "apps/api/app/services/quote_service.py",
+        "apps/web/public/models/README.md"
+      ],
+      "atomic_z_decision": "No code reuse without permission; web/backend stack would create duplicate runtime/database. Translate only compatibility and summary concepts into existing BuildDocument/part catalogue contract."
+    },
+    {
+      "id": "volt-r1-showroom",
+      "name": "rohithyv/3D-Motorcycle-Showroom (VOLT R1)",
+      "repository": "rohithyv/3D-Motorcycle-Showroom",
+      "url": "https://github.com/rohithyv/3D-Motorcycle-Showroom",
+      "revision": {
+        "branch": "main",
+        "commit": "fa6d6d94005a76f6bc1d51126075ee2641a5e494",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "TypeScript",
+        "tree_entries": 95,
+        "stack": [
+          "Next.js",
+          "React Three Fiber",
+          "Three.js",
+          "GSAP",
+          "Zustand"
+        ],
+        "product_claim": "fictional electric motorcycle concept; no checkout/payments"
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file found"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "3D scene lazy loading",
+        "mobile opt-in for heavy 3D",
+        "static fallback and error boundary",
+        "camera preset choreography",
+        "FPS/triangles/draw-calls/texture telemetry"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "src/features/motorcycle/Viewport.tsx",
+        "src/features/motorcycle/Scene.tsx",
+        "src/features/motorcycle/camera/CameraRig.tsx",
+        "src/features/configurator/config/domain.ts",
+        "src/lib/three/optimize.ts"
+      ],
+      "atomic_z_decision": "No source or fictional product specification reuse. Study presentation/performance patterns only; Three.js is not the product runtime and fictional VOLT R1 measurements are not engineering evidence."
+    }
+  ],
+  "rejected_or_unresolved_leads": [
+    {
+      "id": "godot-simple-motorcycle-physics",
+      "url": "https://github.com/rishabhsinghio/Godot-Simple-Motorcycle-Physics",
+      "status": "NOT_FOUND",
+      "reason": "Repository URL returned HTTP 404; prior project research register also records it as invalid."
+    },
+    {
+      "id": "alvariusgames-bearcycle",
+      "url": "https://github.com/alvariusgames/bearcycle",
+      "status": "MISMATCHED",
+      "reason": "Metadata suggested motorcycle content, but inspected README/tree identify a different bear/platformer Godot C# project; excluded."
+    },
+    {
+      "id": "ludditegames-bearcycle",
+      "url": "https://github.com/ludditegames/bearcycle",
+      "status": "NOT_FOUND",
+      "reason": "Guessed replacement owner path did not resolve."
+    },
+    {
+      "id": "call-of-duty-source",
+      "url": null,
+      "status": "NOT_AVAILABLE",
+      "reason": "No official complete public Call of Duty source repository suitable for reuse was established; do not use leaked source or proprietary assets."
+    }
+  ]
+}

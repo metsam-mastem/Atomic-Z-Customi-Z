@@ -11,3 +11,6 @@ dist/
 Thumbs.db
 *.tmp
 *.log
+
+# Local checkouts of pinned research sources (never part of the Godot runtime)
+.research-cache/
