@@ -4,7 +4,7 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 09:30 UTC  
+**Last verified:** 2026-11-16 09:31 UTC  
 **Verified main:** `0f0f419b2d561e1180720c13a55f4a707af3856b`  
 **Current release track:** P1 integrated garage; research vault and optional AI remain separate workstreams.
 
@@ -17,9 +17,10 @@
 - Merged PR #43 — GLB surface catalog, canonical BuildDocument validation, PBR-preserving surface binder and exact Godot CI test.
 - Merged PR #45 — Neon legacy migration into BuildDocument, retirement of the parallel profile store, P1 one-finger orbit/two-finger pan/pinch gestures. Exact-head CI run [#43838993070](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43838993070): smoke/GLB/Neon/UI hydration, simulator and Android Debug/Release export jobs all PASS.
 - Merged PR #46 — research source vault. Exact-head CI run [#43839645819](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43839645819): registry contract tests, helper shell syntax, Godot smoke/contract, Python simulator and Android Debug/Release export all PASS. Registry contains 23 unique source IDs, 16 immutable 40-character commit pins and six licence-identified sparse checkout entries.
+- PR #51 — optional in-garage free-first AI assistant (OPEN; exact head `b353e2964f69a9e69e76c82398af8fd5382518af`). It lazy-loads only after the user presses AI ASSIST, uses a shared provider registry, requires HTTPS for hosted endpoints, permits cleartext only for explicitly trusted private Ollama, disables Android hosted API keys, and adds provider-policy / lazy-load tests. Exact-head Godot/Python/Android CI was QUEUED at this checkpoint; do not merge until all checks complete successfully. Physical Android network QA and live provider integration remain NOT RUN.
 - PR #31 — closed without merge as an experimental AI prototype. Follow-up is tracked in issue #49; AI remains optional and excluded from the P1 release gate.
 - Open issue #47 — P2 GLB runtime import and Android content-URI plugin. PR #38 was closed after exact-head Android export failure; plugin descriptor/AAR/template and project configuration must be resolved before implementation resumes.
-- Open issue #49 — safe optional multi-model AI assistant integration. PR #31's prototype remains unmerged; issue #49 defines the required security, privacy, tests and lazy UI acceptance.
+- Open issue #49 — safe optional multi-model AI assistant integration; implementation is tracked in PR #51. The unsafe prototype PR #31 is closed without merge.
 - Superseded stacked PRs #29, #30, #37 and #44 are closed. Their approved code was selectively transplanted into #43/#45; do not reopen those branches.
 - CI-generated Android artifacts are Debug/test exports. Production signing, Play Store readiness and commercial release approval are NOT RUN.
 - Physical Redmi Note 13 Pro install/launch, real touch interaction, pause/resume, persistence, performance and thermal QA: NOT RUN.
@@ -136,7 +137,7 @@ Both issues were confirmed open; inspect comments/labels again before selecting 
 - This checkpoint is the portable handoff. Do not depend on this chat, old chats, saved memory or an AI-generated recap.
 
 
-## Current next action — PR #28
+## Historical next action — PR #28 (superseded by merged build-hardening work)
 
 1. Wait for exact-head Godot/Python/Android CI and inspect logs if any job fails.
 2. Review the APK verifier against the actual CI-produced artifact; fix any mismatch before merge.
