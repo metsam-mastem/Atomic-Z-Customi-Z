@@ -387,12 +387,12 @@ func _install_selected_glb(license_id: String, source_record: String, display_na
 		source_file.close()
 		push_warning("GLB file size is invalid or exceeds the 128 MiB import limit.")
 		return
-	var model_bytes := source_file.get_buffer(file_size)
-	var read_error := source_file.get_error()
-	source_file.close()
-	if read_error != OK or model_bytes.size() != file_size or model_bytes.slice(0, 4).get_string_from_ascii() != "glTF":
+	var signature := source_file.get_buffer(4)
+	if signature.get_string_from_ascii() != "glTF":
+		source_file.close()
 		push_warning("Selected file is not a readable binary glTF asset.")
 		return
+	source_file.seek(0)
 
 	var directory_path := "user://vehicle_assets"
 	var directory_error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory_path))
@@ -405,13 +405,24 @@ func _install_selected_glb(license_id: String, source_record: String, display_na
 	if output_file == null:
 		push_warning("Could not stage the selected GLB in app storage.")
 		return
-	output_file.store_buffer(model_bytes)
+	var remaining_bytes := file_size
+	var copy_failed := false
+	while remaining_bytes > 0:
+		var chunk_size := mini(1048576, remaining_bytes)
+		var chunk := source_file.get_buffer(chunk_size)
+		if chunk.size() != chunk_size:
+			copy_failed = true
+			break
+		output_file.store_buffer(chunk)
+		remaining_bytes -= chunk_size
+	var read_error := source_file.get_error()
+	source_file.close()
 	output_file.flush()
 	var write_error := output_file.get_error()
 	output_file.close()
-	if write_error != OK:
+	if copy_failed or remaining_bytes > 0 or read_error != OK or write_error != OK:
 		_remove_asset_file(temporary_path)
-		push_warning("Failed to copy the selected GLB into app storage.")
+		push_warning("Failed to copy the selected GLB completely into app storage.")
 		return
 
 	var asset_hash := FileAccess.get_sha256(temporary_path).to_lower()
@@ -463,6 +474,12 @@ func _install_selected_glb(license_id: String, source_record: String, display_na
 				retained_materials.append(material_value)
 		candidate_document["customization"]["materials"] = retained_materials
 
+	var identity_result: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(candidate_document, asset_hash, display_name)
+	if not identity_result.get("ok", false):
+		push_warning("The imported vehicle identity could not be prepared safely: " + str(identity_result.get("errors", [])))
+		return
+	candidate_document = identity_result["document"]
+
 	var candidate_asset: Dictionary = previous_asset
 	candidate_asset["uri"] = installed_path
 	candidate_asset["sha256"] = asset_hash
@@ -471,12 +488,6 @@ func _install_selected_glb(license_id: String, source_record: String, display_na
 	candidate_asset["validation_status"] = "local_import_pending_review"
 	candidate_asset["surface_catalog"] = []
 	candidate_document["asset"] = candidate_asset
-
-	var identity_result: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(candidate_document, asset_hash, display_name)
-	if not identity_result.get("ok", false):
-		push_warning("The imported vehicle identity could not be prepared safely: " + str(identity_result.get("errors", [])))
-		return
-	candidate_document = identity_result["document"]
 	if not BuildDocumentScript.validate(candidate_document).get("ok", false):
 		push_warning("The imported asset metadata did not produce a valid BuildDocument.")
 		return
