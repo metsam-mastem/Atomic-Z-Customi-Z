@@ -5,6 +5,9 @@ config_version=5
 [application]
 config/name="Atomic Z - Customization Lab"
 run/main_scene="res://scenes/main.tscn"
+
+[autoload]
+AndroidContentUriBridge="*res://scripts/android_content_uri_bridge.gd"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 
 [display]
