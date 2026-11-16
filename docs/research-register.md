@@ -37,14 +37,13 @@ These are implementation leads. Recheck each repository's license, maintenance, 
 3. Never treat a biological inspiration as proof of performance.
 4. Record each experiment as hypothesis → geometry/material → simulation or test → measured result.
 
-
 ## Additional model leads and Build-Your-Own-X tracks
 
 ### Licensed motorcycle geometry leads
-- Innerscene sport motorcycle (CC0, GLB, 7.2 MB): https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-e21e8303
-- Innerscene race-replica superbike (CC0, GLB, 20.1 MB): https://www.innerscene.com/tools/library/3d-parts/race-replica-superbike-fully-faired-badbd83b
-- Innerscene naked sport motorcycle (CC0, GLB, 19.1 MB): https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-naked-sport-bike-fc4c9758
-- Innerscene road motorcycle (CC0, GLB, 627 KB): https://www.innerscene.com/tools/library/3d-parts/road-motorcycle-f2519759
+- Innerscene sport motorcycle (listed as CC0, GLB, 7.2 MB): https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-e21e8303
+- Innerscene race-replica superbike (listed as CC0, GLB, 20.1 MB): https://www.innerscene.com/tools/library/3d-parts/race-replica-superbike-fully-faired-badbd83b
+- Innerscene naked sport motorcycle (listed as CC0, GLB, 19.1 MB): https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-naked-sport-bike-fc4c9758
+- Innerscene road motorcycle (listed as CC0, GLB, 627 KB): https://www.innerscene.com/tools/library/3d-parts/road-motorcycle-f2519759
 
 These are generic, unbranded assets, not Kawasaki ZX-25RR geometry. They are suitable for testing import, material assignment and assembly workflows only. Check the current license statement and download availability at acquisition time.
 
@@ -64,3 +63,55 @@ Implementation decision: study algorithms selectively, but use Godot's renderer 
 - Kawasaki Japan's 2026 ZX-25RR FAQ is a primary source for the model-year-specific specification sheet: https://faq.kawasaki-motors.com/faq/show/4668?category_id=2&site_domain=default
 
 No generic asset, miniature STL or render mesh should be relabeled as a factory-accurate ZX-25RR CAD assembly.
+
+---
+
+## Verified source audit — 2026-11-16
+
+This section records a repository-level verification pass. It corrects unverified leads from informal research and does not authorize automatic dependency adoption.
+
+### Godot editor tools and vehicle references
+
+| Resource | Verified facts | Compatibility / license finding | Decision |
+|---|---|---|---|
+| GoBuild — https://github.com/marcel-b-roodt/GoBuild | Godot EditorPlugin for in-editor vertex/edge/face mesh editing; README says active development and UV tools are in progress | README states Godot 4.4+ and GPL-3 | Study workflow only. Do not vendor or bundle in a commercial distribution without a specific GPL compatibility review. Not a runtime dependency. |
+| HammerForge — https://github.com/saworbit/hammerforge | Brush-based level/CSG environment editor, not a motorcycle CAD or assembly tool | README requires Godot 4.7+ and labels project early alpha; MIT | Reject for current Godot 4.4.1 baseline. Revisit only after an intentional engine upgrade and a concrete garage-environment need. |
+| ModuVehicle — https://github.com/AurickMikleton/ModuVehicle | Modular vehicle system for Godot | Repository metadata reports CC0-1.0; description targets Godot 4.5+ | Study resource/assembly patterns only. Do not add as a dependency to the current 4.4.1 project. |
+| kv-vehicle — https://github.com/Kurtzmusch/kv-vehicle | Godot vehicle-system reference | Repository metadata did not provide a declared SPDX license | Study algorithms only; no code copying or vendoring until license is verified. |
+| MotoForge — https://github.com/Whauv/MotoForge | Small motorcycle parts/catalog concept reference | License and maintenance suitability were not established in this audit | Product-flow inspiration only; no source reuse. |
+| 3D Motorcycle Showroom — https://github.com/rohithyv/3D-Motorcycle-Showroom | Cinematic electric-motorcycle presentation using Next.js, React Three Fiber and GSAP | Different runtime from the Godot product; license not established here | Study presentation and configurator patterns only. Do not port its framework or introduce a second runtime. |
+
+### Corrected / unverified leads
+
+- https://github.com/rishabhsinghio/Godot-Simple-Motorcycle-Physics returned HTTP 404 during this audit. It is not a verified source and must not be used as an implementation reference.
+- https://github.com/studioheadpats/poibuilder returned HTTP 404 during this audit. It is not a verified source and must not be used as an implementation reference.
+- Do not infer that a repository exists from a search snippet, package name or prior assistant response. Verify the canonical repository URL before listing it as a usable source.
+
+### Asset and authoring pipeline
+
+- Preserve the existing decision: Blender is the authoring environment; GLB/glTF 2.0 is the interchange format; Khronos glTF Validator is the pre-import validation gate; Godot owns runtime loading, rendering and Android export.
+- Poly Haven: https://polyhaven.com/ — candidate source for HDRIs, textures and 3D assets. Check each asset's current license and metadata at acquisition time; do not assume all third-party content has identical rights.
+- ambientCG: https://ambientcg.com/ — candidate PBR material and HDRI source. Verify the current asset license and record source URL, asset identifier and hash in the project asset manifest.
+- FreeCAD: https://www.freecad.org/ — optional engineering authoring/reference tool for dimensioned parts. It does not replace Blender's approved GLB delivery path.
+- Generic motorcycle assets may be used for import/assembly pipeline tests only. They are not ZX-25RR factory geometry and cannot support fitment or engineering claims.
+
+### Architecture translations worth implementing later
+
+1. Asset provenance manifest: every imported asset records stable asset ID, source URI, SHA-256, license identifier/text, author, acquisition date, target vehicle variant/year/market, units, coordinate frame and validation status.
+2. Assembly metadata: stable part IDs, parent IDs, mount-point IDs, home transforms and deterministic exploded transforms. Display names and array indices are not identifiers.
+3. Material presets: store PBR parameters and texture references inside the canonical BuildDocument's customization/material domain. Do not introduce a separate preset database or profile JSON as a second source of truth.
+4. Surface-bound graphics: attach decals/neon through verified UVs, decal meshes or registered surface curves. Keep legacy 2D points labelled unverified until a measured reference and surface mapping exist.
+5. Performance evidence: measure frame time, memory and thermal behavior on the exact target device before changing the Compatibility renderer baseline or selecting costly effects.
+6. Engineering evidence ledger: separate visual preview, geometric validation, mass properties, solver output, fitment and physical hardware evidence. Every result records inputs, units, assumptions, tool/version and PASS/FAIL/NOT RUN/BLOCKED status.
+7. Extension packages: future extensions must declare ID, version, API range, capabilities, dependencies, asset list, license, hashes, permissions and network needs. They execute within the same Godot application and BuildDocument; they do not create independent apps or stores.
+
+### Current PR and CI integration findings
+
+- PR #3 (BuildDocument contract) contains the correct architectural direction: migrate legacy neon data into one canonical versioned document and bind assembly, paint, neon and persistence to the same state. Its Godot smoke/contract tests passed in the inspected run; Android export failed.
+- PR #4 (neon shader/profile proposal) contains a potentially reusable shader concept, but `scripts/skin_profile_store.gd` creates `user://skin_profile.json`, a second authoritative store. Its glow range is 0..10 while the canonical BuildDocument render intensity is 0..1. Do not merge the profile store in this form. Evaluate the shader only after it is adapted to the canonical range and integrated into the existing NeonSkin/BuildDocument path.
+- Both PR #3 and PR #4 Android export jobs reported: `Cannot export project with preset "Android Debug" due to configuration errors`. The available job logs did not expose the specific failed preset setting. Diagnose the exact export configuration before changing presets or claiming an APK build.
+- PR #2 is a separate documentation PR. Reconcile it through review; do not overwrite its branch or duplicate its charter/workflow files.
+
+### Non-negotiable adoption gate
+
+No external source or asset is adopted merely because it is open-source or visually useful. Before adoption: verify exact upstream commit/release, license and commercial rights, maintenance, Godot/API compatibility, dependency/security posture, provenance, attribution, code actually reused versus concepts studied, target-device impact and tests. Prefer native Godot functionality unless a measured gap justifies an external dependency.
