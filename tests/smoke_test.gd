@@ -1,6 +1,8 @@
 extends SceneTree
 
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
+const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
+const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 
 func _initialize() -> void:
 	call_deferred("_run_smoke_test")
@@ -77,11 +79,13 @@ func _run_smoke_test() -> void:
 		push_error("A known part must accept an isolated paint edit.")
 		quit(1)
 		return
-	if not (bike.call("get_part_color", "fuel_tank") as Color).is_equal_approx(isolated_paint):
+	var isolated_tank_color: Color = bike.call("get_part_color", "fuel_tank")
+	if not isolated_tank_color.is_equal_approx(isolated_paint):
 		push_error("Selected part must receive the requested paint color.")
 		quit(1)
 		return
-	if not (bike.call("get_part_color", "front_fairing") as Color).is_equal_approx(front_color_before):
+	var isolated_front_color: Color = bike.call("get_part_color", "front_fairing")
+	if not isolated_front_color.is_equal_approx(front_color_before):
 		push_error("Painting one part must not recolor another part.")
 		quit(1)
 		return
@@ -90,6 +94,7 @@ func _run_smoke_test() -> void:
 	scene.call("_on_body_color_changed", project_color)
 	scene.call("_on_neon_primary_changed", Color("#123456"))
 	scene.call("_on_glow_changed", 0.55)
+	scene.call("_on_neon_toggled", false)
 	var document: Dictionary = scene.call("get_build_document_snapshot")
 	if document.get("schema_version") != 1:
 		push_error("Garage must expose the canonical BuildDocument.")
@@ -126,7 +131,40 @@ func _run_smoke_test() -> void:
 		push_error("Saved BuildDocument must preserve shared customization state.")
 		quit(1)
 		return
-	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://atomic_z_build.json"))
+	if bool(restored.get("render", {}).get("neon_enabled", true)):
+		push_error("Saved neon visibility must be stored in the canonical BuildDocument.")
+		quit(1)
+		return
 
-	print("PASS: scene load, neon overlay integration, assembly explode/restore and body material update.")
+	var restored_bike := BikeAssemblyScript.new()
+	restored_bike.configure_build_document(restored)
+	root.add_child(restored_bike)
+	await process_frame
+	var restored_tank_color: Color = restored_bike.get_part_color("fuel_tank")
+	var restored_front_color: Color = restored_bike.get_part_color("front_fairing")
+	if not restored_tank_color.is_equal_approx(project_color):
+		push_error("Saved selected-part paint must be restored into the 3D assembly.")
+		quit(1)
+		return
+	if not restored_front_color.is_equal_approx(test_color):
+		push_error("Saved paint for another part must remain independent after reload.")
+		quit(1)
+		return
+
+	var restored_neon := NeonSkinScript.new()
+	restored_neon.configure_build_document(restored)
+	root.add_child(restored_neon)
+	await process_frame
+	for neon_visual in restored_neon.get_children():
+		if neon_visual.visible:
+			push_error("Saved disabled neon state must be restored into the runtime visuals.")
+			quit(1)
+			return
+
+	for path in ["user://atomic_z_build.json", "user://atomic_z_build.json.tmp", "user://atomic_z_build.json.bak"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+	print("PASS: part-isolated paint, canonical state, neon visibility and BuildDocument save/reload recovery.")
+
 	quit(0)
