@@ -21,6 +21,10 @@ Observed: Godot 4 Compatibility project, Android arm64 export preset, main scene
 - Physically Based Rendering: https://www.pbr-book.org/
 - Broad-phase collision detection: https://buildnewgames.com/broad-phase-collision-detection/
 - Motorcycle/product pattern leads: https://github.com/Whauv/MotoForge and https://github.com/rohithyv/3D-Motorcycle-Showroom. Verify license, maintenance and provenance before copying.
+- https://github.com/Seerban/godot-vehicle — MIT-licensed Godot vehicle project. Its `Scripts/vehicle/MeshColorable.gd` is a useful reference for duplicating a material before changing its color. The project targets Godot 4.6 and includes driving/racing systems; use the material-isolation idea only, not as a drop-in dependency for this Godot 4.4.1 garage.
+- https://github.com/Maxim-Lanskoy/KenneyNL-RacingKit — MIT-licensed Godot 4.6 kit with a modular vehicle rig, swappable motorcycle model adapter and `VehicleConfig` resource. Useful architecture reference for future asset adapters, but its racing physics are outside the current garage scope and its engine version is newer than the pinned project runtime.
+- https://github.com/hughdtt/motorbike-configurator — small React Three Fiber/glTF color-picker demonstration. No repository license file was found during inspection; inspect only, do not copy source code or assets.
+- https://github.com/Whauv/MotoForge — full-stack configurator architecture reference. No repository license file was found during inspection; inspect only, do not copy source code or assets.
 
 ## Nature and peer-reviewed research
 - Nature Index, Product Configuration Systems and Mass Customization: https://www.nature.com/nature-index/topics/l4/product-configuration-systems-and-mass-customization-strategies. Translate into rule-based configuration and compatibility constraints.
