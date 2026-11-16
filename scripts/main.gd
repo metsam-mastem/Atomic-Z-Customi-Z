@@ -323,7 +323,7 @@ func _load_initial_build_document() -> Dictionary:
 	if not restored.is_empty():
 		return restored
 
-	var document := BuildDocumentScript.create_default()
+	var document := BuildDocumentScript.create_target_default()
 	var legacy_neon_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
 	if legacy_neon_file != null:
 		var legacy_neon: Variant = JSON.parse_string(legacy_neon_file.get_as_text())
