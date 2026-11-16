@@ -5,6 +5,7 @@ const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
+const GarageTouchGesturesScript = preload("res://scripts/garage_touch_gestures.gd")
 
 var _bike
 var _camera: Camera3D
@@ -20,10 +21,13 @@ const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
+var _camera_target_offset := Vector3.ZERO
+var _touch_gestures
 var _dragging := false
 var _last_pointer := Vector2.ZERO
 
 func _ready() -> void:
+	_touch_gestures = GarageTouchGesturesScript.new()
 	_build_document = _load_initial_build_document()
 	_build_world()
 	_bike = BikeAssemblyScript.new()
@@ -97,7 +101,7 @@ func _build_hud() -> void:
 	root.add_child(title)
 
 	var hint := Label.new()
-	hint.text = "DRAG TO ORBIT  •  WHEEL TO ZOOM"
+	hint.text = "1 FINGER ORBIT  •  2 FINGER PAN / PINCH ZOOM  •  WHEEL ZOOM"
 	hint.position = Vector2(24.0, 52.0)
 	hint.add_theme_font_size_override("font_size", 12)
 	hint.modulate = Color("#aab8c8")
@@ -275,18 +279,21 @@ func _on_save_neon_skin() -> void:
 		_refresh_build_summary()
 
 func _on_reset_camera() -> void:
+	if is_instance_valid(_touch_gestures):
+		_touch_gestures.reset()
+	_camera_target_offset = Vector3.ZERO
 	_orbit_angle = 0.0
 	_orbit_pitch = 0.16
 	_orbit_distance = 5.3
 	_update_camera()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch:
-		_dragging = event.pressed
-		_last_pointer = event.position
-	elif event is InputEventScreenDrag and _dragging:
-		_apply_orbit_drag(event.position)
-	elif event is InputEventMouseButton:
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		_touch_gestures.sync_camera_state(_orbit_angle, _orbit_pitch, _orbit_distance, _camera_target_offset)
+		_touch_gestures.handle_event(event)
+		_apply_touch_camera_state()
+		return
+	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_dragging = event.pressed
 			_last_pointer = event.position
@@ -299,6 +306,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _dragging:
 		_apply_orbit_drag(event.position)
 
+func _apply_touch_camera_state() -> void:
+	var state: Dictionary = _touch_gestures.get_camera_state()
+	_orbit_angle = float(state.get("orbit_angle", _orbit_angle))
+	_orbit_pitch = float(state.get("orbit_pitch", _orbit_pitch))
+	_orbit_distance = float(state.get("orbit_distance", _orbit_distance))
+	_camera_target_offset = Vector3(state.get("target_offset", _camera_target_offset))
+	_update_camera()
+
 func _apply_orbit_drag(pointer: Vector2) -> void:
 	var delta := pointer - _last_pointer
 	_last_pointer = pointer
@@ -309,7 +324,7 @@ func _apply_orbit_drag(pointer: Vector2) -> void:
 func _update_camera() -> void:
 	if not is_instance_valid(_camera):
 		return
-	var target := Vector3(0.0, 0.92, 0.0)
+	var target := Vector3(0.0, 0.92, 0.0) + _camera_target_offset
 	var horizontal := cos(_orbit_pitch) * _orbit_distance
 	_camera.position = target + Vector3(
 		sin(_orbit_angle) * horizontal,
@@ -322,15 +337,37 @@ func _load_initial_build_document() -> Dictionary:
 	var restored := BuildDocumentStoreScript.load_document(BUILD_DOCUMENT_PATH)
 	if not restored.is_empty():
 		return restored
-	var legacy_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
-	if legacy_file != null:
-		var parsed: Variant = JSON.parse_string(legacy_file.get_as_text())
-		legacy_file.close()
-		if parsed is Dictionary:
-			var migrated: Dictionary = BuildDocumentScript.from_legacy_neon(parsed)
-			if BuildDocumentScript.validate(migrated).get("ok", false):
-				return migrated
-	return BuildDocumentScript.create_default()
+
+	var document := BuildDocumentScript.create_target_default()
+	var legacy_neon_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
+	if legacy_neon_file != null:
+		var legacy_neon: Variant = JSON.parse_string(legacy_neon_file.get_as_text())
+		legacy_neon_file.close()
+		if legacy_neon is Dictionary:
+			var migrated_neon: Dictionary = BuildDocumentScript.from_legacy_neon(legacy_neon)
+			if BuildDocumentScript.validate(migrated_neon).get("ok", false):
+				document = migrated_neon
+
+	# Import the retired profile only when no valid canonical BuildDocument exists.
+	# The source file is retained; all future writes use BuildDocumentStore.
+	var legacy_profile_file := FileAccess.open("user://skin_profile.json", FileAccess.READ)
+	if legacy_profile_file != null:
+		var legacy_profile: Variant = JSON.parse_string(legacy_profile_file.get_as_text())
+		legacy_profile_file.close()
+		if legacy_profile is Dictionary:
+			var migrated_profile: Dictionary = BuildDocumentScript.from_legacy_skin_profile(legacy_profile, document)
+			if not migrated_profile.is_empty():
+				document = migrated_profile
+				if not BuildDocumentStoreScript.save_document(document, BUILD_DOCUMENT_PATH):
+					push_warning("Legacy skin profile was imported in memory but canonical BuildDocument save failed; original profile retained.")
+				else:
+					print("Legacy skin profile migrated into canonical BuildDocument; original profile retained.")
+			else:
+				push_warning("Legacy skin profile failed validation or was already migrated; original profile retained.")
+		else:
+			push_warning("Legacy skin profile is not a valid JSON object; original profile retained.")
+
+	return document
 
 func _save_build_document() -> bool:
 	if not BuildDocumentScript.validate(_build_document).get("ok", false):

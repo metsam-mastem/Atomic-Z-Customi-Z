@@ -44,10 +44,16 @@ static func create_default(vehicle_id: String = "vehicle-unassigned", display_na
 		"extensions": []
 	}
 
+static func create_target_default() -> Dictionary:
+	var document := create_default("kawasaki-ninja-zx-25rr-2026", "Kawasaki Ninja ZX-25RR (2026 reference)")
+	document["vehicle"]["model_year"] = 2026
+	document["vehicle"]["variant"] = "ZX-25RR"
+	# Market remains null until the owner selects a regional specification.
+	return document
+
 static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 	var model_name := str(legacy.get("bike_model", "Unassigned vehicle")).strip_edges()
-	var vehicle_id := _stable_id(model_name)
-	var document := create_default(vehicle_id, model_name)
+	var document := create_target_default()
 	var colors: Dictionary = legacy.get("colors", {})
 	var layers: Array = []
 	var seen: Dictionary = {}
@@ -79,10 +85,72 @@ static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 	document["render"]["glow_intensity"] = clampf(float(colors.get("glow_intensity", 0.8)), 0.0, 1.0)
 	document["migration"] = {
 		"source_format": "neon_skin_config",
+		"source_vehicle_label": model_name,
+		"source_vehicle_id": _stable_id(model_name),
 		"source_skin_name": str(legacy.get("skin_name", "Imported skin")),
-		"mapping_note": "Legacy 2D points are preserved but are not claimed to be surface-aligned."
+		"mapping_note": "Legacy customization settings were imported into the selected 2026 ZX-25RR reference context. Legacy 2D points are not surface-aligned; no ZX-25RR geometry or fitment is inferred or validated."
 	}
 	return document
+
+static func from_legacy_skin_profile(profile: Dictionary, source_document: Dictionary) -> Dictionary:
+	if not validate(source_document).get("ok", false):
+		return {}
+	var schema_value: Variant = profile.get("schema_version", null)
+	if not (schema_value is int or schema_value is float):
+		return {}
+	if not is_finite(float(schema_value)) or not is_equal_approx(float(schema_value), 1.0):
+		return {}
+
+	var color_text := str(profile.get("color", "")).strip_edges()
+	if not _is_hex_color(color_text):
+		return {}
+
+	var glow_value: Variant = profile.get("glow_intensity", null)
+	var pulse_value: Variant = profile.get("pulse_speed", null)
+	if not (glow_value is int or glow_value is float):
+		return {}
+	if not (pulse_value is int or pulse_value is float):
+		return {}
+
+	var legacy_glow := float(glow_value)
+	var legacy_pulse := float(pulse_value)
+	if not is_finite(legacy_glow) or not is_finite(legacy_pulse):
+		return {}
+	if legacy_glow < 0.0 or legacy_glow > 10.0 or legacy_pulse < 0.0 or legacy_pulse > 10.0:
+		return {}
+
+	var extension_values: Variant = source_document.get("extensions", [])
+	if not (extension_values is Array):
+		return {}
+	var extensions: Array = extension_values.duplicate(true)
+	for extension_value in extensions:
+		if not (extension_value is Dictionary):
+			return {}
+		if str(extension_value.get("extension_id", "")) == "legacy_neon_shader_profile":
+			return {}
+
+	var migrated := source_document.duplicate(true)
+	var customization: Dictionary = migrated.get("customization", {}).duplicate(true)
+	var palette: Dictionary = customization.get("palette", {}).duplicate(true)
+	palette["primary"] = color_text.to_upper()
+	customization["palette"] = palette
+	migrated["customization"] = customization
+
+	extensions.append({
+		"extension_id": "legacy_neon_shader_profile",
+		"schema_version": 1,
+		"status": "preserved_unmapped",
+		"source_format": "skin_profile",
+		"source_path": "user://skin_profile.json",
+		"payload": {
+			"color_legacy": color_text.to_upper(),
+			"glow_intensity_legacy_0_10": legacy_glow,
+			"pulse_speed_legacy_0_10": legacy_pulse,
+			"mapping_note": "Legacy shader intensity and pulse speed are preserved without conversion because their 0..10 contract is not the canonical BuildDocument 0..1 render contract."
+		}
+	})
+	migrated["extensions"] = extensions
+	return migrated if validate(migrated).get("ok", false) else {}
 
 static func validate(document: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
