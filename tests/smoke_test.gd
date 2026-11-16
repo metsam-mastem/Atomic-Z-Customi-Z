@@ -20,6 +20,16 @@ func _run_smoke_test() -> void:
 		quit(1)
 		return
 
+	var neon := scene.get_node_or_null("NeonSkinOverlay")
+	if neon == null:
+		push_error("Godot neon skin overlay is not integrated into the garage.")
+		quit(1)
+		return
+	if neon.call("get_segment_ids") != ["tail_underglow", "tank_accent", "lower_fairing"]:
+		push_error("Garage neon overlay did not load the expected skin segments.")
+		quit(1)
+		return
+
 	var tank := bike.get_node_or_null("fuel_tank") as Node3D
 	if tank == null:
 		push_error("Fuel tank part is missing.")
@@ -59,5 +69,5 @@ func _run_smoke_test() -> void:
 		quit(1)
 		return
 
-	print("PASS: scene load, assembly explode/restore and body material update.")
+	print("PASS: scene load, neon overlay integration, assembly explode/restore and body material update.")
 	quit(0)
