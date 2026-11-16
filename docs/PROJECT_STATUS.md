@@ -16,9 +16,10 @@
 - Merged PR #42 — Customi-Z Core v0.4 integration audit (documentation only).
 - Merged PR #43 — GLB surface catalog, canonical BuildDocument validation, PBR-preserving surface binder and exact Godot CI test.
 - Merged PR #45 — Neon legacy migration into BuildDocument, retirement of the parallel profile store, P1 one-finger orbit/two-finger pan/pinch gestures. Exact-head CI run [#43838993070](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43838993070): smoke/GLB/Neon/UI hydration, simulator and Android Debug/Release export jobs all PASS.
-- Open PR #46 — research source vault. Exact-head CI run [#43839268888](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43839268888) is queued/running; registry statically parsed: 23 unique source IDs, 16 immutable 40-character commit pins; six licence-identified sparse checkout entries in helper.
-- Open draft PR #31 — optional AI provider adapter/overlay prototype. Not release-ready; requires mocked HTTP tests, Android networking/lifecycle QA and a safer secret/privacy model. It must not block offline customization.
+- Open PR #46 — research source vault. Latest exact-head CI run [#43839645819](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43839645819) is running the added registry contract tests and shell syntax check; earlier exact-head run passed smoke, simulator and Android export. Registry contains 23 unique source IDs, 16 immutable 40-character commit pins and six licence-identified sparse checkout entries.
+- PR #31 — closed without merge as an experimental AI prototype. Follow-up is tracked in issue #49; AI remains optional and excluded from the P1 release gate.
 - Open issue #47 — P2 GLB runtime import and Android content-URI plugin. PR #38 was closed after exact-head Android export failure; plugin descriptor/AAR/template and project configuration must be resolved before implementation resumes.
+- Open issue #49 — safe optional multi-model AI assistant integration. PR #31's prototype remains unmerged; issue #49 defines the required security, privacy, tests and lazy UI acceptance.
 - Superseded stacked PRs #29, #30, #37 and #44 are closed. Their approved code was selectively transplanted into #43/#45; do not reopen those branches.
 - CI-generated Android artifacts are Debug/test exports. Production signing, Play Store readiness and commercial release approval are NOT RUN.
 - Physical Redmi Note 13 Pro install/launch, real touch interaction, pause/resume, persistence, performance and thermal QA: NOT RUN.
