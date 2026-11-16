@@ -80,3 +80,11 @@ The JSON stores sRGB hex colors and a normalized glow intensity in [0, 1]. The T
 This mapping is intentionally provisional. It is not a surface projection, UV mapping, decal attachment or fitment system. Before using a skin on a production vehicle asset, define a versioned coordinate-frame/reference-image contract and map the curves to verified body-surface coordinates. The current placeholder vehicle and skin points are not geometrically registered.
 
 Macroquad remains an isolated Rust rendering experiment, not a dependency of the Godot application. The Godot runtime already owns the scene graph, materials, renderer and Android export path; a second renderer would duplicate lifecycle, input and packaging responsibilities without measured evidence of benefit. Reconsider only if a reproducible benchmark identifies a specific capability or performance gap.
+
+## Unified system decision (2026-11-16)
+
+The product is ONE integrated Godot 4 application. The numbered runtime layers above are internal components, not separate products or subprojects. Garage, assembly, materials, neon/graphics, camera, rendering effects, persistence and export share one active vehicle/build context, one navigation/lifecycle and one canonical versioned BuildDocument. No component may own a parallel source of truth.
+
+The legacy Python/Tkinter preview and ModernGL v1/v2 prototypes are development/research inputs only. Their useful interactions and rendering concepts are to be ported into the existing Godot garage; they must not become separate user-facing applications or Android runtime dependencies. The canonical neon JSON is a migration source during transition, not the long-term second store.
+
+See docs/UNIFIED_SYSTEM_SPEC.md for the product/data contract, docs/AGENT_GOVERNANCE.md for multi-agent coordination, docs/ROADMAP.md for end-to-end delivery, docs/V2_CODE_ASSESSMENT.md for the v2 feasibility review, and AGENTS.md for mandatory instructions.
