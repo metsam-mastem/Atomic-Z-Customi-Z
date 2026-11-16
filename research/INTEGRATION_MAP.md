@@ -76,3 +76,24 @@ COD-related GitHub repositories do exist, but they are not one official, freely 
 - [MW2 2009 reconstruction progress](https://mw2.momo5502.com/) is a mutable dashboard for a private source-level reconstruction; no public source checkout or licence was established.
 
 **Atomic-Z disposition:** no COD engine/source, shooter gameplay, maps, textures, audio or game data is a candidate for product integration. Only generic concepts such as subsystem separation, asset-loading boundaries and evidence-led reverse engineering are worth studying. The full source/rights distinctions are recorded in [COD_RECONSTRUCTION.md](sources/COD_RECONSTRUCTION.md).
+
+
+## Additional Godot and configurator references
+
+The latest pass inspected five more repositories and representative implementation files; detailed findings are in the [Godot vehicle systems dossier](sources/GODOT_VEHICLE_SYSTEMS.md) and [configurator/showroom dossier](sources/MOTORCYCLE_CONFIGURATORS.md).
+
+| Source | Useful findings | Restriction / disposition |
+|---|---|---|
+| Seerban/godot-vehicle | MIT four-wheel RigidBody + RayCast wheel system, suspension/grip separation, modular VehicleData, ghost replay | Godot 4.6 Forward Plus; car topology, not motorcycle physics. Architecture study only |
+| Kurtzmusch/kv-vehicle | modular engine/transmission/tyre/suspension resources, surface-dependent grip/audio, anti-roll and ABS concepts | no root licence; documented shapecast-origin and feedback oscillation limitations. Study-only |
+| AurickMikleton/ModuVehicle | CC0 modular Resources, combined tyre force, slip ratio/angle, traction control, wheel integration and rebound/compression damping | WIP C++ GDExtension for Godot 4.5+; not a completed motorcycle solver and adds a native build matrix |
+| Whauv/MotoForge | explicit part-to-bike compatibility, validated selection and idempotent price/weight/HP summaries, GLB asset manifest/alignment | no repository licence; React/Three.js + FastAPI/SQLite would violate the single-runtime/single-state contract |
+| rohithyv/3D-Motorcycle-Showroom | mobile opt-in 3D, visibility-gated loading, static fallback, camera presets, GPU metrics and texture quality | no repository licence; fictional VOLT R1 specs and web renderer are not product assets or evidence |
+
+### Highest-value lessons for current Atomic-Z garage
+
+1. **Asset loading:** use lightweight preview or static fallback and defer high-detail GLB loading until needed. Measure the actual Godot renderer/GPU instead of copying Three.js thresholds.
+2. **Camera:** maintain named views for whole vehicle, front/rear wheel, selected surface, cockpit and exploded assembly; camera animation must not mutate canonical BuildDocument state.
+3. **Fitment:** encode allowed part/vehicle/surface compatibility as validated relations or catalog constraints, without adding a duplicate SQL database. Validation must use Atomic-Z's existing identifiers and canonical build document.
+4. **Technical summaries:** derive any displayed change from validated part metadata and BuildDocument state; never import MotoForge demo values or fictional showroom numbers.
+5. **Physics is a later decision:** ModuVehicle and Seerban are car-focused. The two-wheel motorcycle model still requires a separately specified, calibrated and tested design. No riding mode is approved by this research update.
