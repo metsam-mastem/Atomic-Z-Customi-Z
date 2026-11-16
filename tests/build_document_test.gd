@@ -60,6 +60,10 @@ func _initialize() -> void:
 	_assert(StoreScript.load_document(save_path) == newer, "A valid backup must recover a corrupt primary save.")
 
 	_remove_if_exists(save_path)
+	_write_text(save_path + ".bak", BuildDocumentScript.to_json(initial))
+	_assert(StoreScript.load_document(save_path) == initial, "A valid backup must recover a missing primary save.")
+
+	_remove_if_exists(save_path)
 	_remove_if_exists(save_path + ".tmp")
 	_remove_if_exists(save_path + ".bak")
 
