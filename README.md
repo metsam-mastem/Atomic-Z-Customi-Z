@@ -28,8 +28,7 @@ Is a 3D motorcycle garage and customization workbench for vehicle inspection, St
 
 ## Product concept illustration
 
-![Customi-Z product concept]
-(assets/product-concept.svg)
+![Atomic-Z-Customi-Z product concept](assets/product-concept.svg)
 
 This is the only visual concept asset currently verified in the repository. It illustrates a proposed product interface and placeholder motorcycle silhouette; it is not a runtime screenshot, a factory motorcycle render, or evidence of implemented UI fidelity. No additional image files from the current chat were available to transfer. Runtime and target-device screenshots remain pending.
 
