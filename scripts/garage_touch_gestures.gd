@@ -59,6 +59,12 @@ func handle_event(event: InputEvent) -> void:
 		MAX_ORBIT_DISTANCE
 	)
 
+func sync_camera_state(orbit_angle: float, orbit_pitch: float, orbit_distance: float, target_offset: Vector3) -> void:
+	_orbit_angle = orbit_angle
+	_orbit_pitch = clampf(orbit_pitch, -0.12, 0.62)
+	_orbit_distance = clampf(orbit_distance, MIN_ORBIT_DISTANCE, MAX_ORBIT_DISTANCE)
+	_target_offset = target_offset
+
 func get_camera_state() -> Dictionary:
 	return {
 		"orbit_angle": _orbit_angle,
@@ -79,7 +85,8 @@ func _centroid() -> Vector2:
 		return Vector2.ZERO
 	var total := Vector2.ZERO
 	for point_value in _touch_points.values():
-		total += Vector2(point_value)
+		var point: Vector2 = point_value
+		total += point
 	return total / float(_touch_points.size())
 
 func _spread(center: Vector2) -> float:
@@ -87,5 +94,6 @@ func _spread(center: Vector2) -> float:
 		return 0.0
 	var total := 0.0
 	for point_value in _touch_points.values():
-		total += Vector2(point_value).distance_to(center)
+		var point: Vector2 = point_value
+		total += point.distance_to(center)
 	return total / float(_touch_points.size())
