@@ -87,7 +87,10 @@ static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 static func from_legacy_skin_profile(profile: Dictionary, source_document: Dictionary) -> Dictionary:
 	if not validate(source_document).get("ok", false):
 		return {}
-	if not (profile.get("schema_version", null) is int) or int(profile.get("schema_version", -1)) != 1:
+	var schema_value: Variant = profile.get("schema_version", null)
+	if not (schema_value is int or schema_value is float):
+		return {}
+	if not is_finite(float(schema_value)) or not is_equal_approx(float(schema_value), 1.0):
 		return {}
 
 	var color_text := str(profile.get("color", "")).strip_edges()
