@@ -48,7 +48,6 @@ Nature Index topic pages are synthesized summaries, not direct validation. Consu
 | ADR-007 | Visual and engineering evidence separated | Prevent false safety/fitment claims |
 | ADR-008 | Branch/PR-only collaboration | Prevent direct-main races |
 | ADR-009 | BuildDocument-only neon persistence; preserve legacy shader parameters as an unmapped extension | Prevent competing writers and avoid guessing a 0..10 to 0..1 conversion |
-| ADR-009 | BuildDocument-only neon persistence; preserve legacy shader parameters as an unmapped extension | Prevent competing writers and avoid guessing a 0..10 to 0..1 conversion |
 
 ## External adoption checklist
 Verify license and commercial rights, maintenance/release, Godot/API compatibility, copied code versus inspiration, exact upstream commit, dependencies/security, attribution, integration tests and reason native Godot features are insufficient. No external code or asset is automatically approved by being listed here.
