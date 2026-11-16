@@ -1,0 +1,100 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "Atomic-Z test fixture"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "MiniBikeScene",
+      "nodes": [0]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "MiniBike",
+      "children": [1]
+    },
+    {
+      "name": "BodyMesh",
+      "mesh": 0
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Body",
+      "primitives": [
+        {
+          "attributes": { "POSITION": 0 },
+          "indices": 1,
+          "material": 0,
+          "mode": 4
+        },
+        {
+          "attributes": { "POSITION": 0 },
+          "indices": 1,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "FixturePrimaryPaint",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [0.8, 0.1, 0.1, 1.0],
+        "metallicFactor": 0.3,
+        "roughnessFactor": 0.4
+      }
+    },
+    {
+      "name": "FixtureTrim",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [0.1, 0.1, 0.8, 1.0],
+        "metallicFactor": 0.7,
+        "roughnessFactor": 0.25
+      }
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 44,
+      "uri": "data:application/octet-stream;base64,AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAAABAAIAAAA="
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 36,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 36,
+      "byteLength": 6,
+      "target": 34963
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 3,
+      "type": "VEC3",
+      "min": [0, 0, 0],
+      "max": [1, 1, 0]
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 0,
+      "componentType": 5123,
+      "count": 3,
+      "type": "SCALAR",
+      "min": [0],
+      "max": [2]
+    }
+  ]
+}
