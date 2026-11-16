@@ -83,12 +83,12 @@ func set_palette_color(key: String, color: Color) -> bool:
 	return true
 
 func _validate_config(value: Variant) -> bool:
-	if not value is Dictionary:
+	if not (value is Dictionary):
 		return false
 	var data: Dictionary = value
 	if not data.has("bike_model") or not data.has("skin_name"):
 		return false
-	if not data.has("colors") or not data["colors"] is Dictionary:
+	if not data.has("colors") or not (data["colors"] is Dictionary):
 		return false
 	var colors: Dictionary = data["colors"]
 	for key in ["primary", "secondary"]:
@@ -98,12 +98,12 @@ func _validate_config(value: Variant) -> bool:
 		return false
 	if float(colors["glow_intensity"]) < 0.0 or float(colors["glow_intensity"]) > 1.0:
 		return false
-	if not data.has("line_segments") or not data["line_segments"] is Array or data["line_segments"].is_empty():
+	if not data.has("line_segments") or not (data["line_segments"] is Array) or data["line_segments"].is_empty():
 		return false
 
 	var seen: Dictionary = {}
 	for segment in data["line_segments"]:
-		if not segment is Dictionary:
+		if not (segment is Dictionary):
 			return false
 		if not segment.has("id") or str(segment["id"]).strip_edges().is_empty():
 			return false
@@ -111,18 +111,20 @@ func _validate_config(value: Variant) -> bool:
 		if seen.has(segment_id):
 			return false
 		seen[segment_id] = true
-		if not segment.has("color") or not colors.has(str(segment["color"])):
+		if not segment.has("color") or not (str(segment["color"]) in ["primary", "secondary"]):
 			return false
 		if not segment.has("width") or not (segment["width"] is int or segment["width"] is float):
 			return false
 		if float(segment["width"]) <= 0.0 or float(segment["width"]) > 40.0:
 			return false
-		if not segment.has("points") or not segment["points"] is Array or segment["points"].size() < 2:
+		if not segment.has("points") or not (segment["points"] is Array) or segment["points"].size() < 2:
 			return false
 		for point in segment["points"]:
-			if not point is Array or point.size() != 2:
+			if not (point is Array) or point.size() != 2:
 				return false
 			if not (point[0] is int or point[0] is float) or not (point[1] is int or point[1] is float):
+				return false
+			if float(point[0]) < 0.0 or float(point[0]) > 800.0 or float(point[1]) < 0.0 or float(point[1]) > 600.0:
 				return false
 	return true
 
