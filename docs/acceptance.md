@@ -94,6 +94,8 @@ Status of these new gates: NOT RUN. Existing headless tests and CI history cover
 - [ ] Stable surface IDs resolve to a unique MeshInstance3D node path and valid surface index.
 - [ ] Applying a material changes only the selected surface and duplicates the material resource.
 - [ ] Imported base PBR materials and unrelated surface overrides remain unchanged.
+- [ ] A global material_override introduced after configuration causes apply to fail closed.
+- [ ] Clearing an override removes only the exact material instance owned by the binder; externally replaced overrides remain untouched.
 - [ ] Duplicate IDs, duplicate target slots, missing nodes, invalid indices, malformed bindings and global material_override conflicts are rejected atomically.
 - [ ] The binder is connected to the imported-asset manifest and canonical BuildDocument before the UI exposes material editing.
 
