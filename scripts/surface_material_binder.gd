@@ -48,11 +48,15 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 		if mesh_instance.mesh == null:
 			errors.append("Binding %s targets a mesh instance without a Mesh." % surface_id)
 			continue
-		if not (definition["surface_index"] is int):
+		var surface_index_value: Variant = definition["surface_index"]
+		var surface_index_is_integer := surface_index_value is int
+		if surface_index_value is float:
+			surface_index_is_integer = is_equal_approx(float(surface_index_value), floorf(float(surface_index_value)))
+		if not surface_index_is_integer:
 			errors.append("Binding %s surface_index must be an integer." % surface_id)
 			continue
 
-		var surface_index := int(definition["surface_index"])
+		var surface_index := int(surface_index_value)
 		if surface_index < 0 or surface_index >= mesh_instance.mesh.get_surface_count():
 			errors.append("Binding %s surface_index is outside the mesh surface range." % surface_id)
 			continue
