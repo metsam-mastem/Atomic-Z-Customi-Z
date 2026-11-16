@@ -1,5 +1,16 @@
 # Project Status — Canonical Resume Checkpoint
 
+## Current execution overlay — 2026-11-16 (P1 continuation)
+
+- Canonical `main` remains `4d2cf3b82bd78437541b49da46f522c06d2652b5`; no direct-main write was made.
+- P1 dependency chain: PR #28 (Android build/export hardening) → PR #29 (GLB surface catalog contract) → PR #30 (legacy neon migration into canonical BuildDocument). These PRs remain unmerged and must be reviewed/integrated in dependency order.
+- PR #37, [P1 two-finger pan and pinch zoom](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/37), is OPEN / DRAFT on branch `agent/garage/p1-touch-gestures-v4`, based on PR #30 branch head `401732458a65936087eb3342b9d46d3dae4c03d8`. It adds view-relative two-finger pan, pinch-in/out zoom with 3.0–8.0 bounds, one-finger orbit, reset, mouse/touch camera-state synchronization and cancelled-touch cleanup.
+- PR #37 current head: `21a8e1fb2052700605c7f355e62192f1b38cf758`. Exact-head CI: NOT RUN / no run associated with this SHA was returned at checkpoint time. Earlier PR #37 head `dfdf6603ef41e4d4249252eb7bd545700c21475d` has workflow #43812927610 queued; do not transfer its status to the newer head.
+- The smoke test now covers one-finger orbit, two-finger pan, pinch-in/out, minimum/maximum zoom bounds, reset, mouse/touch state synchronization and cancelled-touch recovery. These assertions are NOT RUN on the current head.
+- PRs #34, #35 and #36 were closed without merge as superseded drafts; PR #37 is the active P1 camera implementation. The separate PR #33 GLB runtime importer is P2 asset work and is intentionally excluded from this P1 branch.
+- Physical Redmi installation/touch QA, responsive-layout review, exact-device FPS/memory/thermal profiling and production vehicle geometry remain NOT RUN. P1 must not be declared complete until its integrated garage acceptance gates, responsive HUD and required end-to-end checks are satisfied.
+- PR #31 remains an independent AI adapter proposal and is not part of the P1 delivery.
+
 **Purpose:** Resume work without relying on any ChatGPT conversation, account memory or individual agent context.  
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
