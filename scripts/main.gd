@@ -5,6 +5,7 @@ const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
+const GlbVehicleRuntimeScript = preload("res://scripts/glb_vehicle_runtime.gd")
 
 var _bike
 var _camera: Camera3D
@@ -15,6 +16,16 @@ var _build_document: Dictionary = {}
 var _part_selector: OptionButton
 var _paint_picker: ColorPickerButton
 var _build_summary_label: Label
+var _assembly_button: Button
+var _neon_toggle_button: Button
+var _neon_editor_controls: Array[Control] = []
+var _disclaimer_label: Label
+var _file_dialog: FileDialog
+var _asset_metadata_dialog: ConfirmationDialog
+var _asset_license_input: LineEdit
+var _asset_source_input: LineEdit
+var _asset_display_name_input: LineEdit
+var _pending_asset_source_path := ""
 var _selected_part_id := "fuel_tank"
 const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
@@ -37,6 +48,7 @@ func _ready() -> void:
 	_neon_skin.name = "NeonSkinOverlay"
 	_neon_skin.configure_build_document(_build_document)
 	_neon_skin.position.z = 0.29
+	_neon_skin.visible = not _bike.is_imported_model()
 	add_child(_neon_skin)
 	_update_camera()
 	_build_hud()
@@ -109,17 +121,21 @@ func _build_hud() -> void:
 	root.add_child(controls)
 
 	_part_selector = OptionButton.new()
+	_part_selector.name = "PartSelector"
 	_part_selector.custom_minimum_size = Vector2(180.0, 42.0)
 	_populate_part_selector()
 	_part_selector.item_selected.connect(_on_part_selected)
 	controls.add_child(_part_selector)
 
-	var assembly_button := Button.new()
-	assembly_button.text = "EXPLODED / STOCK"
-	assembly_button.pressed.connect(_on_toggle_assembly)
-	controls.add_child(assembly_button)
+	_assembly_button = Button.new()
+	_assembly_button.name = "AssemblyModeButton"
+	_assembly_button.text = "EXPLODED / STOCK" if _bike.supports_exploded_view() else "EXPLODED VIEW N/A"
+	_assembly_button.disabled = not _bike.supports_exploded_view()
+	_assembly_button.pressed.connect(_on_toggle_assembly)
+	controls.add_child(_assembly_button)
 
 	_paint_picker = ColorPickerButton.new()
+	_paint_picker.name = "PaintPicker"
 	_paint_picker.color = _bike.get_part_color(_selected_part_id)
 	_paint_picker.custom_minimum_size = Vector2(54.0, 42.0)
 	_paint_picker.tooltip_text = "Paint selected part"
@@ -131,17 +147,26 @@ func _build_hud() -> void:
 	reset_button.pressed.connect(_on_reset_camera)
 	controls.add_child(reset_button)
 
-	var neon_button := Button.new()
-	neon_button.text = "NEON ON / OFF"
-	neon_button.toggle_mode = true
-	neon_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
-	neon_button.toggled.connect(_on_neon_toggled)
-	controls.add_child(neon_button)
+	_neon_toggle_button = Button.new()
+	_neon_toggle_button.name = "NeonToggleButton"
+	_neon_toggle_button.text = "NEON ON / OFF"
+	_neon_toggle_button.toggle_mode = true
+	_neon_toggle_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
+	_neon_toggle_button.disabled = _bike.is_imported_model()
+	_neon_toggle_button.tooltip_text = "Neon preview stays disabled until paths are verified against imported GLB surfaces." if _bike.is_imported_model() else "Toggle neon preview"
+	_neon_toggle_button.toggled.connect(_on_neon_toggled)
+	controls.add_child(_neon_toggle_button)
 
 	var skin_controls := HBoxContainer.new()
 	skin_controls.position = Vector2(24.0, 146.0)
 	skin_controls.add_theme_constant_override("separation", 10)
 	root.add_child(skin_controls)
+
+	var import_glb_button := Button.new()
+	import_glb_button.text = "IMPORT GLB"
+	import_glb_button.tooltip_text = "Import a local glTF Binary asset and generate a stable surface catalog"
+	import_glb_button.pressed.connect(_on_import_glb_pressed)
+	skin_controls.add_child(import_glb_button)
 
 	_add_neon_segment_toggle(skin_controls, "TAIL", "tail_underglow")
 	_add_neon_segment_toggle(skin_controls, "TANK", "tank_accent")
@@ -153,16 +178,20 @@ func _build_hud() -> void:
 	primary_picker.color = Color.from_string(str(palette.get("primary", "#00FFCC")), Color("#00FFCC"))
 	primary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	primary_picker.tooltip_text = "Neon primary color"
+	primary_picker.disabled = _bike.is_imported_model()
 	primary_picker.color_changed.connect(_on_neon_primary_changed)
 	skin_controls.add_child(primary_picker)
+	_neon_editor_controls.append(primary_picker)
 
 	var secondary_picker := ColorPickerButton.new()
 	secondary_picker.name = "NeonSecondaryPicker"
 	secondary_picker.color = Color.from_string(str(palette.get("secondary", "#FF00FF")), Color("#FF00FF"))
 	secondary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	secondary_picker.tooltip_text = "Neon secondary color"
+	secondary_picker.disabled = _bike.is_imported_model()
 	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
 	skin_controls.add_child(secondary_picker)
+	_neon_editor_controls.append(secondary_picker)
 
 	var glow_slider := HSlider.new()
 	glow_slider.name = "NeonGlowSlider"
@@ -172,27 +201,30 @@ func _build_hud() -> void:
 	glow_slider.step = 0.05
 	glow_slider.value = float(_build_document.get("render", {}).get("glow_intensity", 0.8))
 	glow_slider.tooltip_text = "Neon glow intensity"
+	glow_slider.editable = not _bike.is_imported_model()
 	glow_slider.value_changed.connect(_on_glow_changed)
 	skin_controls.add_child(glow_slider)
+	_neon_editor_controls.append(glow_slider)
 
 	var save_skin_button := Button.new()
 	save_skin_button.text = "SAVE PROJECT"
 	save_skin_button.pressed.connect(_on_save_neon_skin)
 	skin_controls.add_child(save_skin_button)
 
-	var disclaimer := Label.new()
-	disclaimer.text = "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
-	disclaimer.anchor_left = 0.0
-	disclaimer.anchor_top = 1.0
-	disclaimer.anchor_right = 1.0
-	disclaimer.anchor_bottom = 1.0
-	disclaimer.offset_left = 24.0
-	disclaimer.offset_top = -34.0
-	disclaimer.offset_right = -24.0
-	disclaimer.offset_bottom = -10.0
-	disclaimer.add_theme_font_size_override("font_size", 11)
-	disclaimer.modulate = Color("#aab8c8")
-	root.add_child(disclaimer)
+	_disclaimer_label = Label.new()
+	_disclaimer_label.name = "AssetDisclaimer"
+	_disclaimer_label.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / NEON UV MAPPING PENDING / NOT ENGINEERING-VALIDATED" if _bike.is_imported_model() else "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
+	_disclaimer_label.anchor_left = 0.0
+	_disclaimer_label.anchor_top = 1.0
+	_disclaimer_label.anchor_right = 1.0
+	_disclaimer_label.anchor_bottom = 1.0
+	_disclaimer_label.offset_left = 24.0
+	_disclaimer_label.offset_top = -34.0
+	_disclaimer_label.offset_right = -24.0
+	_disclaimer_label.offset_bottom = -10.0
+	_disclaimer_label.add_theme_font_size_override("font_size", 11)
+	_disclaimer_label.modulate = Color("#aab8c8")
+	root.add_child(_disclaimer_label)
 
 	_build_summary_label = Label.new()
 	_build_summary_label.name = "BuildSummaryLabel"
@@ -245,28 +277,269 @@ func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: S
 	segment_button.text = label_text
 	segment_button.toggle_mode = true
 	segment_button.button_pressed = _neon_skin.is_segment_visible(segment_id)
+	segment_button.disabled = _bike.is_imported_model()
 	segment_button.toggled.connect(_on_neon_segment_toggled.bind(segment_id))
 	parent.add_child(segment_button)
+	_neon_editor_controls.append(segment_button)
 
 func _on_neon_segment_toggled(enabled: bool, segment_id: String) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_segment_visible(segment_id, enabled)
 
 func _on_neon_primary_changed(color: Color) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("primary", color)
 
 func _on_neon_secondary_changed(color: Color) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("secondary", color)
 
 func _on_neon_toggled(enabled: bool) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_skin_visible(enabled)
 
 func _on_glow_changed(value: float) -> void:
+	if _bike.is_imported_model():
+		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_glow_intensity(value)
+
+func _on_import_glb_pressed() -> void:
+	if _file_dialog == null:
+		_file_dialog = FileDialog.new()
+		_file_dialog.title = "Select a motorcycle GLB"
+		_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+		_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+		_file_dialog.use_native_dialog = OS.get_name() == "Android"
+		_file_dialog.add_filter("*.glb", "glTF Binary models")
+		_file_dialog.file_selected.connect(_on_glb_file_selected)
+		add_child(_file_dialog)
+	_file_dialog.popup_centered_ratio(0.82)
+
+func _on_glb_file_selected(path: String) -> void:
+	if not path.to_lower().ends_with(".glb"):
+		push_warning("Only binary glTF (.glb) models are supported.")
+		return
+	_pending_asset_source_path = path
+	_show_asset_metadata_dialog()
+
+func _show_asset_metadata_dialog() -> void:
+	if _asset_metadata_dialog == null:
+		_asset_metadata_dialog = ConfirmationDialog.new()
+		_asset_metadata_dialog.title = "Asset provenance"
+		_asset_metadata_dialog.dialog_text = "Record the model name, license and original source. This name is a display label only; manufacturer identity, year and fitment remain unverified."
+		var fields := VBoxContainer.new()
+		fields.add_theme_constant_override("separation", 8)
+		var license_label := Label.new()
+		license_label.text = "License identifier"
+		fields.add_child(license_label)
+		_asset_license_input = LineEdit.new()
+		_asset_license_input.placeholder_text = "Example: CC0-1.0, MIT, or author-provided terms"
+		_asset_license_input.custom_minimum_size.x = 420.0
+		fields.add_child(_asset_license_input)
+		var source_label := Label.new()
+		source_label.text = "Original source URL or provenance record"
+		fields.add_child(source_label)
+		_asset_source_input = LineEdit.new()
+		_asset_source_input.placeholder_text = "https://... or author / original source details"
+		_asset_source_input.custom_minimum_size.x = 420.0
+		fields.add_child(_asset_source_input)
+		var display_name_label := Label.new()
+		display_name_label.text = "Display name (does not certify manufacturer identity)"
+		fields.add_child(display_name_label)
+		_asset_display_name_input = LineEdit.new()
+		_asset_display_name_input.placeholder_text = "Example: Generic CC0 race-replica motorcycle"
+		_asset_display_name_input.custom_minimum_size.x = 420.0
+		fields.add_child(_asset_display_name_input)
+		_asset_metadata_dialog.add_child(fields)
+		_asset_metadata_dialog.confirmed.connect(_on_asset_metadata_confirmed)
+		add_child(_asset_metadata_dialog)
+	_asset_license_input.text = ""
+	_asset_source_input.text = ""
+	_asset_display_name_input.text = _pending_asset_source_path.get_file().get_basename().replace("_", " ").replace("-", " ").capitalize()
+	_asset_metadata_dialog.popup_centered(Vector2i(600, 340))
+
+func _on_asset_metadata_confirmed() -> void:
+	var license_id := _asset_license_input.text.strip_edges()
+	var source_record := _asset_source_input.text.strip_edges()
+	var display_name := _asset_display_name_input.text.strip_edges()
+	if license_id.is_empty() or source_record.is_empty() or display_name.is_empty():
+		push_warning("Import cancelled: display name, license and source provenance are required.")
+		_asset_metadata_dialog.popup_centered(Vector2i(600, 340))
+		return
+	await _install_selected_glb(license_id, source_record, display_name)
+
+func _install_selected_glb(license_id: String, source_record: String, display_name: String) -> void:
+	var source_file := FileAccess.open(_pending_asset_source_path, FileAccess.READ)
+	if source_file == null:
+		push_warning("Could not read the selected GLB. On Android, use the system file picker and grant access to the file.")
+		return
+	var file_size := source_file.get_length()
+	if file_size < 20 or file_size > 134217728:
+		source_file.close()
+		push_warning("GLB file size is invalid or exceeds the 128 MiB import limit.")
+		return
+	var signature := source_file.get_buffer(4)
+	if signature.get_string_from_ascii() != "glTF":
+		source_file.close()
+		push_warning("Selected file is not a readable binary glTF asset.")
+		return
+	source_file.seek(0)
+
+	var directory_path := "user://vehicle_assets"
+	var directory_error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory_path))
+	if directory_error != OK and directory_error != ERR_ALREADY_EXISTS:
+		source_file.close()
+		push_warning("Could not create the local vehicle asset folder: " + error_string(directory_error))
+		return
+
+	var temporary_path := directory_path + "/incoming.glb.tmp"
+	var output_file := FileAccess.open(temporary_path, FileAccess.WRITE)
+	if output_file == null:
+		source_file.close()
+		push_warning("Could not stage the selected GLB in app storage.")
+		return
+	var remaining_bytes := file_size
+	var copy_failed := false
+	while remaining_bytes > 0:
+		var chunk_size := mini(1048576, remaining_bytes)
+		var chunk := source_file.get_buffer(chunk_size)
+		if chunk.size() != chunk_size:
+			copy_failed = true
+			break
+		output_file.store_buffer(chunk)
+		remaining_bytes -= chunk_size
+	var read_error := source_file.get_error()
+	source_file.close()
+	output_file.flush()
+	var write_error := output_file.get_error()
+	output_file.close()
+	if copy_failed or remaining_bytes > 0 or read_error != OK or write_error != OK:
+		_remove_asset_file(temporary_path)
+		push_warning("Failed to copy the selected GLB completely into app storage.")
+		return
+
+	var asset_hash := FileAccess.get_sha256(temporary_path).to_lower()
+	if asset_hash.length() != 64:
+		_remove_asset_file(temporary_path)
+		push_warning("Could not calculate the selected GLB SHA-256.")
+		return
+	var installed_path := directory_path + "/asset_" + asset_hash + ".glb"
+	if FileAccess.file_exists(installed_path):
+		_remove_asset_file(temporary_path)
+		if FileAccess.get_sha256(installed_path).to_lower() != asset_hash:
+			push_warning("Existing asset path failed full SHA-256 collision verification.")
+			return
+	else:
+		var rename_error := DirAccess.rename_absolute(
+			ProjectSettings.globalize_path(temporary_path),
+			ProjectSettings.globalize_path(installed_path)
+		)
+		if rename_error != OK:
+			_remove_asset_file(temporary_path)
+			push_warning("Could not finalize the copied GLB: " + error_string(rename_error))
+			return
+
+	var candidate_document := _build_document.duplicate(true)
+	var previous_asset: Dictionary = candidate_document.get("asset", {}).duplicate(true)
+	var previous_hash := str(previous_asset.get("sha256", ""))
+	var previous_catalog: Array = previous_asset.get("surface_catalog", [])
+	var preserved_surface_materials: Array = []
+	var active_materials: Array = candidate_document.get("customization", {}).get("materials", []).duplicate(true)
+	for material_value in active_materials:
+		if material_value is Dictionary and material_value.has("target_surface_ids"):
+			preserved_surface_materials.append(material_value.duplicate(true))
+	if not preserved_surface_materials.is_empty():
+		var extensions: Array = candidate_document.get("extensions", []).duplicate(true)
+		extensions.append({
+			"extension_id": "replaced_asset_surface_materials",
+			"schema_version": 1,
+			"status": "preserved_unmapped",
+			"source_asset_sha256": previous_hash,
+			"payload": {
+				"surface_catalog": previous_catalog.duplicate(true),
+				"materials": preserved_surface_materials
+			}
+		})
+		candidate_document["extensions"] = extensions
+		var retained_materials: Array = []
+		for material_value in active_materials:
+			if not (material_value is Dictionary) or not material_value.has("target_surface_ids"):
+				retained_materials.append(material_value)
+		candidate_document["customization"]["materials"] = retained_materials
+
+	var identity_result: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(candidate_document, asset_hash, display_name)
+	if not identity_result.get("ok", false):
+		push_warning("The imported vehicle identity could not be prepared safely: " + str(identity_result.get("errors", [])))
+		return
+	candidate_document = identity_result["document"]
+
+	var candidate_asset: Dictionary = previous_asset
+	candidate_asset["uri"] = installed_path
+	candidate_asset["sha256"] = asset_hash
+	candidate_asset["license"] = license_id
+	candidate_asset["source"] = source_record
+	candidate_asset["validation_status"] = "local_import_pending_review"
+	candidate_asset["surface_catalog"] = []
+	candidate_document["asset"] = candidate_asset
+	if not BuildDocumentScript.validate(candidate_document).get("ok", false):
+		push_warning("The imported asset metadata did not produce a valid BuildDocument.")
+		return
+
+	var candidate_bike := BikeAssemblyScript.new()
+	candidate_bike.name = "ImportedMotorcycle"
+	candidate_bike.configure_build_document(candidate_document)
+	add_child(candidate_bike)
+	await get_tree().process_frame
+	if not candidate_bike.is_imported_model():
+		candidate_bike.queue_free()
+		push_warning("GLB import was rejected. The existing garage model remains active; inspect the output warnings for details.")
+		return
+
+	var previous_bike = _bike
+	_bike = candidate_bike
+	_build_document = candidate_document
+	_selected_part_id = ""
+	_populate_part_selector()
+	if _part_selector.item_count > 0:
+		_paint_picker.color = _bike.get_part_color(_selected_part_id)
+	if is_instance_valid(previous_bike):
+		previous_bike.queue_free()
+	_update_imported_model_controls()
+	_refresh_build_summary()
+	if not _save_build_document():
+		push_warning("GLB loaded successfully but the BuildDocument save failed. Use SAVE PROJECT after checking app storage.")
+
+func _update_imported_model_controls() -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.visible = false
+	if is_instance_valid(_assembly_button):
+		_assembly_button.text = "EXPLODED VIEW N/A"
+		_assembly_button.disabled = true
+	if is_instance_valid(_neon_toggle_button):
+		_neon_toggle_button.disabled = true
+		_neon_toggle_button.tooltip_text = "Neon preview is disabled until its paths are mapped to verified GLB surfaces."
+	for control in _neon_editor_controls:
+		if not is_instance_valid(control):
+			continue
+		if control is HSlider:
+			(control as HSlider).editable = false
+		else:
+			control.set("disabled", true)
+	if is_instance_valid(_disclaimer_label):
+		_disclaimer_label.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / UV MAPPING PENDING / NOT ENGINEERING-VALIDATED"
+
+func _remove_asset_file(path: String) -> void:
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 func _on_save_neon_skin() -> void:
 	if not _save_build_document():
@@ -379,7 +652,10 @@ func _refresh_build_summary() -> void:
 		paint_color = "#" + _bike.get_part_color(_selected_part_id).to_html(false).to_upper()
 	var assembly_mode := str(_build_document.get("assembly", {}).get("mode", "stock")).to_upper()
 	var neon_state := "ON" if bool(_build_document.get("render", {}).get("neon_enabled", true)) else "OFF"
-	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
+	var asset_state := "IMPORTED GLB" if _bike.is_imported_model() else "PLACEHOLDER"
+	if _bike.is_imported_model():
+		neon_state = "DISABLED — UV PENDING"
+	_build_summary_label.text = "BUILD  /  %s\nREVISION  /  %s\nASSET  /  %s\nPART  /  %s\nPAINT  /  %s\nMATERIAL RECORDS  /  %d\nASSEMBLY  /  %s\nNEON  /  %s" % [str(vehicle.get("display_name", "Unassigned vehicle")), str(_build_document.get("revision", 1)), asset_state, _selected_part_id.replace("_", " ").to_upper(), paint_color, materials.size(), assembly_mode, neon_state]
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
