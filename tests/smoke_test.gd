@@ -149,3 +149,9 @@ func _run_smoke_test() -> void:
 
 	print("PASS: scene load, neon overlay integration, assembly explode/restore and body material update.")
 	quit(0)
+
+func _remove_file_if_exists(path: String) -> void:
+	if FileAccess.file_exists(path):
+		var remove_error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+		if remove_error != OK:
+			push_error("Smoke test cleanup failed for %s: %s" % [path, error_string(remove_error)])
