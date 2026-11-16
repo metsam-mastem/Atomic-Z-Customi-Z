@@ -51,7 +51,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run neon simulator unit tests
+      - name: Validate research fetch helper shell syntax
+        run: bash -n tools/research/fetch-reference.sh
+
+      - name: Run Python and research registry unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
 
       - name: Compile simulator
