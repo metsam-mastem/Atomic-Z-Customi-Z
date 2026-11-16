@@ -4,11 +4,11 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 08:10 UTC  
+**Last verified:** 2026-11-16 — latest live GitHub API snapshot  
 **Verified main:** `db532efa725e6f54df54a707ce7b5be585d589d6`  
 **Current research branch:** `agent/research/atomic-z-reference-vault`  
 **Current research PR:** [#40 — Pinned reverse-engineering and source vault](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/40)  
-**Research PR HEAD:** `7b49a70278a40f8cac88620d8d5385505b34a1e8`
+**Research PR HEAD:** `93797f5459a525ab7624e7b7c06728439792b586`
 
 ## Resume rule
 
@@ -37,14 +37,15 @@
 
 - `main` observed at `db532efa725e6f54df54a707ce7b5be585d589d6`.
 - Latest observed main `Godot CI` run: [#43814661860](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43814661860) — completed / success on the exact main SHA.
-- No independent open issues were returned by the live GitHub query at this checkpoint.
+- Independent open issue [#41](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/issues/41) tracks the Customi-Z Core v0.3 donor-package audit; re-check its current state before taking action.
 - GitHub branch-protection/ruleset enforcement remains **UNVERIFIED**; prior integration read returned 403. The owner should inspect Settings → Branches / Rulesets.
 
 ### Open pull requests
 
 | PR | Scope | State / dependency | Next action |
 |---|---|---|---|
-| [#40](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/40) | Pinned reverse-engineering and source vault (documentation/tooling only) | OPEN, non-draft; base `main`; head `7b49a702...`; mergeable true / state unstable; exact-head CI is running | Review source/licence labels and wait for exact-head CI result; no source code is being merged into product runtime |
+| [#42](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/42) | Audit/reconcile Customi-Z Core v0.3 donor package | OPEN, non-draft; base `main` | Review donor provenance, source rights and architecture before any integration |
+| [#40](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/40) | Pinned reverse-engineering and source vault (documentation/tooling only) | OPEN, non-draft; base `main`; head `93797f54...`; mergeable true / state unstable; latest exact-head CI queued | Review source/licence labels and wait for exact-head CI result; no external source is merged into product runtime |
 | [#39](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/39) | Revert unintended Android plugin files from main | OPEN, non-draft; base `main` | Review governance diff and verify no required Android plugin file is removed |
 | [#38](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/38) | Import verified GLB models into integrated garage | OPEN / DRAFT; stacked on PR #30 | Resolve GLB provenance, compatibility and dependency chain before review |
 | [#37](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/37) | Android two-finger pan and pinch zoom | OPEN / DRAFT; stacked on PR #30 | Review touch behaviour and reconcile after stack dependencies |
@@ -59,14 +60,14 @@ This live list supersedes the older PR snapshot and statuses retained in earlier
 
 - Branch: `agent/research/atomic-z-reference-vault`.
 - Base SHA: `db532efa725e6f54df54a707ce7b5be585d589d6`.
-- Head SHA: `7b49a70278a40f8cac88620d8d5385505b34a1e8`.
+- Head SHA: `93797f5459a525ab7624e7b7c06728439792b586`.
 - Scope: source registry, per-project dossiers, integration map, reverse-engineering playbook, third-party policy, sparse local source retrieval helper and README/checkpoint references.
-- Registry: 15 unique sources, 10 pinned immutable Git revisions; statuses identify study-only, reuse-candidate, private/no-source and recheck items.
+- Registry: 23 unique sources, 16 pinned immutable Git revisions; statuses identify study-only, reuse-candidate, private/no-source and recheck items.
 - Research files: `research/README.md`, `research/source-registry.json`, `research/INTEGRATION_MAP.md`, `research/sources/`, `research/reverse-engineering/PLAYBOOK.md`.
-- The fetch helper supports only four pinned/licence-identified checkouts (`danknooner`, `moto-controller`, `opennfs`, `rea`) and stores them locally in ignored `.research-cache/`. Unlicensed or rights-unclear sources remain manual-reference only.
+- The fetch helper supports six pinned/licence-identified checkouts (`danknooner`, `moto-controller`, `opennfs`, `rea`, `godot-vehicle`, `modu-vehicle`) and stores them locally in ignored `.research-cache/`. Unlicensed or mixed-rights sources remain manual-reference only.
 - No external code, game assets or binaries were vendored into the product repository or imported into Godot's `res://` runtime. The research cache is not a product dependency.
-- PR metadata at last read: OPEN, non-draft, `mergeable=true`, `mergeable_state=unstable`.
-- Exact-head `Godot CI` run [#43829015985](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43829015985) was **IN_PROGRESS** at the last read. Re-check before claiming PASS.
+- PR metadata at last read: OPEN, non-draft, `mergeable=true`, `mergeable_state=unstable`; the latest check-runs were queued.
+- Exact-head `Godot CI` runs [#43830219336](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43830219336) and [#43830211488](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43830211488) were **QUEUED** at the last read. Re-check before claiming PASS.
 - Other intermediate documentation commits on the branch completed CI successfully, but that is not a substitute for the exact PR HEAD result.
 - Godot runtime tests and Android device/thermal QA were not run manually for this docs-only task. Source retrieval helper was not executed.
 
