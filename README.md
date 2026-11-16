@@ -44,6 +44,9 @@ Run the current headless checks from the repository root:
     godot --headless --editor --path . --quit
     godot --headless --path . --script res://tests/smoke_test.gd
     godot --headless --path . --script res://tests/neon_skin_test.gd
+    godot --headless --path . --script res://tests/build_document_test.gd
+    godot --headless --path . --script res://tests/surface_material_binder_test.gd
+    godot --headless --path . --script res://tests/build_document_ui_state_test.gd
     python -m unittest discover -s tests -p "test_*.py" -v
 
 The Python tests currently cover the legacy desktop authoring/preview utility. That utility is a development aid and compatibility path, not a separate product experience. Product customization must converge into the Godot runtime and canonical BuildDocument.
@@ -56,6 +59,7 @@ Read these before changing code:
 - [Unified System Specification](docs/UNIFIED_SYSTEM_SPEC.md) — product and system contract.
 - [Agent Governance](docs/AGENT_GOVERNANCE.md) — concurrent agent/branch/PR policy.
 - [Roadmap](docs/ROADMAP.md) — end-to-end phases and exit gates.
+- [Godot Motorcycle Rendering Research](docs/GODOT_MOTORCYCLE_RENDERING_RESEARCH.md) — GLB surface binding, PBR material ownership and mobile rendering guidance.
 - [Research and Decisions](docs/RESEARCH_AND_DECISIONS.md) — GitHub, Build Your Own X, Nature research and ADRs.
 - [Architecture](docs/architecture.md) — technical architecture.
 - [Acceptance](docs/acceptance.md) — testable acceptance gates.
