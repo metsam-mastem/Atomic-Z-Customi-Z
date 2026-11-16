@@ -624,6 +624,104 @@
         "progress taxonomy separating byte-exact, decompiled-not-exact and unattempted functions"
       ],
       "atomic_z_decision": "Research case study only. Dashboard counts are mutable project-reported progress, not independent proof of game completeness and not a source download."
+    },
+    {
+      "id": "innerscene-naked-sport-bike",
+      "name": "Innerscene Naked Sport Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-naked-sport-bike-fc4c9758",
+      "revision": {
+        "page_id": "fc4c9758",
+        "pinned": false,
+        "note": "asset page is mutable; downloaded GLB hash not recorded"
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_mb": 19.1,
+        "nominal_dimensions_m": [
+          1.009,
+          2.055,
+          1.304
+        ],
+        "model": "generic naked sport bike with inline-four exterior and trellis frame"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page explicitly states public-domain CC0"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "high-detail generic bike for showroom and close-up surface/UV evaluation"
+      ],
+      "atomic_z_decision": "Potential visual placeholder only; heavier 19.1 MB GLB needs polygon/texture profiling and hashed provenance before import. Not OEM or Kawasaki CAD."
+    },
+    {
+      "id": "innerscene-adventure-bike",
+      "name": "Innerscene Adventure Motorcycle GLB",
+      "repository": null,
+      "url": "https://www.innerscene.com/tools/library/3d-parts/adventure-motorcycle-3de675e4",
+      "revision": {
+        "page_id": "3de675e4",
+        "pinned": false,
+        "note": "asset page is mutable; downloaded GLB hash not recorded"
+      },
+      "metadata": {
+        "format": "GLB",
+        "reported_size_mb": 7.2,
+        "nominal_dimensions_m": [
+          2.275,
+          0.922,
+          1.405
+        ],
+        "model": "generic unbranded adventure motorcycle"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "individual asset page explicitly states public-domain CC0"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "alternate silhouette and import/LOD benchmarking"
+      ],
+      "atomic_z_decision": "Potential visual placeholder; validate mesh/material/scale and compute file hash before import. Not engineering CAD."
+    },
+    {
+      "id": "3dassets-motorcycle-racing-pack",
+      "name": "3DAssets.dev Motorcycle Racing and Street Bikes pack",
+      "repository": null,
+      "url": "https://3dassets.dev/demos/motorcycle-racing-and-street-bikes",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "note": "pack manifest and downloadable files must be acquired and hashed before vendor import"
+      },
+      "metadata": {
+        "format": "69 GLB models",
+        "reported_scene_placements": 202,
+        "pack_reported_size_mb": 10,
+        "units": "metres",
+        "up_axis": "+Y",
+        "components": [
+          "motorcycle archetypes",
+          "showroom",
+          "paddock garages",
+          "workshop",
+          "transport trailers",
+          "hairpin track",
+          "pit equipment"
+        ]
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "demo page states CC0 1.0 Universal for the pack and models"
+      },
+      "status": "REUSE_CANDIDATE",
+      "relevance": [
+        "garage/paddock environment kit",
+        "showroom props",
+        "mobile GLB import/instancing benchmark"
+      ],
+      "atomic_z_decision": "The demo provides layout and assets, not gameplay, physics, colliders or navigation. Measure mobile LOD, draw calls, textures and streaming before use; pin exact downloaded file hashes."
     }
   ],
   "rejected_or_unresolved_leads": [
