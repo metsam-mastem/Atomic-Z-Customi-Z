@@ -144,26 +144,30 @@ func _build_hud() -> void:
 	_add_neon_segment_toggle(skin_controls, "TANK", "tank_accent")
 	_add_neon_segment_toggle(skin_controls, "LOWER", "lower_fairing")
 
+	var palette: Dictionary = _build_document.get("customization", {}).get("palette", {})
 	var primary_picker := ColorPickerButton.new()
-	primary_picker.color = Color("#00FFCC")
+	primary_picker.name = "NeonPrimaryPicker"
+	primary_picker.color = Color.from_string(str(palette.get("primary", "#00FFCC")), Color("#00FFCC"))
 	primary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	primary_picker.tooltip_text = "Neon primary color"
 	primary_picker.color_changed.connect(_on_neon_primary_changed)
 	skin_controls.add_child(primary_picker)
 
 	var secondary_picker := ColorPickerButton.new()
-	secondary_picker.color = Color("#FF00FF")
+	secondary_picker.name = "NeonSecondaryPicker"
+	secondary_picker.color = Color.from_string(str(palette.get("secondary", "#FF00FF")), Color("#FF00FF"))
 	secondary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	secondary_picker.tooltip_text = "Neon secondary color"
 	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
 	skin_controls.add_child(secondary_picker)
 
 	var glow_slider := HSlider.new()
+	glow_slider.name = "NeonGlowSlider"
 	glow_slider.custom_minimum_size = Vector2(120.0, 32.0)
 	glow_slider.min_value = 0.0
 	glow_slider.max_value = 1.0
 	glow_slider.step = 0.05
-	glow_slider.value = 0.8
+	glow_slider.value = float(_build_document.get("render", {}).get("glow_intensity", 0.8))
 	glow_slider.tooltip_text = "Neon glow intensity"
 	glow_slider.value_changed.connect(_on_glow_changed)
 	skin_controls.add_child(glow_slider)

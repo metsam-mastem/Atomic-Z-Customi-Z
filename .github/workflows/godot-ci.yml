@@ -20,7 +20,7 @@ jobs:
           include-templates: false
 
       - name: Import and parse project
-        run: godot --headless --editor --path . --quit
+        run: godot --headless --editor --path . --quit --verbose
 
       - name: Run vertical-slice smoke test
         run: godot --headless --path . --script res://tests/smoke_test.gd
@@ -30,6 +30,12 @@ jobs:
 
       - name: Run canonical BuildDocument contract test
         run: godot --headless --path . --script res://tests/build_document_test.gd
+
+      - name: Run surface material binder ownership test
+        run: godot --headless --path . --script res://tests/surface_material_binder_test.gd
+
+      - name: Run BuildDocument UI hydration test
+        run: godot --headless --path . --script res://tests/build_document_ui_state_test.gd
 
   neon-simulator-tests:
     runs-on: ubuntu-latest
@@ -116,7 +122,7 @@ jobs:
       - name: Import project and export debug APK
         run: |
           godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk
+          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk --verbose
           test -s build/Atomic-Z-debug.apk
 
       - name: Verify APK package and signature
