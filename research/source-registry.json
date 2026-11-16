@@ -722,6 +722,234 @@
         "mobile GLB import/instancing benchmark"
       ],
       "atomic_z_decision": "The demo provides layout and assets, not gameplay, physics, colliders or navigation. Measure mobile LOD, draw calls, textures and streaming before use; pin exact downloaded file hashes."
+    },
+    {
+      "id": "godot-vehicle",
+      "name": "Seerban/godot-vehicle",
+      "repository": "Seerban/godot-vehicle",
+      "url": "https://github.com/Seerban/godot-vehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "935e24c0942df0c0b907dc61512c37b6d64d4f57",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4.6",
+        "renderer": "Forward Plus",
+        "tree_entries": 844,
+        "approx_size_kib": 132035,
+        "vehicle_type": "four-wheel racing car"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "repository LICENSE; bundled addons and assets/dependencies may have separate notices"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "RigidBody + RayCast wheel contact",
+        "spring/damping and grip split",
+        "VehicleData resource composition",
+        "controller contract",
+        "ghost replay/checkpoints"
+      ],
+      "reviewed_paths": [
+        "Scripts/vehicle/Vehicle.gd",
+        "Scripts/vehicle/Wheel.gd",
+        "Scripts/controller/VehicleController.gd",
+        "Resources/VehicleData.gd",
+        "Scripts/sprint/GhostPlayer.gd",
+        "README.md",
+        "project.godot",
+        "LICENSE"
+      ],
+      "atomic_z_decision": "MIT-licensed car reference only. Godot 4.6 Forward+ and four-wheel topology do not match Atomic-Z baseline or motorcycle dynamics. No source/assets imported; use architecture lessons only."
+    },
+    {
+      "id": "kv-vehicle",
+      "name": "Kurtzmusch/kv-vehicle",
+      "repository": "Kurtzmusch/kv-vehicle",
+      "url": "https://github.com/Kurtzmusch/kv-vehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "e37b7ea335a45a2f6d220a4fea3603a248aaac08",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "GDScript",
+        "engine": "Godot 4",
+        "tree_entries": 150,
+        "modules": [
+          "engine",
+          "drivetrain",
+          "clutch",
+          "limited-slip differential",
+          "ABS brakes",
+          "tire response",
+          "suspension",
+          "anti-roll",
+          "input",
+          "Ackermann"
+        ]
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE found in inspected tree"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "modular wheel/vehicle addon structure",
+        "surface-dependent tire friction and audio",
+        "tire response resources and bump sampling"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "addons/kv-vehicle/README.md",
+        "addons/kv-vehicle/TireResponse.gd",
+        "addons/kv-vehicle/nodes/kv-wheel.gd (path not confirmed; use tree inventory)"
+      ],
+      "atomic_z_decision": "No code reuse until rights are clarified. README documents limitations: straight-line suspension travel, shapecast origin sensitivity and wheel/engine feedback oscillations."
+    },
+    {
+      "id": "modu-vehicle",
+      "name": "AurickMikleton/ModuVehicle",
+      "repository": "AurickMikleton/ModuVehicle",
+      "url": "https://github.com/AurickMikleton/ModuVehicle",
+      "revision": {
+        "branch": "main",
+        "commit": "618e43db7578dcf9d4ca4640d832b45a94ef1ddc",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C++17",
+        "engine": "Godot 4.5+ GDExtension",
+        "tree_entries": 137,
+        "build": "CMake + godot-cpp submodule",
+        "status": "work in progress"
+      },
+      "licence": {
+        "spdx": "CC0-1.0",
+        "scope": "repository LICENSE; godot-cpp and third-party submodule/dependencies retain their own terms"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "modular vehicle Resource graph",
+        "tire combined-force model",
+        "slip ratio/angle",
+        "traction control",
+        "wheel inertia integration",
+        "compression/rebound suspension damping"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "CMakeLists.txt",
+        "src/car.cpp",
+        "src/components/wheel.cpp",
+        "src/components/transmission.cpp",
+        "src/math/tire_math.cpp",
+        "src/math/suspension_math.cpp",
+        "src/resources/vehicle_assembly.cpp",
+        "LICENSE"
+      ],
+      "atomic_z_decision": "CC0 source is available but it is an unfinished C++ GDExtension for Godot 4.5+, not a complete motorcycle solver. Do not add native build matrix now; study algorithms and data boundaries."
+    },
+    {
+      "id": "moto-forge",
+      "name": "Whauv/MotoForge motorcycle configurator",
+      "repository": "Whauv/MotoForge",
+      "url": "https://github.com/Whauv/MotoForge",
+      "revision": {
+        "branch": "main",
+        "commit": "f21a554256dff308dcafc069a666c13b1b56de25",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "TypeScript/JavaScript + Python",
+        "tree_entries": 120,
+        "stack": [
+          "Next.js 14",
+          "React Three Fiber",
+          "FastAPI",
+          "SQLAlchemy",
+          "SQLite"
+        ],
+        "features": [
+          "mod-part catalogue",
+          "compatibility relation",
+          "quote/HP/weight deltas",
+          "GLB asset manifest",
+          "URL-shared build"
+        ]
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file found"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "motorcycle parts compatibility modelling",
+        "idempotent quote calculation",
+        "shareable configurations",
+        "GLB alignment/asset manifest conventions"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "apps/api/app/models/compatibility.py",
+        "apps/api/app/models/mod_part.py",
+        "apps/api/app/services/parts_service.py",
+        "apps/api/app/services/quote_service.py",
+        "apps/web/public/models/README.md"
+      ],
+      "atomic_z_decision": "No code reuse without permission; web/backend stack would create duplicate runtime/database. Translate only compatibility and summary concepts into existing BuildDocument/part catalogue contract."
+    },
+    {
+      "id": "volt-r1-showroom",
+      "name": "rohithyv/3D-Motorcycle-Showroom (VOLT R1)",
+      "repository": "rohithyv/3D-Motorcycle-Showroom",
+      "url": "https://github.com/rohithyv/3D-Motorcycle-Showroom",
+      "revision": {
+        "branch": "main",
+        "commit": "fa6d6d94005a76f6bc1d51126075ee2641a5e494",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "TypeScript",
+        "tree_entries": 95,
+        "stack": [
+          "Next.js",
+          "React Three Fiber",
+          "Three.js",
+          "GSAP",
+          "Zustand"
+        ],
+        "product_claim": "fictional electric motorcycle concept; no checkout/payments"
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file found"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "3D scene lazy loading",
+        "mobile opt-in for heavy 3D",
+        "static fallback and error boundary",
+        "camera preset choreography",
+        "FPS/triangles/draw-calls/texture telemetry"
+      ],
+      "reviewed_paths": [
+        "README.md",
+        "src/features/motorcycle/Viewport.tsx",
+        "src/features/motorcycle/Scene.tsx",
+        "src/features/motorcycle/camera/CameraRig.tsx",
+        "src/features/configurator/config/domain.ts",
+        "src/lib/three/optimize.ts"
+      ],
+      "atomic_z_decision": "No source or fictional product specification reuse. Study presentation/performance patterns only; Three.js is not the product runtime and fictional VOLT R1 measurements are not engineering evidence."
     }
   ],
   "rejected_or_unresolved_leads": [
@@ -742,18 +970,6 @@
       "url": "https://github.com/ludditegames/bearcycle",
       "status": "NOT_FOUND",
       "reason": "Guessed replacement owner path did not resolve."
-    },
-    {
-      "id": "moto-forge",
-      "url": "https://github.com/Whauv/MotoForge",
-      "status": "NEEDS_RECHECK",
-      "reason": "Existing Atomic-Z research notes describe a parts catalog and configurator, but this audit did not establish a clear reuse licence or pinned commit."
-    },
-    {
-      "id": "3d-motorcycle-showroom",
-      "url": "https://github.com/rohithyv/3D-Motorcycle-Showroom",
-      "status": "NEEDS_RECHECK",
-      "reason": "Product-presentation reference; React/Three.js rather than Godot and no reuse licence established by this audit."
     },
     {
       "id": "call-of-duty-source",
