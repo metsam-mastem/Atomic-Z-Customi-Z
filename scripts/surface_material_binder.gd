@@ -12,6 +12,7 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 		return {"ok": false, "errors": ["A scene root is required."]}
 
 	var candidate: Dictionary = {}
+	var occupied_slots: Dictionary = {}
 	var errors: Array[String] = []
 	for definition_value in definitions:
 		if not (definition_value is Dictionary):
@@ -38,6 +39,9 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 			continue
 
 		var mesh_instance: MeshInstance3D = target
+		if mesh_instance.material_override != null:
+			errors.append("Binding %s conflicts with a global material_override; resolve it before surface binding." % surface_id)
+			continue
 		if mesh_instance.mesh == null:
 			errors.append("Binding %s targets a mesh instance without a Mesh." % surface_id)
 			continue
@@ -50,6 +54,11 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 			errors.append("Binding %s surface_index is outside the mesh surface range." % surface_id)
 			continue
 
+		var slot_key := str(node_path) + "#" + str(surface_index)
+		if occupied_slots.has(slot_key):
+			errors.append("Multiple surface IDs target the same mesh surface: %s" % slot_key)
+			continue
+		occupied_slots[slot_key] = surface_id
 		candidate[surface_id] = {
 			"node_path": node_path,
 			"surface_index": surface_index
