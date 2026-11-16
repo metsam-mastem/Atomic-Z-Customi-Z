@@ -107,3 +107,96 @@ The README warns not to commit retail assets, executables, compiler binaries or 
 ## Atomic-Z decision
 
 Use OpenNFS to study data-driven vehicle parameters, raycast contact/suspension architecture, wheel slip and race/camera separation. Use OpenUG2 and SPEED RE to study provenance, behavioural specifications, evidence confidence and independent verification. Do not transplant EA assets, game code or recovered tables. Any future motorcycle solver must be newly specified for two-wheel dynamics and validated independently.
+
+
+## 5. SPEED RE — deeper vehicle-physics and reconstruction audit
+
+**Canonical repository:** https://github.com/troikoss/speed-re  
+**Reviewed revision:** `892e5c31d77c751acd123330eda15c157c4f1b1f` (2026-10-29)  
+**Tree:** approximately 1,003 tracked paths.  
+**Licence:** limited MIT grant for original project contributions only. The `LICENSE` expressly excludes recovered/reconstructed NFSU2 program code under `src/Speed/Indep/`, recovered game data, embedded protected material, retail executable/assets and third-party imports. `NOTICE` reiterates those exclusions.  
+**Disposition:** `STUDY_ONLY`; do not vendor wholesale or copy recovered source.
+
+This is the most technically detailed NFS reference reviewed. It is an active, incomplete source-reconstruction of EA Black Box's SPEED engine, using Need for Speed Underground 2 PC v1.2 as its first target. It is **not** an official EA release and not a complete finished game. The author explicitly says the basic driving demo is an intermediate milestone, not complete recovery.
+
+### Repository architecture
+
+The tree separates:
+- `src/Speed/Indep/`: recovered/reconstructed engine/game implementation; this is expressly outside the MIT grant.
+- `src/Platform/`: native platform replacement/scaffolding and integration boundaries; individual file rights still require review.
+- `docs/`: per-subsystem recovery, provenance, verification and coverage notes.
+- `tools/`: many isolated verification scripts and probes.
+- `modding/`: optional native plugin SDK/loader, separate from recovered game source.
+- `config/SPEED2_EXE_1_2/`: configuration/evidence metadata for the selected target.
+
+The public tree includes separate write-ups for vehicle physics, wheel physics, physics parameters, drivetrain, controls, camera, collisions, racing, effects, HUD and native demo replacement. Its tooling includes many `verify_pc_*` scripts; these are subsystem-specific tests, not a single proof of complete game fidelity.
+
+### Vehicle update and integration
+
+The vehicle-physics dossier records an observed substep partition from the original executable. For finite nonnegative input durations, the recovered routine divides by approximately 0.0044, truncates the quotient and adds one; it is not simply a conventional `ceil` rule. Example values supplied to the isolated routine produce four substeps for 1/60 s, two for 1/144 s and one for 1/240 s.
+
+**Important limitation:** the caller's clock source and units are not fully established, and this fragment does not prove the entire game runs at a fixed 240 Hz or is fully frame-rate independent. The original fragment and conversion helper were tested across 216 finite input cases and two x87 precision control words, but the whole vehicle update was not thereby executed.
+
+The derivative collector gathers all registered block derivatives before integration; the integration routine updates scalar states in list order and invokes callbacks. The collector source is reported as byte-matching, while the integration candidate is explicitly reported as one byte short and **nonmatching**. The author does not fake a match with inline assembly or forced registers. This is an excellent example of keeping exact, nonmatching and unknown status separate.
+
+### Engine/drivetrain/upgrade data
+
+The physics parameter documentation describes:
+- per-vehicle physics records and a data-driven tuning layout;
+- a 64-sample drive curve;
+- a selected drivetrain and wheel-radius/coefficient inputs;
+- engine force sampled against speed and resampled into the destination curve;
+- gear transition/shift-point logic;
+- aerodynamic drag divided by mass in the speed helper;
+- selected upgrade groups and per-upgrade modifiers affecting engine curves, drivetrain ratios, suspension/axle/wheel height, brake bias, engine range, limits and drag.
+
+The source docs explicitly retain unresolved offsets, fields and composition steps. Units and meaning for every recovered field must not be assumed from its name alone.
+
+### Wheel force, contact and collision findings
+
+The wheel-physics dossier describes a staged chain:
+1. Prepare wheel force state, transform motion to local coordinates, derive the quantized angle and slip variables, evaluate lateral force, apply lock-state logic and low-speed adjustments.
+2. Correct force bases and coefficients, apply conditional drive-force scaling/undo paths, saturation/limiting, contact/flag overrides and motion-angle correction.
+3. The original uses a quantized angle lookup path and explicit binary32 stores/reloads at precision-sensitive boundaries; a generic `atan2` or unbounded floating-point simplification is not equivalent.
+
+The documentation reports thousands of bounded original/rebuilt state comparisons for isolated functions. Some bodies byte-match; many reconstructed bodies do not. These are isolated emulator/probe comparisons with mapped target data, not a proof that the whole game behaves identically on hardware.
+
+Collision research uses world collision bodies, convex support mappings, GJK pair distance/overlap, impulse response and cached track polygons. This is technically interesting as a modern reverse-engineering case study, but it is four-wheel car collision logic and cannot be transplanted as a two-wheel motorcycle stability or tyre-contact model.
+
+### Controls, camera and native plugin SDK
+
+- The PC controls documentation recovers keyboard binding UI and device-input interfaces. It is useful for action mapping and UI state ownership, not an Android touch implementation.
+- Camera documentation covers chase/cockpit framing, collision push and shake behavior. Concepts such as stable camera targets and separate shake state can inform a new Godot camera, but the original code cannot be copied from excluded recovered paths.
+- The modding SDK documents a native 32-bit Linux plugin interface with lifecycle, HUD and physics-provider callbacks. It is optional scaffolding, disabled by default. It does not provide a second solver or guarantee that the game is fully recovered. Native plugins execute in-process and are explicitly not sandboxed; this system is not appropriate to import into an Android Godot app.
+
+### What remains incomplete
+
+The project scope document explicitly requires executable-wide accounted-for code/data, reproducible source builds, correct original asset loading, verified caller composition/state transitions and end-to-end playable system coverage. It distinguishes byte matching from bounded behavioral evidence and says neither isolated emulation tests nor a playable driving demo establishes full completion.
+
+Therefore, the repo's existence, large verifier count and native driving demo should not be read as “Need for Speed source is finished”. It is a detailed, ongoing reconstruction with substantial unresolved subsystems.
+
+### Atomic-Z transfer decision
+
+**High-value lessons to translate into an independent Godot design:**
+- separate per-bike parameter data from runtime state and visual skin;
+- use fixed-step/substep simulation only after the timestep contract is measured;
+- preserve units, coordinate frames, binary32/precision boundaries and explicit data validation;
+- separate engine torque curves, gear ratios, suspension tuning, wheel contact and body collision;
+- model each verifier against a defined subsystem contract and preserve failing/nonmatching cases;
+- use an explicit coverage inventory and mark every unknown instead of inventing plausible values.
+
+**Do not transfer:**
+- recovered NFSU2 routines or layouts from `src/Speed/Indep/`;
+- retail executable bytes, mapped game files, track/car geometry, textures, audio or tuning tables;
+- the native Linux 32-bit host/plugin loader into Godot/Android;
+- any NFS car parameters as motorcycle parameters.
+
+Pinned documents:
+- [Vehicle physics](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-vehicle-physics.md)
+- [Wheel physics](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-wheel-physics.md)
+- [Physics parameters](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-physics-parameters.md)
+- [Controls](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-controls.md)
+- [Camera](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-camera.md)
+- [Collision](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/pc-collision-notifications.md)
+- [Native demo](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/NATIVE_DEMO.md)
+- [Decompilation scope](https://github.com/troikoss/speed-re/blob/892e5c31d77c751acd123330eda15c157c4f1b1f/docs/DECOMPILATION_SCOPE.md)
