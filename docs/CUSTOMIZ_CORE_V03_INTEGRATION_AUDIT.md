@@ -2,8 +2,8 @@
 
 **Status:** inspected; integration candidates classified; runtime port NOT RUN  
 **Date:** 2026-11-16  
-**Source artifact:** user-uploaded `customiz-core-v0.3.zip`  
-**SHA-256:** `5b64659a59b77931185f738a79466701e11e0be821e0aa0a08d9d6aa5f44c0be`  
+**Current source artifact:** user-uploaded `customiz-core-v0.4.zip`  
+**Current SHA-256:** `ad5f66761e26a9b883ff843125c2b4421c298c9e7995975e9044ce03321397a6`  
 **Repository baseline:** `metsam-mastem/Atomic-Z-Customi-Z`, `main` at `db532efa725e6f54df54a707ce7b5be585d589d6`  
 **Tracking:** [Issue #41](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/issues/41)
 
