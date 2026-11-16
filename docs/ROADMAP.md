@@ -36,7 +36,8 @@ Exit: product customization requires no external Tkinter/Python window.
 - UV/surface registration for graphics.
 - Exact vehicle variant/year/market selection.
 - Recursively inventory imported GLB nodes, mesh surfaces and source material slots.
-- Prototype stable surface bindings and a safe per-surface override adapter; preserve imported PBR materials and fail closed on ambiguous IDs.\n- Complete integration with the GLB asset manifest, BuildDocument material records and garage selection before exposing the editor.
+- Prototype stable surface bindings and a safe per-surface override adapter; preserve imported PBR materials and fail closed on ambiguous IDs.
+- Complete integration with the GLB asset manifest, BuildDocument material records and garage selection before exposing the editor.
 Exit: asset validator passes; fitment claims limited to verified assets; one-surface edits cannot alter unrelated slots.
 
 ## Phase 4 — Rendering
