@@ -44,10 +44,16 @@ static func create_default(vehicle_id: String = "vehicle-unassigned", display_na
 		"extensions": []
 	}
 
+static func create_target_default() -> Dictionary:
+	var document := create_default("kawasaki-ninja-zx-25rr-2026", "Kawasaki Ninja ZX-25RR (2026 reference)")
+	document["vehicle"]["model_year"] = 2026
+	document["vehicle"]["variant"] = "ZX-25RR"
+	# Market remains null until the owner selects a regional specification.
+	return document
+
 static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 	var model_name := str(legacy.get("bike_model", "Unassigned vehicle")).strip_edges()
-	var vehicle_id := _stable_id(model_name)
-	var document := create_default(vehicle_id, model_name)
+	var document := create_target_default()
 	var colors: Dictionary = legacy.get("colors", {})
 	var layers: Array = []
 	var seen: Dictionary = {}
@@ -79,8 +85,10 @@ static func from_legacy_neon(legacy: Dictionary) -> Dictionary:
 	document["render"]["glow_intensity"] = clampf(float(colors.get("glow_intensity", 0.8)), 0.0, 1.0)
 	document["migration"] = {
 		"source_format": "neon_skin_config",
+		"source_vehicle_label": model_name,
+		"source_vehicle_id": _stable_id(model_name),
 		"source_skin_name": str(legacy.get("skin_name", "Imported skin")),
-		"mapping_note": "Legacy 2D points are preserved but are not claimed to be surface-aligned."
+		"mapping_note": "Legacy customization settings were imported into the selected 2026 ZX-25RR reference context. Legacy 2D points are not surface-aligned; no ZX-25RR geometry or fitment is inferred or validated."
 	}
 	return document
 
