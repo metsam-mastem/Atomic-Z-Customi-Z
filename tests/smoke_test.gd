@@ -95,6 +95,8 @@ func _run_smoke_test() -> void:
 	scene.call("_on_neon_primary_changed", Color("#123456"))
 	scene.call("_on_glow_changed", 0.55)
 	scene.call("_on_neon_toggled", false)
+	bike.call("set_exploded", true)
+	var saved_exploded_tank_position: Vector3 = tank.position
 	var document: Dictionary = scene.call("get_build_document_snapshot")
 	if document.get("schema_version") != 1:
 		push_error("Garage must expose the canonical BuildDocument.")
@@ -143,6 +145,10 @@ func _run_smoke_test() -> void:
 		push_error("Saved neon visibility must be stored in the canonical BuildDocument.")
 		quit(1)
 		return
+	if str(restored.get("assembly", {}).get("mode", "")) != "exploded":
+		push_error("Saved assembly mode must be stored in the canonical BuildDocument.")
+		quit(1)
+		return
 
 	var restored_bike := BikeAssemblyScript.new()
 	restored_bike.configure_build_document(restored)
@@ -150,6 +156,7 @@ func _run_smoke_test() -> void:
 	await process_frame
 	var restored_tank_color: Color = restored_bike.get_part_color("fuel_tank")
 	var restored_front_color: Color = restored_bike.get_part_color("front_fairing")
+	var restored_tank_position: Vector3 = restored_bike.get_node("fuel_tank").position
 	var expected_project_color := Color.from_string("#" + project_color.to_html(false).to_upper(), Color.WHITE)
 	var expected_test_color := Color.from_string("#" + test_color.to_html(false).to_upper(), Color.WHITE)
 	if not restored_tank_color.is_equal_approx(expected_project_color):
@@ -158,6 +165,10 @@ func _run_smoke_test() -> void:
 		return
 	if not restored_front_color.is_equal_approx(expected_test_color):
 		push_error("Saved paint for another part must remain independent after reload.")
+		quit(1)
+		return
+	if not restored_tank_position.is_equal_approx(saved_exploded_tank_position):
+		push_error("Saved Stock/Exploded mode must restore the assembly transforms.")
 		quit(1)
 		return
 
