@@ -43,3 +43,14 @@ No Godot editor/runtime, Android export or physical-device test has been run dur
 - PASS — smoke assertions: main scene load, named fuel-tank part, exploded transform movement, stock transform restoration and body material update.
 - Run: https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43778397883
 - NOT RUN — Android export/install, visual review, touch-on-device, thermal/performance profile and manufacturer-model accuracy.
+
+ 
+## Neon skin utility gates
+- [ ] JSON parses and preserves the requested ZX-25R skin configuration.
+- [ ] Python unit tests validate color references, geometry point arrays and glow range.
+- [ ] Tkinter app opens on a desktop with Tk support.
+- [ ] All three layer visibility toggles work.
+- [ ] Primary/secondary color selection updates the preview.
+- [ ] Glow slider changes layered stroke appearance.
+- [ ] Save/reload round-trips valid JSON without losing segment IDs or points.
+- [ ] A verified ZX-25R/ZX-25RR reference image and model-year/market mapping exist before claiming physical fitment.
