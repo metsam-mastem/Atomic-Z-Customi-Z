@@ -3,6 +3,7 @@ extends SceneTree
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
+const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 
 func _initialize() -> void:
 	call_deferred("_run_smoke_test")
@@ -186,6 +187,67 @@ func _run_smoke_test() -> void:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
-	print("PASS: part-isolated paint, canonical state, neon visibility and BuildDocument save/reload recovery.")
+
+	var quality := QualityControllerScript.new()
+	var quality_light := DirectionalLight3D.new()
+	root.add_child(quality_light)
+	root.add_child(quality)
+	quality.configure(quality_light)
+	if not quality.has_method("record_frame"):
+		push_error("QualityController must expose deterministic frame sampling for tests.")
+		quit(1)
+		return
+	if quality.call("get_quality_tier") != "quality" or not quality_light.shadow_enabled:
+		push_error("Adaptive quality must begin in the quality tier with shadows enabled.")
+		quit(1)
+		return
+
+	_feed_quality_window(quality, 20)
+	if quality.call("is_reduced_quality"):
+		push_error("One low-FPS window must not trigger a quality reduction.")
+		quit(1)
+		return
+	_feed_quality_window(quality, 20)
+	if not quality.call("is_reduced_quality") or quality_light.shadow_enabled:
+		push_error("Two consecutive low-FPS windows must disable expensive shadows.")
+		quit(1)
+		return
+
+	for _window in range(3):
+		_feed_quality_window(quality, 60)
+	if not quality.call("is_reduced_quality"):
+		push_error("Quality must not recover before four consecutive high-FPS windows.")
+		quit(1)
+		return
+	_feed_quality_window(quality, 40)
+	if not quality.call("is_reduced_quality"):
+		push_error("Mid-band FPS must preserve the reduced tier and reset recovery hysteresis.")
+		quit(1)
+		return
+	for _window in range(3):
+		_feed_quality_window(quality, 60)
+	if not quality.call("is_reduced_quality"):
+		push_error("A mid-band sample must restart the high-FPS recovery count.")
+		quit(1)
+		return
+	_feed_quality_window(quality, 60)
+	if quality.call("is_reduced_quality") or not quality_light.shadow_enabled:
+		push_error("Four consecutive high-FPS windows must restore the quality tier.")
+		quit(1)
+		return
+	if not is_equal_approx(float(quality.call("get_last_measured_fps")), 60.0):
+		push_error("Adaptive quality must expose the latest measured FPS for diagnostics.")
+		quit(1)
+		return
+	quality.queue_free()
+	quality_light.queue_free()
+
+	print("PASS: garage integration, canonical state, persistence and adaptive quality hysteresis.")
 
 	quit(0)
+
+func _feed_quality_window(controller: Node, fps: int) -> void:
+	var frame_count := fps * 2
+	var frame_delta := 2.0 / float(frame_count)
+	for _frame in range(frame_count):
+		controller.call("record_frame", frame_delta)
