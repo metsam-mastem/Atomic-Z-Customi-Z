@@ -65,14 +65,15 @@ func _run() -> void:
 	document["vehicle"]["variant"] = "ZX-25RR"
 	document["vehicle"]["market"] = "EU"
 	document["asset"]["uri"] = FIXTURE_PATH
-	document["asset"]["sha256"] = FileAccess.get_sha256(FIXTURE_PATH)
 	document["asset"]["license"] = "CC0-1.0"
 	document["asset"]["source"] = "Atomic-Z-Customi-Z synthetic GLB test fixture"
 	document["asset"]["validation_status"] = "test_fixture"
-	var imported_identity: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(document, document["asset"]["sha256"], "Synthetic Generic Test Motorcycle")
+	var fixture_hash := FileAccess.get_sha256(FIXTURE_PATH)
+	var imported_identity: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(document, fixture_hash, "Synthetic Generic Test Motorcycle")
 	_assert(imported_identity.get("ok", false), "Imported asset identity must be prepared from the actual model file.")
 	if imported_identity.get("ok", false):
 		document = imported_identity["document"]
+	document["asset"]["sha256"] = fixture_hash
 	_assert(document.get("vehicle", {}).get("display_name") == "Synthetic Generic Test Motorcycle", "Imported generic model must replace the prior ZX-25RR display label.")
 	_assert(document.get("vehicle", {}).get("model_year") == null and document.get("vehicle", {}).get("variant") == null and document.get("vehicle", {}).get("market") == null, "Unverified imported model identity fields must be cleared.")
 	_assert(str(document.get("vehicle", {}).get("vehicle_id", "")).begins_with("imported-"), "Imported vehicle ID must be pinned to the imported asset hash.")
