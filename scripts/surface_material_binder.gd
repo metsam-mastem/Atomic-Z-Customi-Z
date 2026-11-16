@@ -54,7 +54,7 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 			errors.append("Binding %s surface_index is outside the mesh surface range." % surface_id)
 			continue
 
-		var slot_key := str(node_path) + "#" + str(surface_index)
+		var slot_key := str(mesh_instance.get_instance_id()) + "#" + str(surface_index)
 		if occupied_slots.has(slot_key):
 			errors.append("Multiple surface IDs target the same mesh surface: %s" % slot_key)
 			continue
