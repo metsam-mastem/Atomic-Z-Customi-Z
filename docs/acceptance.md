@@ -99,3 +99,18 @@ Status of these new gates: NOT RUN. Existing headless tests and CI history cover
 - [x] Godot 4.4.1 CI smoke and BuildDocument tests pass on the current feature head.
 
 Implementation status: PASS — headless import, garage smoke, neon and BuildDocument tests passed at commit `b773e6911fc30bf20693211ca745c8d7995beae3` in CI run [#43788490715](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788490715). Android Debug export passed after enabling ETC2/ASTC at commit `ced48a657dd688d683b9328a97081af7bfad52ac` in CI run [#43788240486](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788240486). Physical device acceptance remains NOT RUN.
+
+
+## GLB surface material binding and unified HUD
+
+- [ ] Stable surface IDs resolve to unique MeshInstance3D node paths and valid mesh surface indices.
+- [ ] Applying a material changes only the selected surface and duplicates the source resource.
+- [ ] Imported base PBR materials and unrelated surface overrides remain unchanged.
+- [ ] Binder rejects duplicate IDs, aliased slots, missing nodes, invalid indices and global material_override conflicts atomically.
+- [ ] Binder refuses to replace or clear a surface override after ownership transfers to another component.
+- [ ] The focused binder contract test runs in the pinned Godot 4.4.1 CI workflow.
+- [ ] Binder surface records are connected to imported-asset provenance and canonical BuildDocument material targets before the UI exposes full surface editing.
+- [ ] Primary/secondary neon color pickers and glow slider hydrate from the active BuildDocument on garage startup.
+- [ ] A saved build reopened in a fresh garage scene displays the same visible HUD values as the canonical BuildDocument.
+
+Implementation status: implementation and focused test additions are present on the unified feature branch. Exact-head CI verification is pending. Android export does not imply physical-device acceptance.
