@@ -114,4 +114,12 @@ Implementation status: PASS — headless import, garage smoke, neon and BuildDoc
 - [ ] A saved build reopened in a fresh garage scene displays the same visible HUD values as the canonical BuildDocument.
 
 Implementation status: implementation and focused test additions are present on the unified feature branch. Exact-head CI verification is pending. Android export does not imply physical-device acceptance.
-\n\n## Legacy profile migration acceptance\n- [ ] On first launch without a canonical BuildDocument, a valid `user://skin_profile.json` imports its color into the primary BuildDocument palette.\n- [ ] Legacy 0..10 glow and pulse values are preserved unchanged in a versioned `extensions` record; they are not silently coerced to the 0..1 render contract.\n- [ ] The canonical document is saved through `BuildDocumentStore`, and the original legacy profile file is retained.\n- [ ] A valid existing BuildDocument takes precedence over any stale legacy profile and the old file remains untouched.\n- [ ] Invalid legacy values are rejected without mutating the source profile or active document.\n- [ ] Godot contract and first-launch migration tests run in the pinned 4.4.1 CI workflow.\n
+
+
+## Legacy profile migration acceptance
+- [ ] On first launch without a canonical BuildDocument, a valid `user://skin_profile.json` imports its color into the primary BuildDocument palette.
+- [ ] Legacy 0..10 glow and pulse values are preserved unchanged in a versioned `extensions` record; they are not silently coerced to the 0..1 render contract.
+- [ ] The canonical document is saved through `BuildDocumentStore`, and the original legacy profile file is retained.
+- [ ] A valid existing BuildDocument takes precedence over any stale legacy profile and the old file remains untouched.
+- [ ] Invalid legacy values are rejected without mutating the source profile or active document.
+- [ ] Godot contract and first-launch migration tests run in the pinned 4.4.1 CI workflow.
