@@ -25,6 +25,12 @@ jobs:
       - name: Run vertical-slice smoke test
         run: godot --headless --path . --script res://tests/smoke_test.gd
 
+      - name: Run AI provider transport-policy tests
+        run: godot --headless --path . --script res://tests/ai_model_registry_test.gd
+
+      - name: Run optional AI garage integration test
+        run: godot --headless --path . --script res://tests/ai_overlay_integration_test.gd
+
       - name: Run neon skin runtime test
         run: godot --headless --path . --script res://tests/neon_skin_test.gd
 
