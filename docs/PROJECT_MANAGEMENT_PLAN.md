@@ -56,8 +56,8 @@ Priority is not permission to merge: gates still apply.
 - Exit: device evidence recorded; blockers triaged; no production-readiness claim beyond proven gates.
 
 ### Stage D — P2 verified GLB import and vehicle asset pipeline (BLOCKED/DEFERRED)
-- Reassess issue #47: first decide whether Android content-URI native plugin is necessary or Godot built-in picker suffices.
-- If native plugin required, produce version-matched source/build/AAR/license and reproducible optional CI; fail closed if missing.
+- Godot 4.4.1 has a native Android file dialog, but its 4.4.1 non-media document access has known limitations; do not assume the Godot 4.6 SAF URI flow exists in the current runtime. See issue #47 evidence.
+- Keep MANAGE_EXTERNAL_STORAGE disabled. Evaluate a narrow optional ContentResolver bridge or a separately tested Godot engine upgrade; if a native plugin is required, produce version-matched source/build/AAR/license and reproducible optional CI; fail closed if missing.
 - Validate provenance/license/hash/size, cancellation, stable IDs/surface mapping and BuildDocument linkage.
 - Exit: CI export plus physical-device import QA pass; no unverified fitment/CAD claims.
 
@@ -77,11 +77,12 @@ Priority is not permission to merge: gates still apply.
 
 ## 6. Live work snapshot (2026-11-16; refresh before execution)
 
-- **PR #50 — governance/status checkpoint:** OPEN. Validate freshness and reconcile against current GitHub inventory before merge.
-- **PR #53 — optional free-first AI assistant integration:** OPEN; exact-head Godot/Python/Android CI queued. PR #51 was closed as a superseded duplicate after its malformed workflow command was identified; PR #53 carries the corrected workflow.
-- **Issue #47 — Android GLB content-URI support:** BLOCKED/deferred; decision on necessity and plugin reproducibility precedes implementation.
-- **Issue #49 — AI assistant capability:** linked to PR #51; track through PR review and acceptance.
-- Research vault PR #46 is merged; do not re-import its source or create a parallel research cache.
+- **PR #50 — canonical status/roadmap checkpoint:** OPEN; docs-only, based on current main. Exact-head CI pending.
+- **PR #53 — optional free-first AI assistant:** OPEN; clean mainline transplant. Exact-head CI pending; Android cleartext is disabled, hosted API keys are blocked on Android, and APK INTERNET permission is checked in CI.
+- **Issue #47 — Android GLB content-URI support:** BLOCKED/deferred; Godot 4.4.1 SAF limitations are documented. No broad storage permission or incomplete plugin is allowed.
+- **Issue #49 — AI assistant capability:** OPEN; PR #53 is the implementation candidate. Live desktop Ollama and Android HTTPS provider QA remain NOT RUN.
+- **Issue #54 — P1 Redmi device acceptance and production signing:** OPEN; mandatory before commercial release.
+- **PR #46 — research vault:** MERGED; do not re-import its source or create a parallel research cache. PR #51 is closed as superseded.
 
 This snapshot is intentionally provisional; docs/PROJECT_STATUS.md and live GitHub facts must be reconciled as the first operational step.
 
