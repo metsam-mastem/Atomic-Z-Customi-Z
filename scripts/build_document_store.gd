@@ -11,13 +11,11 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 	var backup_path := path + ".bak"
 	if not _remove_file_if_exists(temporary_path):
 		return false
-
 	if not _write_verified_document(document, temporary_path):
 		_remove_file_if_exists(temporary_path)
 		return false
 
-	# If an earlier interrupted save left a backup, restore it first when the
-	# primary is invalid. Never discard the only valid copy.
+	# Resolve an interrupted previous save before beginning another rotation.
 	if FileAccess.file_exists(backup_path):
 		var primary_document := _read_valid_document(path)
 		var backup_document := _read_valid_document(backup_path)
@@ -25,15 +23,19 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 			if not _restore_backup(path, backup_path):
 				_remove_file_if_exists(temporary_path)
 				return false
-		elif primary_document.is_empty() and backup_document.is_empty():
-			# Neither copy is valid. Keep the primary as a forensic artifact;
-			# refuse to rotate it over the backup path.
-			_remove_file_if_exists(temporary_path)
-			return false
-		else:
+			# The restored primary is now independently valid; it is safe to
+			# rotate it back into the backup slot below.
 			if not _remove_file_if_exists(backup_path):
 				_remove_file_if_exists(temporary_path)
 				return false
+		elif primary_document.is_empty() and backup_document.is_empty():
+			# Neither copy is valid. Preserve both for diagnosis and refuse to
+			# overwrite the only remaining evidence with a new save.
+			_remove_file_if_exists(temporary_path)
+			return false
+		elif not _remove_file_if_exists(backup_path):
+			_remove_file_if_exists(temporary_path)
+			return false
 
 	var had_primary := FileAccess.file_exists(path)
 	if had_primary:
@@ -57,8 +59,7 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 		_remove_file_if_exists(temporary_path)
 		return false
 
-	var installed := _read_valid_document(path)
-	if installed != document:
+	if _read_valid_document(path) != document:
 		push_error("BuildDocumentStore: installed document failed read-back verification.")
 		_remove_file_if_exists(path)
 		if had_primary:
@@ -76,14 +77,22 @@ static func load_document(path: String = "user://atomic_z_build.json") -> Dictio
 	if backup.is_empty():
 		return {}
 
-	# Restore through a verified temporary file and keep the backup intact.
-	if _write_verified_document(backup, path + ".recovery.tmp"):
-		var recovery_error := DirAccess.rename_absolute(
-			ProjectSettings.globalize_path(path + ".recovery.tmp"),
-			ProjectSettings.globalize_path(path)
-		)
-		if recovery_error != OK:
-			_remove_file_if_exists(path + ".recovery.tmp")
+	# Copy through a verified temporary file. Keep the backup until the
+	# restored primary has been installed successfully.
+	var recovery_path := path + ".recovery.tmp"
+	if not _write_verified_document(backup, recovery_path):
+		_remove_file_if_exists(recovery_path)
+		return backup
+	if not _remove_file_if_exists(path):
+		_remove_file_if_exists(recovery_path)
+		return backup
+	var recovery_error := DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(recovery_path),
+		ProjectSettings.globalize_path(path)
+	)
+	if recovery_error != OK:
+		push_error("BuildDocumentStore: backup recovery failed: " + error_string(recovery_error))
+		_remove_file_if_exists(recovery_path)
 	return backup
 
 static func _write_verified_document(document: Dictionary, path: String) -> bool:
@@ -109,17 +118,25 @@ static func _read_valid_document(path: String) -> Dictionary:
 	return result
 
 static func _restore_backup(path: String, backup_path: String) -> bool:
-	if not FileAccess.file_exists(backup_path) or not _read_valid_document(backup_path).is_empty() == false:
+	var backup := _read_valid_document(backup_path)
+	if backup.is_empty():
 		return false
-	_remove_file_if_exists(path)
+	var recovery_path := path + ".recovery.tmp"
+	if not _write_verified_document(backup, recovery_path):
+		_remove_file_if_exists(recovery_path)
+		return false
+	if not _remove_file_if_exists(path):
+		_remove_file_if_exists(recovery_path)
+		return false
 	var recovery_error := DirAccess.rename_absolute(
-		ProjectSettings.globalize_path(backup_path),
+		ProjectSettings.globalize_path(recovery_path),
 		ProjectSettings.globalize_path(path)
 	)
-	if recovery_error == OK:
-		return true
-	push_error("BuildDocumentStore: backup restore failed: " + error_string(recovery_error))
-	return false
+	if recovery_error != OK:
+		push_error("BuildDocumentStore: backup restore failed: " + error_string(recovery_error))
+		_remove_file_if_exists(recovery_path)
+		return false
+	return _read_valid_document(path) == backup
 
 static func _remove_file_if_exists(path: String) -> bool:
 	if not FileAccess.file_exists(path):
