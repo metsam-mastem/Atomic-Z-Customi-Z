@@ -68,7 +68,7 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 		_remove_if_exists(temporary_path)
 		return false
 
-	_remove_if_exists(backup_path)
+	# Keep the previous valid revision as the recovery point until the next save.
 	return true
 
 static func load_document(path: String = "user://atomic_z_build.json") -> Dictionary:
