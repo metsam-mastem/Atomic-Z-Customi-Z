@@ -34,7 +34,10 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 		return _failure("Asset source/provenance metadata is required.")
 
 	var catalog_value: Variant = asset.get("surface_catalog", null)
-	if not (catalog_value is Array) or (catalog_value as Array).is_empty():
+	if not (catalog_value is Array):
+		return _failure("BuildDocument asset.surface_catalog must be an array.")
+	var surface_catalog: Array = catalog_value
+	if surface_catalog.is_empty():
 		return _failure("A validated, non-empty surface catalog is required for editable GLB loading.")
 
 	var gltf_document := GLTFDocument.new()
@@ -61,7 +64,7 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 		return _failure("Surface binder rejected the catalog: " + str(binder_result.get("errors", [])))
 
 	var parts_by_id: Dictionary = {}
-	for surface_value in catalog_value:
+	for surface_value in surface_catalog:
 		if not (surface_value is Dictionary):
 			scene_root.free()
 			return _failure("Surface catalog contains an invalid record.")
@@ -124,7 +127,7 @@ static func _apply_saved_surface_materials(document: Dictionary, binder) -> Dict
 static func _is_safe_local_glb_uri(value: String) -> bool:
 	if not (value.begins_with("res://") or value.begins_with("user://")):
 		return false
-	if not value.to_lower().ends_with(".glb") or value.contains(":\u0000"):
+	if not value.to_lower().ends_with(".glb"):
 		return false
 	var relative_path := value.trim_prefix("res://").trim_prefix("user://")
 	if relative_path.is_empty() or relative_path.begins_with("/") or relative_path.contains("\\"):
