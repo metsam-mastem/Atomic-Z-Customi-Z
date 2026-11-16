@@ -4,7 +4,7 @@ Date: 2026-11-16. Research informs architecture; it does not prove the project's
 
 ## Repository baseline observed
 Repository: https://github.com/metsam-mastem/Atomic-Z-Customi-Z
-Observed: Godot 4 Compatibility project, Android arm64 export preset, main scene, bike assembly script, neon skin runtime, legacy JSON, Tkinter preview, Godot/Python tests, architecture/acceptance/research docs. Recent commits include neon runtime, garage controls, validation, save/reload and Android export changes. Branch search showed main only; PR search returned none; open issue search returned none. Commit responses did not identify every agent reliably. README still calls Tkinter a separate preview tool and ModernGL an isolated experiment; unified-system spec supersedes this framing.
+Observed on 2026-11-16: `main` is `4d2cf3b82bd78437541b49da46f522c06d2652b5`. Active dependency chain is PR #28 (Android artifact hardening) → PR #29 (GLB surface catalog / BuildDocument integration) → PR #30 (legacy neon profile migration). PR #28 exact-head Android export passed, but its BuildDocument smoke subtest exposed a false-green assertion helper; PR #29 corrected the helper and its exact-head Godot/Python/Android CI passed in run #43807888243. PR #30 is a draft stacked on PR #29; at the time of this update its Godot/Python jobs passed and Android export remained in progress. The current main branch still contains the historical parallel skin-profile writer and old BuildDocument test helper; their proposed retirement/correction exists only in PR branches. Open-issue search returned none.
 
 ## Open-source references
 - Godot: https://github.com/godotengine/godot — use native scene, resource, renderer, UI, input, persistence and Android export.
@@ -47,6 +47,7 @@ Nature Index topic pages are synthesized summaries, not direct validation. Consu
 | ADR-006 | Hardware mapping requires calibration | No invented LED indices or wiring |
 | ADR-007 | Visual and engineering evidence separated | Prevent false safety/fitment claims |
 | ADR-008 | Branch/PR-only collaboration | Prevent direct-main races |
+| ADR-009 | Retire the unused SkinProfileStore and NeonSkin.save_skin writers; treat legacy `user://skin_profile.json` as a read-only, one-time migration input into BuildDocument; preserve unmapped 0..10 glow/pulse values in a versioned extension and retain the original file | Enforce one canonical writable state without losing legacy user data | Accepted by product owner; implementation proposed in PR #30 |
 
 ## External adoption checklist
 Verify license and commercial rights, maintenance/release, Godot/API compatibility, copied code versus inspiration, exact upstream commit, dependencies/security, attribution, integration tests and reason native Godot features are insufficient. No external code or asset is automatically approved by being listed here.
