@@ -29,15 +29,15 @@ static func validate_manifest(scene_root: Node, definitions: Array) -> Dictionar
 		var surface_id := str(definition.get("surface_id", "")).strip_edges()
 		var node_path_text := str(definition.get("node_path", "")).strip_edges()
 		var surface_index_value: Variant = definition.get("surface_index", null)
-		if surface_id.is_empty():
-			errors.append("surface_id must be a non-empty stable identifier.")
+		if not _is_stable_surface_id(surface_id):
+			errors.append("surface_id must use a stable lowercase identifier.")
 			continue
 		if seen_ids.has(surface_id):
 			errors.append("Duplicate surface_id: %s" % surface_id)
 			continue
 		seen_ids[surface_id] = true
-		if node_path_text.is_empty():
-			errors.append("Surface %s requires a root-relative node_path." % surface_id)
+		if not _is_root_relative_node_path(node_path_text):
+			errors.append("Surface %s requires a safe root-relative node_path." % surface_id)
 			continue
 		var surface_index_is_integer := surface_index_value is int
 		if surface_index_value is float:
@@ -122,6 +122,19 @@ static func _collect_surfaces(current: Node, scene_root: Node, output: Array[Dic
 				})
 	for child in current.get_children():
 		_collect_surfaces(child, scene_root, output)
+
+static func _is_stable_surface_id(value: String) -> bool:
+	var regex := RegEx.new()
+	regex.compile("^[a-z0-9][a-z0-9._-]*$")
+	return regex.search(value) != null
+
+static func _is_root_relative_node_path(value: String) -> bool:
+	if value.is_empty() or value.begins_with("/") or value.contains(":"):
+		return false
+	for segment in value.split("/", false):
+		if segment == "..":
+			return false
+	return true
 
 static func _source_material_name(material: Material) -> String:
 	if material == null:
