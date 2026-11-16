@@ -118,6 +118,24 @@ func _build_hud() -> void:
 	neon_button.toggled.connect(_on_neon_toggled)
 	controls.add_child(neon_button)
 
+	_add_neon_segment_toggle(controls, "TAIL", "tail_underglow")
+	_add_neon_segment_toggle(controls, "TANK", "tank_accent")
+	_add_neon_segment_toggle(controls, "LOWER", "lower_fairing")
+
+	var primary_picker := ColorPickerButton.new()
+	primary_picker.color = Color("#00FFCC")
+	primary_picker.custom_minimum_size = Vector2(42.0, 42.0)
+	primary_picker.tooltip_text = "Neon primary color"
+	primary_picker.color_changed.connect(_on_neon_primary_changed)
+	controls.add_child(primary_picker)
+
+	var secondary_picker := ColorPickerButton.new()
+	secondary_picker.color = Color("#FF00FF")
+	secondary_picker.custom_minimum_size = Vector2(42.0, 42.0)
+	secondary_picker.tooltip_text = "Neon secondary color"
+	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
+	controls.add_child(secondary_picker)
+
 	var glow_slider := HSlider.new()
 	glow_slider.custom_minimum_size = Vector2(120.0, 32.0)
 	glow_slider.min_value = 0.0
@@ -147,6 +165,26 @@ func _on_toggle_assembly() -> void:
 
 func _on_body_color_changed(color: Color) -> void:
 	_bike.set_body_color(color)
+
+func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: String) -> void:
+	var segment_button := Button.new()
+	segment_button.text = label_text
+	segment_button.toggle_mode = true
+	segment_button.button_pressed = true
+	segment_button.toggled.connect(_on_neon_segment_toggled.bind(segment_id))
+	parent.add_child(segment_button)
+
+func _on_neon_segment_toggled(enabled: bool, segment_id: String) -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.set_segment_visible(segment_id, enabled)
+
+func _on_neon_primary_changed(color: Color) -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.set_palette_color("primary", color)
+
+func _on_neon_secondary_changed(color: Color) -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.set_palette_color("secondary", color)
 
 func _on_neon_toggled(enabled: bool) -> void:
 	if is_instance_valid(_neon_skin):
