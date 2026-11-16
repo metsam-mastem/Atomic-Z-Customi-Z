@@ -1,6 +1,8 @@
 extends RefCounted
 class_name SurfaceMaterialBinder
 
+const BuildDocumentScript = preload("res://scripts/build_document.gd")
+
 var _root: Node
 var _bindings: Dictionary = {}
 var _owned_overrides: Dictionary = {}
@@ -71,6 +73,95 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 	_root = scene_root
 	_bindings = candidate
 	return {"ok": true, "errors": [], "surface_ids": _bindings.keys()}
+
+## Configures bindings from the canonical BuildDocument asset catalog.
+func configure_from_build_document(scene_root: Node, document: Dictionary) -> Dictionary:
+	var asset_value: Variant = document.get("asset", null)
+	if not (asset_value is Dictionary):
+		return {"ok": false, "errors": ["BuildDocument asset must be an object."]}
+	var catalog: Variant = asset_value.get("surface_catalog", [])
+	if not (catalog is Array):
+		return {"ok": false, "errors": ["BuildDocument asset.surface_catalog must be an array."]}
+	return configure(scene_root, catalog)
+
+## Applies a color edit and persists it to the same canonical BuildDocument.
+## Only StandardMaterial3D surfaces are currently supported; other shader/material
+## types fail closed rather than discarding their imported PBR/shader properties.
+func set_surface_color(document: Dictionary, surface_id: String, color: Color) -> bool:
+	if not _bindings.has(surface_id) or _resolve_mesh_instance(surface_id) == null:
+		return false
+	var candidate := document.duplicate(true)
+	var customization_value: Variant = candidate.get("customization", null)
+	if not (customization_value is Dictionary):
+		return false
+	var customization: Dictionary = customization_value
+	var materials_value: Variant = customization.get("materials", [])
+	if not (materials_value is Array):
+		return false
+	var materials: Array = materials_value.duplicate(true)
+	var material_id := "surface-paint:" + surface_id
+	var color_hex := "#" + color.to_html(false).to_upper()
+	var record := {
+		"material_id": material_id,
+		"target_surface_ids": [surface_id],
+		"base_color": color_hex
+	}
+	var found := false
+	for index in range(materials.size()):
+		if materials[index] is Dictionary and str(materials[index].get("material_id", "")) == material_id:
+			materials[index] = record
+			found = true
+			break
+	if not found:
+		materials.append(record)
+	customization["materials"] = materials
+	candidate["customization"] = customization
+	if not BuildDocumentScript.validate(candidate).get("ok", false):
+		return false
+	if apply_surface_color(surface_id, color) == null:
+		return false
+	document.clear()
+	document.merge(candidate, true)
+	return true
+
+## Duplicates the imported/owned StandardMaterial3D and changes only its albedo.
+func apply_surface_color(surface_id: String, color: Color) -> StandardMaterial3D:
+	if not _bindings.has(surface_id):
+		return null
+	var mesh_instance := _resolve_mesh_instance(surface_id)
+	if mesh_instance == null or mesh_instance.mesh == null or mesh_instance.material_override != null:
+		return null
+	var surface_index := int(_bindings[surface_id]["surface_index"])
+	if surface_index < 0 or surface_index >= mesh_instance.mesh.get_surface_count():
+		return null
+	var current_override := mesh_instance.get_surface_override_material(surface_index)
+	var source_material: Material = null
+	if current_override != null:
+		if not _owned_overrides.has(surface_id):
+			return null
+		var ownership: Dictionary = _owned_overrides[surface_id]
+		if int(ownership.get("instance_id", -1)) != mesh_instance.get_instance_id():
+			return null
+		if int(ownership.get("surface_index", -1)) != surface_index:
+			return null
+		if ownership.get("material") != current_override:
+			return null
+		source_material = current_override
+	else:
+		source_material = mesh_instance.mesh.surface_get_material(surface_index)
+	if not (source_material is StandardMaterial3D):
+		return null
+	var edited_material := source_material.duplicate(true) as StandardMaterial3D
+	if edited_material == null:
+		return null
+	edited_material.albedo_color = color
+	mesh_instance.set_surface_override_material(surface_index, edited_material)
+	_owned_overrides[surface_id] = {
+		"instance_id": mesh_instance.get_instance_id(),
+		"surface_index": surface_index,
+		"material": edited_material
+	}
+	return edited_material
 
 ## Applies a duplicated material to exactly one registered surface.
 ## Returns the per-instance duplicate, or null when the ID/material is invalid.
