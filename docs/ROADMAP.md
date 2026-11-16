@@ -101,3 +101,16 @@ Every task has owner, scope, dependencies, acceptance criteria and estimate. Eve
 - NOT RUN — verified production GLB motorcycle asset, factory dimensions, UV/surface mapping, undo/redo, responsive touch review, Android FPS/memory/thermal profiling and engineering validation.
 
 The current milestone is a working Godot garage vertical slice with a CI-built debug APK, not a production-ready motorcycle configurator. Do not close Phases 2–7 until their stated exit criteria are met.
+
+
+## Live integration checkpoint — 2026-11-16
+
+- PASS — GLB surface catalog and stable surface-ID validation integrated through PR #43; Godot smoke, GLB contract, Neon simulator and Android Debug/Release CI passed on exact head.
+- PASS — Neon state now migrates into the canonical BuildDocument through PR #45. The parallel skin profile writer is retired; legacy shader values that cannot be safely normalized remain preserved as unmapped extension data.
+- PASS — P1 camera gestures integrated through PR #45: one-finger orbit, two-finger pan and pinch zoom. Exact-head CI passed; physical Redmi touch QA remains NOT RUN.
+- PASS — PR #46 research-only source vault merged after exact-head registry, shell syntax, Godot, Python and Android Debug/Release checks passed in run #43839645819.
+- OPEN — PR #51 implements the optional safe AI assistant in the same garage lifecycle; exact-head Godot/Python/Android CI was QUEUED at the latest checkpoint. AI remains outside P1 acceptance until exact-head CI and separate device/network validation are complete. The earlier unsafe prototype PR #31 was closed without merge.
+- BLOCKED — Issue #47 tracks GLB runtime import and Android content-URI plugin work after PR #38's Android export failure.
+- NOT RUN — physical device installation, production GLB provenance/fitment, performance/thermal profiling, production signing and commercial release acceptance.
+
+The current P1 gate is now a single integrated Godot runtime with one BuildDocument write path. Do not start another parallel Neon store, camera controller, renderer or Android app. Finish the exact-device acceptance and release-hardening gates before expanding scope.
