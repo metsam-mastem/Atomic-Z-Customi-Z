@@ -72,3 +72,11 @@ The current points are 2D canvas pixels. To project them onto the motorcycle, fi
 
 ### Color and rendering semantics
 The JSON stores sRGB hex colors and a normalized glow intensity in [0, 1]. The Tkinter preview approximates glow using layered 2D strokes. The Godot implementation should convert colors consistently, use emissive materials and a restrained bloom/glow post-process only on capable device tiers. Tkinter's glow is not physically based light emission.
+
+## Godot neon runtime implementation
+
+`scripts/neon_skin.gd` is the runtime consumer of the shared skin JSON. It validates input before replacing the active visual state, keeps segment IDs stable, resolves named palette keys, exposes per-segment visibility and global visibility, and generates emissive ribbon meshes in three stacked passes. The glow scalar is clamped to [0, 1] and controls emission energy. The 2D points are mapped to a generic XY side plane with a fixed depth offset.
+
+This mapping is intentionally provisional. It is not a surface projection, UV mapping, decal attachment or fitment system. Before using a skin on a production vehicle asset, define a versioned coordinate-frame/reference-image contract and map the curves to verified body-surface coordinates. The current placeholder vehicle and skin points are not geometrically registered.
+
+Macroquad remains an isolated Rust rendering experiment, not a dependency of the Godot application. The Godot runtime already owns the scene graph, materials, renderer and Android export path; a second renderer would duplicate lifecycle, input and packaging responsibilities without measured evidence of benefit. Reconsider only if a reproducible benchmark identifies a specific capability or performance gap.
