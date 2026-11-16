@@ -2,11 +2,13 @@ extends Node3D
 
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
+const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 
 var _bike
 var _camera: Camera3D
 var _key_light: DirectionalLight3D
 var _quality
+var _neon_skin
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
@@ -21,6 +23,10 @@ func _ready() -> void:
 	_quality = QualityControllerScript.new()
 	add_child(_quality)
 	_quality.configure(_key_light)
+	_neon_skin = NeonSkinScript.new()
+	_neon_skin.name = "NeonSkinOverlay"
+	_neon_skin.position.z = 0.29
+	add_child(_neon_skin)
 	_update_camera()
 	_build_hud()
 
@@ -105,6 +111,23 @@ func _build_hud() -> void:
 	reset_button.pressed.connect(_on_reset_camera)
 	controls.add_child(reset_button)
 
+	var neon_button := Button.new()
+	neon_button.text = "NEON ON / OFF"
+	neon_button.toggle_mode = true
+	neon_button.button_pressed = true
+	neon_button.toggled.connect(_on_neon_toggled)
+	controls.add_child(neon_button)
+
+	var glow_slider := HSlider.new()
+	glow_slider.custom_minimum_size = Vector2(120.0, 32.0)
+	glow_slider.min_value = 0.0
+	glow_slider.max_value = 1.0
+	glow_slider.step = 0.05
+	glow_slider.value = 0.8
+	glow_slider.tooltip_text = "Neon glow intensity"
+	glow_slider.value_changed.connect(_on_glow_changed)
+	controls.add_child(glow_slider)
+
 	var disclaimer := Label.new()
 	disclaimer.text = "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
 	disclaimer.anchor_left = 0.0
@@ -124,6 +147,14 @@ func _on_toggle_assembly() -> void:
 
 func _on_body_color_changed(color: Color) -> void:
 	_bike.set_body_color(color)
+
+func _on_neon_toggled(enabled: bool) -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.set_skin_visible(enabled)
+
+func _on_glow_changed(value: float) -> void:
+	if is_instance_valid(_neon_skin):
+		_neon_skin.set_glow_intensity(value)
 
 func _on_reset_camera() -> void:
 	_orbit_angle = 0.0
