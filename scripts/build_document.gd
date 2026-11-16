@@ -119,10 +119,13 @@ static func validate(document: Dictionary) -> Dictionary:
 					known_surface_ids[surface_id] = true
 				if node_path.is_empty():
 					errors.append("Asset surface %s requires a node_path." % surface_id)
-				if not (surface_index is int) or int(surface_index) < 0:
+				var surface_index_is_integer := surface_index is int
+				if surface_index is float:
+					surface_index_is_integer = is_equal_approx(float(surface_index), floorf(float(surface_index)))
+				if not surface_index_is_integer or float(surface_index) < 0.0:
 					errors.append("Asset surface %s requires a non-negative integer surface_index." % surface_id)
 				else:
-					var slot_key := node_path + "#" + str(surface_index)
+					var slot_key := node_path + "#" + str(int(surface_index))
 					if occupied_slots.has(slot_key):
 						errors.append("Asset surface catalog entries cannot alias the same mesh slot.")
 					occupied_slots[slot_key] = surface_id
