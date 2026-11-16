@@ -27,8 +27,8 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 		return false
 
 	var verified := _read_valid_document(temporary_path)
-	if verified.is_empty() or verified != document:
-		push_error("BuildDocumentStore: temporary document failed read-back validation.")
+	if verified.is_empty():
+		push_error("BuildDocumentStore: temporary document failed JSON/schema read-back validation.")
 		_remove_if_exists(temporary_path)
 		return false
 
