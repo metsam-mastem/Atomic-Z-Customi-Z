@@ -4,12 +4,19 @@ class_name BikeAssembly
 var _parts: Dictionary = {}
 var _body_materials: Array[StandardMaterial3D] = []
 var _is_exploded := false
+var _build_document: Dictionary = {}
+
+func configure_build_document(document: Dictionary) -> void:
+	_build_document = document
 
 func _ready() -> void:
 	_build_placeholder()
+	_sync_document_parts()
 
 func set_exploded(enabled: bool) -> void:
 	_is_exploded = enabled
+	if not _build_document.is_empty():
+		_build_document["assembly"]["mode"] = "exploded" if enabled else "stock"
 	for part_id in _parts:
 		var item: Dictionary = _parts[part_id]
 		var part_node: Node3D = item["node"]
@@ -22,6 +29,8 @@ func toggle_exploded() -> bool:
 	return _is_exploded
 
 func set_body_color(color: Color) -> void:
+	if not _build_document.is_empty():
+		_build_document["customization"]["materials"] = [{"material_id": "body-paint", "target_part_ids": ["fuel_tank", "front_fairing", "tail_fairing"], "base_color": "#" + color.to_html(false).to_upper()}]
 	for material in _body_materials:
 		material.albedo_color = color
 
@@ -75,3 +84,19 @@ func _add_mesh_part(part_id: String, mesh: Mesh, at: Vector3, material: Standard
 	_parts[part_id] = {"node": part_root, "home": at, "explode": explode_offset}
 	if is_body:
 		_body_materials.append(material)
+
+func _sync_document_parts() -> void:
+	if _build_document.is_empty():
+		return
+	var part_records: Array = []
+	for part_id in _parts.keys():
+		var item: Dictionary = _parts[part_id]
+		part_records.append({
+			"part_id": str(part_id),
+			"display_name": str(part_id).replace("_", " ").capitalize(),
+			"home_position_m": (item["home"] as Vector3).to_array(),
+			"explode_offset_m": (item["explode"] as Vector3).to_array(),
+			"asset_status": "placeholder_geometry"
+		})
+	_build_document["assembly"]["parts"] = part_records
+	_build_document["assembly"]["mode"] = "stock"
