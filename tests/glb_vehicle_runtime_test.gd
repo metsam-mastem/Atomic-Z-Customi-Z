@@ -146,6 +146,7 @@ func _run() -> void:
 		_assert(glow_slider != null and not glow_slider.editable, "Imported GLB mode must disable the unverified Neon glow control.")
 		_assert(overlay != null and not overlay.visible, "Legacy screen-space Neon overlays must not float over an imported GLB.")
 		_assert(summary != null and summary.text.contains("IMPORTED GLB") and summary.text.contains("DISABLED"), "HUD must identify the imported asset and disclose the pending Neon mapping.")
+		_assert(summary != null and summary.text.contains("Synthetic Generic Test Motorcycle") and not summary.text.contains("ZX-25RR"), "Imported generic GLB must not be presented in the HUD as the previous ZX-25RR identity.")
 		_assert(main_scene.save_project(), "The imported GLB UI state must save through the canonical BuildDocument path.")
 		main_scene.queue_free()
 		await process_frame
