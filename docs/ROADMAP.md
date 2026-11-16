@@ -35,7 +35,9 @@ Exit: product customization requires no external Tkinter/Python window.
 - Stable part IDs, pivots, mount points and material slots.
 - UV/surface registration for graphics.
 - Exact vehicle variant/year/market selection.
-Exit: asset validator passes; fitment claims limited to verified assets.
+- Recursively inventory imported GLB nodes, mesh surfaces and source material slots.
+- Add stable surface bindings and a safe per-surface override adapter; preserve imported PBR materials and fail closed on ambiguous IDs.
+Exit: asset validator passes; fitment claims limited to verified assets; one-surface edits cannot alter unrelated slots.
 
 ## Phase 4 — Rendering
 - PBR paint/material presets.
@@ -44,7 +46,8 @@ Exit: asset validator passes; fitment claims limited to verified assets.
 - Decals, textures and surface-bound curves.
 - Lighting presets and preview capture.
 - Frame-time telemetry and graceful quality reduction.
-Exit: desktop visual review and Android profiling meet measured budgets.
+- Keep emission functional with glow disabled; test Compatibility glow separately and verify occlusion/alpha sorting before enabling additive/depth overrides.
+Exit: desktop visual review and Android profiling meet measured budgets; low-tier fallback remains usable.
 
 ## Phase 5 — Persistence and export
 - Save/load full BuildDocument.
@@ -61,7 +64,8 @@ Exit: save-close-reopen preserves full state; exported document validates.
 - Mass properties only with verified geometry and density.
 - Optional solver adapters with assumptions, versions and validation cases.
 - Separate fitment/legal evidence.
-Exit: each result has traceable input, units, assumptions and status.
+- Motorcycle riding physics remains out of scope unless a separate product-scope decision authorizes a rideable preview; evaluate candidate add-ons before any dependency is introduced.
+Exit: each result has traceable input, units, assumptions, method and status.
 
 ## Phase 7 — Android release candidate
 - Reproducible arm64 APK/AAB pipeline.
@@ -84,3 +88,6 @@ Do not invent FPS/memory targets before profiling the exact device. Measure base
 
 ## Project operating cadence
 Every task has owner, scope, dependencies, acceptance criteria and estimate. Every merge requires review and current CI evidence. A milestone closes only when exit gates and evidence are recorded. Maintain decision and risk logs. When a dependency fails, re-plan rather than creating a parallel workaround.
+
+## Technical research decisions
+See [Godot motorcycle rendering and asset integration review](GODOT_MOTORCYCLE_RENDERING_RESEARCH.md) for the GLB material-slot strategy, neon/glow tiering, renderer-specific constraints, physics scope boundary and test-first acceptance gates.
