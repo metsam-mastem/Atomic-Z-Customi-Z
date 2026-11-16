@@ -78,6 +78,11 @@ func _test_legacy_profile_startup_migration() -> void:
 
 	var snapshot: Dictionary = scene.call("get_build_document_snapshot")
 	_assert(snapshot.get("customization", {}).get("palette", {}).get("primary") == "#224466FF", "First launch must migrate the legacy profile color into BuildDocument.")
+	var vehicle: Dictionary = snapshot.get("vehicle", {})
+	_assert(vehicle.get("model_year") == 2026, "First launch must hydrate the selected 2026 model-year reference.")
+	_assert(vehicle.get("variant") == "ZX-25RR", "First launch must hydrate the selected ZX-25RR variant.")
+	_assert(vehicle.get("market") == null, "First launch must not infer a regional market.")
+	_assert(snapshot.get("asset", {}).get("validation_status") == "not_run", "Vehicle identity metadata must not imply validated production geometry.")
 	_assert(is_equal_approx(float(snapshot.get("render", {}).get("glow_intensity", -1.0)), 0.8), "First launch must preserve the existing canonical glow value instead of converting legacy 0..10 intensity.")
 	var extensions: Array = snapshot.get("extensions", [])
 	_assert(extensions.size() == 1, "First launch must preserve legacy shader parameters in a BuildDocument extension.")
