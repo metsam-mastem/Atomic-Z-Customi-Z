@@ -28,6 +28,9 @@ jobs:
       - name: Run neon skin runtime test
         run: godot --headless --path . --script res://tests/neon_skin_test.gd
 
+      - name: Run canonical BuildDocument contract test
+        run: godot --headless --path . --script res://tests/build_document_test.gd
+
   neon-simulator-tests:
     runs-on: ubuntu-latest
     steps:
