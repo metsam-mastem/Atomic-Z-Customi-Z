@@ -1,5 +1,7 @@
 extends SceneTree
 
+const BuildDocumentScript = preload("res://scripts/build_document.gd")
+
 func _initialize() -> void:
 	call_deferred("_run_smoke_test")
 
@@ -68,6 +70,48 @@ func _run_smoke_test() -> void:
 		push_error("Body color change did not reach the fuel tank material.")
 		quit(1)
 		return
+
+	var project_color := Color(0.2, 0.4, 0.9, 1.0)
+	scene.call("_on_body_color_changed", project_color)
+	scene.call("_on_neon_primary_changed", Color("#123456"))
+	scene.call("_on_glow_changed", 0.55)
+	var document: Dictionary = scene.call("get_build_document_snapshot")
+	if document.get("schema_version") != 1:
+		push_error("Garage must expose the canonical BuildDocument.")
+		quit(1)
+		return
+	if document.get("assembly", {}).get("parts", []).size() < 10:
+		push_error("Assembly parts must be represented in the shared BuildDocument.")
+		quit(1)
+		return
+	if document.get("customization", {}).get("materials", []).is_empty():
+		push_error("Body paint edits must update the shared BuildDocument.")
+		quit(1)
+		return
+	if document.get("customization", {}).get("palette", {}).get("primary") != "#123456":
+		push_error("Neon palette edits must update the shared BuildDocument.")
+		quit(1)
+		return
+	if not is_equal_approx(float(document.get("render", {}).get("glow_intensity", -1.0)), 0.55):
+		push_error("Glow edits must update the shared BuildDocument.")
+		quit(1)
+		return
+	if not scene.call("save_project"):
+		push_error("Unified BuildDocument must save successfully.")
+		quit(1)
+		return
+	var saved := FileAccess.open("user://atomic_z_build.json", FileAccess.READ)
+	if saved == null:
+		push_error("Saved BuildDocument file is missing.")
+		quit(1)
+		return
+	var restored: Dictionary = BuildDocumentScript.from_json(saved.get_as_text())
+	saved.close()
+	if restored.is_empty() or restored.get("customization", {}).get("palette", {}).get("primary") != "#123456":
+		push_error("Saved BuildDocument must preserve shared customization state.")
+		quit(1)
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://atomic_z_build.json"))
 
 	print("PASS: scene load, neon overlay integration, assembly explode/restore and body material update.")
 	quit(0)
