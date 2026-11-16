@@ -1,0 +1,26 @@
+name: Godot CI
+
+on:
+  push:
+    branches: [main, "**"]
+  pull_request:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Import and parse project
+        run: godot --headless --editor --path . --quit
+
+      - name: Run vertical-slice smoke test
+        run: godot --headless --path . --script res://tests/smoke_test.gd
