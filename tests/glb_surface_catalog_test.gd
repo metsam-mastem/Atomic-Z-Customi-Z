@@ -93,7 +93,9 @@ func _run() -> void:
 	_assert(applied != null and applied.albedo_color == Color("#ABCDEF"), "The selected runtime surface must show the persisted color.")
 	_assert(mesh_instance.get_surface_override_material(1) == null, "Unselected surfaces must remain untouched.")
 	_assert(mesh.surface_get_material(0) == imported_body and imported_body.albedo_color == Color("#345678"), "Imported PBR source materials must remain unchanged.")
-	_assert(mesh.surface_get_material(1) == imported_trim and imported_trim.metallic == 0.72, "Unselected imported PBR materials must remain unchanged.")
+	_assert(mesh.surface_get_material(1) == imported_trim, "Unselected imported PBR material resource identity must remain unchanged.")
+	_assert(is_equal_approx(imported_trim.metallic, 0.72), "Unselected imported PBR metallic value must remain unchanged within floating-point tolerance.")
+	_assert(is_equal_approx(imported_trim.roughness, 0.28), "Unselected imported PBR roughness value must remain unchanged within floating-point tolerance.")
 
 	print("PASS: GLB surface inventory, stable manifest, BuildDocument contract and isolated material edit.")
 	quit(1 if _failed else 0)
