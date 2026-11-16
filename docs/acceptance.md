@@ -86,3 +86,16 @@ The following gates supersede any interpretation of the garage, material editor,
 - [ ] Agent collaboration follows AGENTS.md and docs/AGENT_GOVERNANCE.md; all future source changes use branches and reviewed PRs.
 
 Status of these new gates: NOT RUN. Existing headless tests and CI history cover only the specific behaviors named above in their original sections; they do not automatically satisfy this end-to-end contract.
+
+## Part-level customization and persistence hardening
+
+- [ ] Garage part selector lists stable part IDs and supports selecting each named assembly part.
+- [ ] Paint edits affect only the selected part and update its own material record in BuildDocument.
+- [ ] Existing per-part paint records are restored to the correct runtime mesh after load.
+- [ ] Saving validates the candidate document before replacing the current save.
+- [ ] Save replacement uses a temporary file and recoverable backup; failed writes do not destroy the last valid save.
+- [ ] Loading restores a valid backup if the primary save is corrupt or missing.
+- [ ] Assembly Stock/Exploded mode and global neon visibility restore from the canonical BuildDocument.
+- [ ] Godot 4.4.1 CI smoke and BuildDocument tests pass on the feature commit.
+
+Implementation status: code and regression assertions are committed on `agent/implementation/10-part-paint-safe-save`. Runtime status remains NOT RUN until the CI job reports results. Android device acceptance remains separate.
