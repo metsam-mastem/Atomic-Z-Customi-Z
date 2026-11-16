@@ -387,7 +387,6 @@ func _test_touch_gestures() -> bool:
 	if not synchronized_offset.is_equal_approx(Vector3(0.5, 0.25, -0.4)):
 		push_error("Touch gestures must inherit the current camera pan offset.")
 		return false
-	sync_probe.free()
 
 	var gestures = GarageTouchGesturesScript.new()
 	var initial: Dictionary = gestures.get_camera_state()
@@ -496,5 +495,4 @@ func _test_touch_gestures() -> bool:
 	if not after_cancel_offset.is_equal_approx(Vector3.ZERO):
 		push_error("Cancelled touches must not leave a stale multi-touch pan gesture active.")
 		return false
-	cancellation_probe.free()
 	return true
