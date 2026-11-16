@@ -132,3 +132,15 @@ Both issues were confirmed open; inspect comments/labels again before selecting 
 3. Merge PR #28 only after review and green required checks.
 4. Publish a durable, versioned GitHub Release artifact only after release signing and device acceptance are approved.
 5. Run physical Redmi Note 13 Pro installation/launch and interaction QA; record the exact device SKU and APK SHA.
+
+
+## Live integration checkpoint — 2026-11-16 (release-path reconciliation)
+
+- Main remains unchanged at `4d2cf3b82bd78437541b49da46f522c06d2652b5`. No PR has been merged and no direct-main write was made.
+- PR #28 remains OPEN / READY FOR REVIEW at `4bf83ef75d196b8a1259179b034632ebca2ca6bf`. Exact-head workflow [#43810187315](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43810187315) PASS: Godot smoke, Python tests, Android Debug export and Android Release export with an ephemeral CI keystore. This does not create a production-signed release.
+- PR #29 remains OPEN / DRAFT. Its branch now contains a two-parent integration commit `0795b86eff0f8041366a33989cd307851d64800f` whose parents are the prior PR #29 head and latest PR #28 head. This carries the verified temporary release-preset injection, its unit tests and the release CI path into the GLB catalog work. The exact-head workflow [#43812665434](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43812665434) was QUEUED at checkpoint time; do not claim PASS until completed.
+- PR #30 remains OPEN / DRAFT. Its branch now contains two-parent integration commit `2563e654fdd399d0ee29065f4dca62a22671741e`, combining the prior PR #30 work with the reconciled PR #29 head. It carries the same release-signing fix and combined GLB integration test workflow. Exact-head workflow [#43812702829](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43812702829) was QUEUED at checkpoint time; do not claim PASS until completed.
+- The release-path discrepancy was verified and corrected in the PR chain: PR #28's latest `scripts/build_android.sh` uses an isolated temporary project copy and `scripts/configure_android_release_preset.py`; the tracked `export_presets.cfg` is not mutated. The fix and its tests are now present on PR #29 and PR #30 branches.
+- PR #31, the independent Draft AI adapter proposal, remains outside this release task and is not part of the product release baseline.
+- Commercial release blockers: production ZX-25RR GLB/CAD and verified UV/surface mapping are MISSING; market is unset; physical Redmi Note 13 Pro SKU/device QA is NOT RUN; owner-controlled production keystore is NOT PROVIDED; repository LICENSE file is MISSING; legal/trademark and distribution review are NOT RUN. CI ephemeral signing is test-only. The current APK is a debug artifact, not a commercial release.
+- Next sequence: wait for exact-head PR #29/#30 CI; review and merge PR #28 → #29 → #30 only through normal owner review; then obtain production asset provenance/license, market decision, owner-managed signing secrets and device acceptance evidence before tagging a release.
