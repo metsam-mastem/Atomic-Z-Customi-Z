@@ -1,6 +1,6 @@
 # Source Dossier: Need for Speed reconstruction projects
 
-This dossier separates three very different kinds of NFS reference: an MIT-licensed scratch-built car engine, a clean-room reconstruction with unclear project-wide rights, and a newer incomplete source-reconstruction effort whose MIT notice expressly excludes recovered game content.
+This dossier separates official and independent NFS references: an MIT-licensed scratch-built car engine, a reconstruction with unclear project-wide rights, a detailed but incomplete source reconstruction with limited MIT scope, and older unlicensed leads.
 
 ## 1. OpenNFS
 
@@ -79,9 +79,9 @@ The repository's GitHub licence detection is NOASSERTION. Until an explicit lice
 ## 3. SPEED RE
 
 **Repository:** https://github.com/troikoss/speed-re  
-**Current branch observed:** `main`; exact commit could not be pinned through the active repository connector during this audit.  
-**Licence statement:** README says original project contributions are MIT, but explicitly excludes recovered Underground 2 code, reconstructed game data, retail assets and third-party material. It says the repository is not licensed as a whole under MIT.  
-**Disposition:** `STUDY_ONLY`, `NEEDS_PIN`; manual link only, no automatic fetch or source import.
+**Reviewed revision:** `892e5c31d77c751acd123330eda15c157c4f1b1f` (2026-10-29).  
+**Licence:** limited MIT grant for original project contributions only; the LICENSE expressly excludes recovered/reconstructed NFSU2 code under `src/Speed/Indep/`, recovered game data, embedded protected material, retail assets and third-party imports.  
+**Disposition:** `STUDY_ONLY`; no wholesale vendoring or recovered-source import.
 
 ### Findings
 
@@ -96,13 +96,13 @@ This explicit split between code presence, byte matching and behavioural compari
 
 ### Restrictions
 
-The README warns not to commit retail assets, executables, compiler binaries or generated disassembly. It says the MIT grant does not cover recovered UG2 code or game data and does not represent permission from the rights holder. Consequently, the source is not safe to vendor as a whole even though an MIT licence file exists.
+The README and NOTICE prohibit committing retail assets, executables, compiler binaries and generated disassembly. The MIT grant covers only original scaffolding/tools/docs and excludes recovered NFSU2 code/data. The code tree is mixed-scope; every file would need provenance and licence review before reuse.
 
 ## 4. Other NFS research leads
 
 - `yugecin/nfsu2-re`: older hobby reverse-engineering project; no licence grant was established in the metadata inspected. Study-only.
 - `s-b-repo/nfsmw-2005-re`: describes a Most Wanted 2005 reverse-engineering effort, but GitHub reports `NOASSERTION`; no code reuse.
-- No official complete Call of Duty or Need for Speed game source was found that can be adopted as a licensed game engine for Atomic-Z.
+- No official complete Activision or EA game-source repository suitable for reuse was established. Independent reconstructions are listed above, but their licensing and compatibility restrictions make them research references, not Atomic-Z dependencies.
 
 ## Atomic-Z decision
 
