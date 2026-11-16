@@ -91,11 +91,13 @@ func _sync_document_parts() -> void:
 	var part_records: Array = []
 	for part_id in _parts.keys():
 		var item: Dictionary = _parts[part_id]
+		var home: Vector3 = item["home"]
+		var explode_offset: Vector3 = item["explode"]
 		part_records.append({
 			"part_id": str(part_id),
 			"display_name": str(part_id).replace("_", " ").capitalize(),
-			"home_position_m": (item["home"] as Vector3).to_array(),
-			"explode_offset_m": (item["explode"] as Vector3).to_array(),
+			"home_position_m": [home.x, home.y, home.z],
+			"explode_offset_m": [explode_offset.x, explode_offset.y, explode_offset.z],
 			"asset_status": "placeholder_geometry"
 		})
 	_build_document["assembly"]["parts"] = part_records
