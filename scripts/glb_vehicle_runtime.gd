@@ -122,6 +122,21 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 	}
 
 static func _build_default_surface_manifest(inventory: Array) -> Array:
+	var node_leaf_ids: Dictionary = {}
+	var leaf_id_counts: Dictionary = {}
+	for surface_value in inventory:
+		if not (surface_value is Dictionary):
+			continue
+		var surface: Dictionary = surface_value
+		var node_path := str(surface.get("node_path", "")).strip_edges()
+		if node_path.is_empty() or node_leaf_ids.has(node_path):
+			continue
+		var path_parts := node_path.split("/", false)
+		var leaf_name := str(path_parts[path_parts.size() - 1]) if not path_parts.is_empty() else node_path
+		var leaf_part_id := _normalize_part_id(leaf_name)
+		node_leaf_ids[node_path] = leaf_part_id
+		leaf_id_counts[leaf_part_id] = int(leaf_id_counts.get(leaf_part_id, 0)) + 1
+
 	var definitions: Array = []
 	for surface_value in inventory:
 		if not (surface_value is Dictionary):
@@ -129,9 +144,11 @@ static func _build_default_surface_manifest(inventory: Array) -> Array:
 		var surface: Dictionary = surface_value
 		var node_path := str(surface.get("node_path", "")).strip_edges()
 		var surface_index := int(surface.get("surface_index", -1))
-		if node_path.is_empty() or surface_index < 0:
+		if node_path.is_empty() or surface_index < 0 or not node_leaf_ids.has(node_path):
 			continue
-		var part_id := _stable_part_id(node_path)
+		var part_id := str(node_leaf_ids[node_path])
+		if int(leaf_id_counts.get(part_id, 0)) > 1:
+			part_id = _stable_part_id(node_path)
 		definitions.append({
 			"surface_id": part_id + ".surface_" + str(surface_index),
 			"node_path": node_path,
@@ -140,14 +157,17 @@ static func _build_default_surface_manifest(inventory: Array) -> Array:
 		})
 	return definitions
 
-static func _stable_part_id(node_path: String) -> String:
-	if node_path == ".":
-		return "vehicle_root"
-	var normalized := node_path.to_snake_case().to_lower()
+static func _normalize_part_id(value: String) -> String:
+	var normalized := value.to_snake_case().to_lower()
 	var regex := RegEx.new()
 	regex.compile("[^a-z0-9]+")
 	normalized = regex.sub(normalized, "_", true).trim_prefix("_").trim_suffix("_")
 	return normalized if not normalized.is_empty() else "vehicle_part"
+
+static func _stable_part_id(node_path: String) -> String:
+	if node_path == ".":
+		return "vehicle_root"
+	return _normalize_part_id(node_path)
 
 static func _apply_saved_surface_materials(document: Dictionary, binder) -> Dictionary:
 	var customization: Dictionary = document.get("customization", {})
