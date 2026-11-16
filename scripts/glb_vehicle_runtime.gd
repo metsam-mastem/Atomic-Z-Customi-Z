@@ -6,7 +6,7 @@ const GlbSurfaceCatalogScript = preload("res://scripts/glb_surface_catalog.gd")
 const SurfaceMaterialBinderScript = preload("res://scripts/surface_material_binder.gd")
 
 ## Loads a local GLB only when its provenance, pinned SHA-256 and surface catalog
-## are present in the canonical BuildDocument. No network access is performed.
+## are present in the canonical BuildDocument. An empty surface catalog is generated safely at runtime.
 static func instantiate_from_document(document: Dictionary) -> Dictionary:
 	var validation: Dictionary = BuildDocumentScript.validate(document)
 	if not validation.get("ok", false):
@@ -21,6 +21,13 @@ static func instantiate_from_document(document: Dictionary) -> Dictionary:
 		return _failure("Asset URI must be a safe local res:// or user:// .glb path.")
 	if not FileAccess.file_exists(asset_uri):
 		return _failure("GLB file does not exist: " + asset_uri)
+	var asset_file := FileAccess.open(asset_uri, FileAccess.READ)
+	if asset_file == null:
+		return _failure("GLB file cannot be opened.")
+	var asset_size := asset_file.get_length()
+	asset_file.close()
+	if asset_size < 20 or asset_size > 134217728:
+		return _failure("GLB size is invalid or exceeds the 128 MiB Android import limit.")
 
 	var expected_hash := str(asset.get("sha256", "")).to_lower()
 	if not _is_sha256(expected_hash):
