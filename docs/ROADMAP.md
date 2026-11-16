@@ -37,6 +37,10 @@ Exit: product customization requires no external Tkinter/Python window.
 - Recursively inventory imported GLB nodes, mesh surfaces and source material slots.
 - Bind stable surface IDs to unique mesh/surface targets; duplicate materials before edits and preserve imported PBR resources.
 - Complete the bridge from verified asset metadata and surface bindings into BuildDocument material records and the existing garage selection flow.
+- Add a recursive GLB surface inventory and validate stable manifest IDs against imported MeshInstance3D nodes and exact surface indices.
+- Persist the validated surface catalog in the canonical BuildDocument asset record; validate every surface material target against it.
+- Configure the existing SurfaceMaterialBinder from BuildDocument and write surface color edits back to that same document.
+- Keep manifest/catalog integration separate from production asset verification: a synthetic test scene proves the contract, not Kawasaki geometry, UV alignment or fitment.
 - Exact vehicle variant/year/market selection.
 Exit: asset validator passes; fitment claims limited to verified assets; isolated surface edits cannot mutate unrelated slots.
 
