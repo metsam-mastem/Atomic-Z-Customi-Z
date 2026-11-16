@@ -104,3 +104,56 @@ For Atomic-Z, the actionable material is limited to general engineering practice
 - Official Telescope components may be considered independently only if Atomic-Z develops a specific webview/middleware need and the exact package's versioned licence archive, dependency graph, security posture and Android compatibility are reviewed.
 - Keep all other Call of Duty references in the research vault.
 - No gameplay scope change or runtime integration is proposed by this dossier.
+
+
+## 8. Source-tree architecture observations
+
+The pinned trees were inventoried and representative core files/build scripts were inspected. This is a targeted architecture review, not a line-by-line audit of every file.
+
+### OpenCOD2 tree and build
+
+The reviewed tree contains about 1,039 paths. Its main C source domains include:
+- `src/PC/client_mp/`: client lifecycle, networking, input and UI integration;
+- `src/PC/server_mp/`: dedicated/server lifecycle, network packets and client handling;
+- `src/PC/game_mp/`: game rules, entities, player movement and weapon-facing game logic;
+- `src/PC/cgame_mp/`: client-side presentation, player state, animation, HUD and effects;
+- `src/PC/qcommon/`: shared frame/event loop, common utilities, networking and filesystem foundations;
+- `src/PC/renderer/` and `src/PC/gfx_d3d/`: renderer API/graphics backends;
+- `src/PC/EffectsCore/`, `src/PC/xanim/`, `src/PC/script/`, `src/PC/botlib/`: effects, animation, scripting and bots;
+- `cod2rad/`: map lighting/geometry compilation and supporting asset tools.
+
+The inspected CMake entry point has separate native Linux, WebAssembly/Emscripten and Windows MinGW/MSVC build paths. The original path is 32-bit ILP32/x86 with 32-bit data blobs; the documented x64 path is explicitly in progress and does not yet link/run because typed-data migration remains a prerequisite. The README also documents an experimental renderer-DLL interface, not a stable plugin API.
+
+Representative files `client_mp/cl_main_mp.c`, `server_mp/sv_main_mp.c`, `game_mp/g_main_mp.c`, `cgame_mp/cg_main_mp.c` and `qcommon/common.c` show the expected game-engine split, but contain legacy structures, import shims, fixed data-layout assumptions and reconstructed functions. They are not a design template to port wholesale into Godot.
+
+### OpenCoD1 tree and build
+
+The reviewed tree contains about 405 paths and follows the classic modular multiplayer layout:
+- `src/client_mp/`, `src/server_mp/`, `src/game_mp/`, `src/cgame_mp/`, `src/ui_mp/`;
+- `src/qcommon/`, `src/renderer/`, `src/EffectsCore/`, `src/xanim/`, `src/botlib/`, `src/script/`, `src/zlib/`;
+- `tools/` and Premake project generation.
+
+The inspected `premake5.lua` / README describe a native Windows/Visual Studio build, producing a client executable, dedicated server and separate game/cgame/UI modules. The `game_mp`/ `cgame_mp` source split illustrates client prediction/presentation versus authoritative game logic, but no Android/Godot abstraction exists. The renderer and effects code are historical shooter-specific systems.
+
+### CoDWaW research tables and verification architecture
+
+The inspected tree has only about 20 tracked files: structured CSV inventories under `data/`, methodology/toolchain/crypto docs under `docs/`, and binary/asset-format notes under `notes/`. The methodology's strongest transferable rule is that “verified” must be reserved for a reproducible oracle result, not a plausible name or AI guess. The project uses evidence tiers and rebuild/compare oracles, pins verifier integrity, records negative results, and parks unresolved symbols rather than promoting them.
+
+The toolchain dossier shows why byte-comparison needs cluster-specific compiler/version/flags rather than a project-wide compiler assumption. This is useful general reverse-engineering discipline, but its MSVC8 x86 and crypto-library details have no product-code relevance to Atomic-Z.
+
+### CoD-Research documentation tree
+
+The inspected tree contains about 182 paths, organised by game generation and platform. It documents FastFile/Zone formats, asset type identifiers (models, shaders, images, audio, animation, menus, weapons), platform-specific memory layouts and offsets, and World at War DemonWare interfaces. This is a community technical wiki rather than an engine implementation. Its GPL-3.0 content licence must be respected.
+
+## 9. Reverse-engineering confidence and remaining gaps
+
+| Claim | Evidence | Confidence / limitation |
+|---|---|---|
+| Activision publishes some official versioned source archives | Official Activision Open Source page and paired Telescope licence files | High for Telescope middleware scope; not evidence of game-engine source |
+| OpenCOD2 is an independent engine reconstruction | README, tree and CMake layout | High for project intent/layout; low for completion because README warns it is incomplete/unstable |
+| OpenCoD1 is a multiplayer reconstruction | README, Premake file and module tree | High for stated structure; functionality incomplete and licence unresolved |
+| CoDWaW notes do not distribute proprietary game source | README legal statement, MIT licence, small docs/data tree | High for author-stated repository scope; does not establish any rights in the target binary |
+| CoD-Research contains platform/asset format documentation | README and game/platform directory tree | High for visible docs coverage; published wiki content remains GPL-3.0 |
+| MW2 source is publicly obtainable | No canonical public repo established; dashboard is progress-only | Not established; treat as private/no-source |
+
+No external target was executed, no proprietary binary was obtained, and no dynamic behaviour was measured in this audit.
