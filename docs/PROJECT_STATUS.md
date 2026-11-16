@@ -4,24 +4,25 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 05:14 UTC  
+**Last verified:** 2026-11-16 05:16 UTC  
 **Verified main:** `4d2cf3b82bd78437541b49da46f522c06d2652b5`  
 **Active dependency chain:** PR #28 → PR #29 → PR #30. No direct changes to `main`.
 
-## Current live snapshot — 2026-11-16 05:14 UTC
+## Current live snapshot — 2026-11-16 05:16 UTC
 
-- `main` remains at `4d2cf3b82bd78437541b49da46f522c06d2652b5`; this work has not written to `main`.
-- PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), is OPEN against `main`, head `092d84c975bed159b244eb552a2b76efd16a41a7`. Android Debug export, APK structure verification and apksigner passed in exact-head workflow [#43807090339](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807090339). Important: its smoke job was job-green but the BuildDocument test emitted failed assertions because the old test helper overwrote `quit(1)` with `quit(0)`. Do not treat that subtest as verified on PR #28 alone.
-- PR #29, [GLB surface catalog to BuildDocument integration](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/29), is OPEN / DRAFT, stacked on PR #28, head `2325738c652733723412e2e1f7b91fd45e20d961`. Exact-head Godot, Python and Android Debug CI all passed in [#43807888243](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807888243). This run includes the corrected BuildDocument assertion harness and the synthetic GLB surface-catalog integration test. Artifact `atomic-z-android-debug`: ID `14199128439`, ZIP digest `sha256:433202a853c92fc2ff0a5a1a776118d90ff8ba639eef636837f02d72ccba6f5a`; debug build only.
-- PR #30, [Unify legacy neon profile migration with BuildDocument](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/30), is OPEN / DRAFT, stacked on PR #29, current head `ff479d1109aa314a87fed27b2aef8e8a9fde6219`. Exact-head Godot smoke, BuildDocument, Neon, GLB, HUD and Python tests passed in run [#43808772798](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43808772798). Android Debug export is still IN PROGRESS; re-check the exact run before calling the full PR green.
-- PR #30 retires the unused `SkinProfileStore` and `NeonSkin.save_skin()` writers; migrates legacy `user://skin_profile.json` into a versioned BuildDocument extension only when no valid canonical BuildDocument exists; preserves the original profile file and unmapped 0..10 glow/pulse values; and keeps all future writes on `BuildDocumentStore`.
+- `main` remains at `4d2cf3b82bd78437541b49da46f522c06d2652b5`; all current work is on task branches and PRs.
+- PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), is OPEN against `main`, head `092d84c975bed159b244eb552a2b76efd16a41a7`. Android Debug export, APK structure verification and apksigner passed in exact-head workflow [#43807090339](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807090339). Its earlier smoke job was job-green while the old BuildDocument test helper hid failed assertions; do not treat that subtest as verified on PR #28 alone.
+- PR #29, [GLB surface catalog to BuildDocument integration](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/29), is OPEN / DRAFT, stacked on PR #28, head `2325738c652733723412e2e1f7b91fd45e20d961`. Exact-head Godot, Python and Android Debug CI all passed in [#43807888243](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807888243). This includes the corrected BuildDocument assertion harness and synthetic GLB surface-catalog integration. Artifact `atomic-z-android-debug`: ID `14199128439`, ZIP digest `sha256:433202a853c92fc2ff0a5a1a776118d90ff8ba639eef636837f02d72ccba6f5a`; debug build only.
+- PR #30, [Unify legacy neon profile migration with BuildDocument](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/30), is OPEN / DRAFT, stacked on PR #29, head `cc72cafd645d5b3c7b3551eb24a63312fd059b4d`. Exact-head Godot import/smoke/Neon/BuildDocument/Binder/GLB/UI tests, Python tests and Android Debug export all passed in [#43808940023](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43808940023). Artifact `atomic-z-android-debug`: ID `14198774996`, size 26,845,053 bytes, ZIP digest `sha256:f627260018d501cc9f940c70e129ef7eff9ed9458c9ec930c8bffd70d2901577`; debug build only.
+- PR #30 retires the unused `SkinProfileStore` and `NeonSkin.save_skin()` writers; migrates legacy `user://skin_profile.json` into a versioned BuildDocument extension only when no valid canonical BuildDocument exists; preserves the original profile file and unmapped 0..10 glow/pulse values; all future writes use `BuildDocumentStore`.
 - The old `scripts/skin_profile_store.gd` was not registered as an Autoload and had no product-code callers. Its deletion is proposed only in PR #30; it is not deleted from `main`.
-- Main's older BuildDocument test result is classified FAIL / false-green due the test-harness defect above. PR #29 contains the correction; its exact-head test run is PASS.
-- Current open PRs: #28, #29, #30. Live open-issue search returned none.
+- Main's older BuildDocument test result is classified FAIL / false-green due the test-harness defect. PR #29 contains the correction; its exact-head tests pass.
+- Branch audit: current open work is PR #28/#29/#30. Divergent, unmerged architecture branches `agent/architecture/1-hydrate-build-document-ui`, `agent/architecture/2-retire-legacy-skin-profile-store` and `agent/architecture/3-builddocument-neon-migration` were reviewed; relevant ideas were selectively reimplemented in PR #30. Do not merge those branches wholesale. Other old branches are behind or diverged and are not current ownership sources unless a live PR is opened.
+- Live open-issue search returned none.
 - Repository branch protection remains UNVERIFIED; the GitHub integration could not read the protection settings endpoint. No `.github/CODEOWNERS` file was found. Governance is documented but not confirmed as technically enforced.
-- Physical Redmi installation/launch, touch, persistence and thermal QA: NOT RUN. Release signing/export with an owner-controlled keystore: NOT RUN.
+- Physical Android installation/launch, touch, persistence and thermal QA: NOT RUN. Release signing/export with an owner-controlled keystore: NOT RUN.
 - Production ZX-25RR GLB/CAD, verified UV/surface registration, model-year/market fitment, mechanical validity, hardware calibration and road legality: NOT RUN.
-- The exact target ZX-25RR year/market/variant remains MISSING. The legacy config still identifies ZX-25R; do not silently convert it to ZX-25RR.
+- Exact ZX-25RR year/market/variant remains MISSING. The legacy config still identifies ZX-25R; do not silently convert it to ZX-25RR.
 
 The dated tables and baseline below are historical snapshots and are superseded by this live section. Refresh GitHub before acting.
 
