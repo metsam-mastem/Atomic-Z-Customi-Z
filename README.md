@@ -103,3 +103,7 @@ godot --headless --path . --script res://tests/neon_skin_test.gd
 The test verifies config loading, stable segment IDs, named color resolution, visibility control and rejection of an invalid color reference.
 
 The garage controls also expose independent TAIL / TANK / LOWER visibility toggles, primary and secondary color pickers, a glow slider and SAVE SKIN. Saving writes to Godot's writable `user://neon_skin_config.json` location rather than attempting to modify the read-only packaged `res://` asset. Layer visibility, palette colors and glow intensity are included in the saved JSON.
+
+## Experimental ModernGL neon renderer
+
+An isolated Python/ModernGL/GLFW experiment has been added under `experiments/modern_gl_neon/`. It preserves a user-submitted renderer prototype for desktop shader research. It is **not production-ready**, is not connected to the Godot runtime, and does not provide an Android build path. Known code defects and explicit acceptance gates are documented in that folder's README. Godot remains the product runtime and shared neon-skin data remains the integration contract.
