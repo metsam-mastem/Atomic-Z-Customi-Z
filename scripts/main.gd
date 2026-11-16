@@ -4,6 +4,7 @@ const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
+const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
 
 var _bike
 var _camera: Camera3D
@@ -11,6 +12,9 @@ var _key_light: DirectionalLight3D
 var _quality
 var _neon_skin
 var _build_document: Dictionary = {}
+var _part_selector: OptionButton
+var _paint_picker: ColorPickerButton
+var _selected_part_id := "fuel_tank"
 const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
@@ -101,16 +105,23 @@ func _build_hud() -> void:
 	controls.add_theme_constant_override("separation", 10)
 	root.add_child(controls)
 
+	_part_selector = OptionButton.new()
+	_part_selector.custom_minimum_size = Vector2(180.0, 42.0)
+	_populate_part_selector()
+	_part_selector.item_selected.connect(_on_part_selected)
+	controls.add_child(_part_selector)
+
 	var assembly_button := Button.new()
 	assembly_button.text = "EXPLODED / STOCK"
 	assembly_button.pressed.connect(_on_toggle_assembly)
 	controls.add_child(assembly_button)
 
-	var color_button := ColorPickerButton.new()
-	color_button.color = Color("#e53b36")
-	color_button.custom_minimum_size = Vector2(54.0, 42.0)
-	color_button.color_changed.connect(_on_body_color_changed)
-	controls.add_child(color_button)
+	_paint_picker = ColorPickerButton.new()
+	_paint_picker.color = _bike.get_part_color(_selected_part_id)
+	_paint_picker.custom_minimum_size = Vector2(54.0, 42.0)
+	_paint_picker.tooltip_text = "Paint selected part"
+	_paint_picker.color_changed.connect(_on_body_color_changed)
+	controls.add_child(_paint_picker)
 
 	var reset_button := Button.new()
 	reset_button.text = "RESET CAMERA"
@@ -120,7 +131,7 @@ func _build_hud() -> void:
 	var neon_button := Button.new()
 	neon_button.text = "NEON ON / OFF"
 	neon_button.toggle_mode = true
-	neon_button.button_pressed = true
+	neon_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
 	neon_button.toggled.connect(_on_neon_toggled)
 	controls.add_child(neon_button)
 
@@ -180,13 +191,36 @@ func _on_toggle_assembly() -> void:
 	_bike.toggle_exploded()
 
 func _on_body_color_changed(color: Color) -> void:
-	_bike.set_body_color(color)
+	if not _bike.set_part_color(_selected_part_id, color):
+		push_warning("Selected part does not support paint editing: " + _selected_part_id)
+
+func _populate_part_selector() -> void:
+	_part_selector.clear()
+	var selected_index := -1
+	for part_id in _bike.get_part_ids():
+		var index := _part_selector.item_count
+		_part_selector.add_item(_bike.get_part_display_name(part_id))
+		_part_selector.set_item_metadata(index, part_id)
+		if part_id == _selected_part_id:
+			selected_index = index
+	if selected_index < 0 and _part_selector.item_count > 0:
+		selected_index = 0
+	if selected_index >= 0:
+		_part_selector.select(selected_index)
+		_selected_part_id = str(_part_selector.get_item_metadata(selected_index))
+
+func _on_part_selected(index: int) -> void:
+	if index < 0 or index >= _part_selector.item_count:
+		return
+	_selected_part_id = str(_part_selector.get_item_metadata(index))
+	if is_instance_valid(_paint_picker):
+		_paint_picker.color = _bike.get_part_color(_selected_part_id)
 
 func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: String) -> void:
 	var segment_button := Button.new()
 	segment_button.text = label_text
 	segment_button.toggle_mode = true
-	segment_button.button_pressed = true
+	segment_button.button_pressed = _neon_skin.is_segment_visible(segment_id)
 	segment_button.toggled.connect(_on_neon_segment_toggled.bind(segment_id))
 	parent.add_child(segment_button)
 
@@ -259,13 +293,9 @@ func _update_camera() -> void:
 	_camera.look_at(target, Vector3.UP)
 
 func _load_initial_build_document() -> Dictionary:
-	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
-		var saved := FileAccess.open(BUILD_DOCUMENT_PATH, FileAccess.READ)
-		if saved != null:
-			var restored := BuildDocumentScript.from_json(saved.get_as_text())
-			saved.close()
-			if not restored.is_empty():
-				return restored
+	var restored := BuildDocumentStoreScript.load_document(BUILD_DOCUMENT_PATH)
+	if not restored.is_empty():
+		return restored
 	var legacy_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
 	if legacy_file != null:
 		var parsed: Variant = JSON.parse_string(legacy_file.get_as_text())
@@ -280,18 +310,13 @@ func _save_build_document() -> bool:
 	if not BuildDocumentScript.validate(_build_document).get("ok", false):
 		push_warning("BuildDocument validation failed; save was refused.")
 		return false
-	_build_document["revision"] = int(_build_document.get("revision", 0)) + 1
-	var temporary_path := BUILD_DOCUMENT_PATH + ".tmp"
-	var file := FileAccess.open(temporary_path, FileAccess.WRITE)
-	if file == null:
+	var next_revision := int(_build_document.get("revision", 0)) + 1
+	var candidate := _build_document.duplicate(true)
+	candidate["revision"] = next_revision
+	if not BuildDocumentStoreScript.save_document(candidate, BUILD_DOCUMENT_PATH):
 		return false
-	file.store_string(BuildDocumentScript.to_json(_build_document))
-	file.flush()
-	file.close()
-	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
-	var rename_error := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary_path), ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
-	return rename_error == OK
+	_build_document["revision"] = next_revision
+	return true
 
 func get_build_document_snapshot() -> Dictionary:
 	return _build_document.duplicate(true)
