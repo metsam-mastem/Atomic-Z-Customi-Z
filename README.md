@@ -1,109 +1,57 @@
-# Atomic Z — Customization Lab
+# Atomic-Z-Customi-Z — Unified Motorcycle Customization Workbench
 
-Android-first, modular 3D motorcycle customization and engineering-preview workbench.
+One Android-first application. One vehicle/build context. One canonical data contract. Internally modular, externally one continuous product.
 
-**Asset honesty:** the first scene uses procedural geometric placeholders. It is not a Kawasaki factory CAD model, a ZX-25RR-accurate replica, or a validated engineering model. Real model assets require clear licensing and verified dimensions.
+Atomic-Z-Customi-Z is a 3D motorcycle garage and customization workbench for vehicle inspection, Stock/Exploded assembly, part/material editing, neon and graphic design, persistence and export. Godot 4 / GDScript is the only product runtime and Android delivery engine.
 
-## First vertical slice
-- Godot 4 / GDScript project foundation.
-- Procedural sport-motorcycle placeholder with independently movable named parts.
-- Stock ↔ exploded assembly toggle.
-- Live body-color editing.
-- Touch/mouse orbit camera.
-- Adaptive low-cost rendering policy based on measured frame rate.
-- Architecture, research register and acceptance gates.
+**Asset honesty:** current motorcycle geometry is procedural placeholder geometry, not Kawasaki factory CAD, not a verified ZX-25RR replica and not an engineering-validated model.
+
+## The integrated experience
+- Vehicle identity and variant selection.
+- Named part assembly with Stock / Exploded views.
+- Orbit camera, touch/mouse input and adaptive rendering.
+- Part selection and body paint/material editing.
+- Neon/graphic layers in the same garage HUD and 3D scene.
+- One saved build state and one export pipeline.
+- Future asset catalog, parametric geometry, engineering checks and calibrated hardware adapters.
+
+These are integrated capabilities of one application, not separate products or standalone subprojects.
 
 ## Run
-1. Install the current stable Godot 4 editor.
+1. Install the supported Godot 4 editor.
 2. Clone this repository.
 3. Import the folder containing project.godot.
 4. Run the project from the editor.
 
-No third-party runtime plugin is required for this slice.
-
 ## Android
-Use the official Godot Android export guide:
-https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html
-
-This repository does not yet contain an APK/AAB or a device-tested export. Device profiling is a required acceptance gate, not an assumed result.
-
-## Planned modules
-| Module | Responsibility | Status |
-|---|---|---|
-| Garage scene | Showroom, camera, lighting, touch input | Foundation |
-| Assembly graph | Named parts, parent/child and explode offsets | Foundation |
-| Material lab | PBR presets and texture sets | Basic color control |
-| Asset pipeline | Blender → glTF/GLB → validation → Godot | Planned |
-| Part catalog | Fitment rules, dimensions, metadata, licensing | Planned |
-| Geometry lab | Parametric and procedural part generation | Planned |
-| Engineering checks | Interference, mass properties, solver adapters | Planned |
-| Plugin system | Versioned manifests and capability contracts | Planned |
-| Android profile | Device tiers, frame-time and memory budgets | Not run |
-
-## Project principles
-1. Mobile-first and offline-capable runtime.
-2. Visual preview is separate from engineering validation.
-3. Every imported model/material has provenance and license metadata.
-4. Parts use stable IDs, not display names.
-5. Prefer reusable modules and data-driven catalogs.
-6. No feature is complete until its acceptance checks pass on target hardware.
-
-See docs/architecture.md, docs/research-register.md and docs/acceptance.md.
-
+An Android arm64 debug export preset and CI export job are present. A CI-generated APK is not equivalent to installation and validation on the target Redmi device. Physical-device acceptance remains separate.
 
 ## Verification
-The repository includes a headless smoke test for scene loading, stock/exploded transform restoration and body-material updates:
+Run the current headless checks from the repository root:
 
-```bash
-godot --headless --editor --path . --quit
-godot --headless --path . --script res://tests/smoke_test.gd
-```
+    godot --headless --editor --path . --quit
+    godot --headless --path . --script res://tests/smoke_test.gd
+    godot --headless --path . --script res://tests/neon_skin_test.gd
+    python -m unittest discover -s tests -p "test_*.py" -v
 
-GitHub Actions runs these checks on pushes and pull requests. A green CI run proves only the tested headless behaviors; it does not prove visual quality, Android export, device performance or engineering validity.
+The Python tests currently cover the legacy desktop authoring/preview utility. That utility is a development aid and compatibility path, not a separate product experience. Product customization must converge into the Godot runtime and canonical BuildDocument.
 
+## Architecture and governance
+Read these before changing code:
+- AGENTS.md — mandatory rules for every coding model/agent.
+- docs/UNIFIED_SYSTEM_SPEC.md — product and system contract.
+- docs/AGENT_GOVERNANCE.md — concurrent agent/branch/PR policy.
+- docs/ROADMAP.md — end-to-end phases and exit gates.
+- docs/V2_CODE_ASSESSMENT.md — v2 ModernGL feasibility and integration mapping.
+- docs/RESEARCH_AND_DECISIONS.md — GitHub, Build Your Own X, Nature research and ADRs.
+- docs/architecture.md — technical architecture.
+- docs/acceptance.md — testable acceptance gates.
 
-## Neon Cyberpunk skin preview (Python / Tkinter)
+## Technology boundary
+Godot owns the product scene, UI, input, materials, effects, persistence and Android export. Blender to GLB/glTF 2.0 to validation to Godot is the preferred asset path. Python/Tkinter and ModernGL are reference/developer tools; useful controls and rendering ideas are ported into Godot, not shipped as parallel product runtimes.
 
-This is a separate 2D design-preview utility alongside the Godot 3D garage:
-- `neon_skin_config.json` is the editable, data-only skin definition. It stores the bike label, skin name, two palette colors, glow intensity and three polyline overlays.
-- `neon_simulator.py` reads that JSON and opens a desktop Tkinter window. It draws a stylized side-profile guide, renders the three neon line layers with stacked strokes to approximate glow, lets you toggle layers, change colors, adjust glow intensity, reload the JSON and save edits.
-- `tests/test_neon_simulator.py` validates the config, named color references and input ranges.
+## Vehicle identity
+The accepted base vehicle in project decisions is Kawasaki Ninja ZX-25RR. The initial neon document explicitly says ZX-25R. Do not treat these as identical for geometry, parts or fitment until exact year/market/variant evidence resolves the difference.
 
-### Run on Windows / macOS / Linux
-
-Python 3.10+ is recommended. Tkinter is normally included with the standard Python distribution.
-
-```bash
-python neon_simulator.py
-```
-
-Run automated checks:
-
-```bash
-python -m unittest discover -s tests -p "test_*.py" -v
-python -m py_compile neon_simulator.py
-```
-
-The simulator is a 2D concept tool, not a 3D renderer, not a measured ZX-25R/ZX-25RR body template and not a factory CAD viewer. The supplied line coordinates are canvas pixels and must be aligned to a verified motorcycle side-view template before manufacturing or claiming model-specific fitment.
-
-**Model naming:** this skin JSON intentionally preserves the requested label `Kawasaki Ninja ZX-25R`. The main product brief currently targets ZX-25RR. These names must not be treated as interchangeable for exact fitment; the skin-to-vehicle compatibility remains unverified.
-
-## Godot neon runtime
-
-The same `neon_skin_config.json` is now consumed by `scripts/neon_skin.gd` in the garage scene. The runtime validates the palette, normalized glow range, unique segment IDs, point arrays, named color references and positive stroke widths before building emissive ribbon geometry. The garage HUD exposes a global neon visibility toggle and glow-intensity control.
-
-The current Godot importer maps the supplied 2D canvas coordinates onto a deliberately generic side-plane preview. This is a visualization scaffold only: it is not UV-mapped to body panels, does not conform to the motorcycle mesh, and does not establish ZX-25R/ZX-25RR fitment. The stacked emissive ribbons approximate a neon halo; no platform-wide bloom guarantee is made. The renderer uses Godot's built-in mesh/material pipeline and does not add Macroquad as a second runtime engine.
-
-Run the Godot neon contract test:
-
-```bash
-godot --headless --path . --script res://tests/neon_skin_test.gd
-```
-
-The test verifies config loading, stable segment IDs, named color resolution, visibility control and rejection of an invalid color reference.
-
-The garage controls also expose independent TAIL / TANK / LOWER visibility toggles, primary and secondary color pickers, a glow slider and SAVE SKIN. Saving writes to Godot's writable `user://neon_skin_config.json` location rather than attempting to modify the read-only packaged `res://` asset. Layer visibility, palette colors and glow intensity are included in the saved JSON.
-
-## Experimental ModernGL neon renderer
-
-An isolated Python/ModernGL/GLFW experiment has been added under `experiments/modern_gl_neon/`. It preserves a user-submitted renderer prototype for desktop shader research. It is **not production-ready**, is not connected to the Godot runtime, and does not provide an Android build path. Known code defects and explicit acceptance gates are documented in that folder's README. Godot remains the product runtime and shared neon-skin data remains the integration contract.
+## Status vocabulary
+Use PASS / FAIL / NOT RUN / BLOCKED. Code presence or a green headless test is not proof of Android device performance, factory geometry, fitment or engineering validity.
