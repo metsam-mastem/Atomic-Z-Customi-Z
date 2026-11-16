@@ -47,6 +47,14 @@ Read these before changing code:
 - docs/architecture.md — technical architecture.
 - docs/acceptance.md — testable acceptance gates.
 
+## Project charter, philosophy & handoff
+- [Project Charter](docs/PROJECT_CHARTER.md) — mission, scope, success criteria and governance.
+- [Manifesto & Philosophy](docs/MANIFESTO.md) — principles, product promise and creative philosophy.
+- [Product Catalog](docs/PRODUCT_CATALOG.md) — current capabilities versus roadmap; no overclaiming.
+- [Development Workflow](docs/DEVELOPMENT_WORKFLOW.md) — branch/PR flow, quality gates and debugging protocol.
+- [Product Handoff Presentation](docs/HANDOFF_PRESENTATION.md) — presentation-ready 10-slide handoff outline.
+- [Repository Audit & Work Report](docs/PROJECT_AUDIT_REPORT.md) — inspected files, gaps, work performed and validation status.
+
 ## Technology boundary
 Godot owns the product scene, UI, input, materials, effects, persistence and Android export. Blender to GLB/glTF 2.0 to validation to Godot is the preferred asset path. Python/Tkinter and ModernGL are reference/developer tools; useful controls and rendering ideas are ported into Godot, not shipped as parallel product runtimes.
 
