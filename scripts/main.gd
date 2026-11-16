@@ -5,6 +5,7 @@ const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
+const GlbVehicleRuntimeScript = preload("res://scripts/glb_vehicle_runtime.gd")
 
 var _bike
 var _camera: Camera3D
@@ -23,6 +24,7 @@ var _file_dialog: FileDialog
 var _asset_metadata_dialog: ConfirmationDialog
 var _asset_license_input: LineEdit
 var _asset_source_input: LineEdit
+var _asset_display_name_input: LineEdit
 var _pending_asset_source_path := ""
 var _selected_part_id := "fuel_tank"
 const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
@@ -333,7 +335,7 @@ func _show_asset_metadata_dialog() -> void:
 	if _asset_metadata_dialog == null:
 		_asset_metadata_dialog = ConfirmationDialog.new()
 		_asset_metadata_dialog.title = "Asset provenance"
-		_asset_metadata_dialog.dialog_text = "Record the model license and original source. An unknown or missing license must not be represented as open-source."
+		_asset_metadata_dialog.dialog_text = "Record the model name, license and original source. This name is a display label only; manufacturer identity, year and fitment remain unverified."
 		var fields := VBoxContainer.new()
 		fields.add_theme_constant_override("separation", 8)
 		var license_label := Label.new()
@@ -350,23 +352,32 @@ func _show_asset_metadata_dialog() -> void:
 		_asset_source_input.placeholder_text = "https://... or author / original source details"
 		_asset_source_input.custom_minimum_size.x = 420.0
 		fields.add_child(_asset_source_input)
+		var display_name_label := Label.new()
+		display_name_label.text = "Display name (does not certify manufacturer identity)"
+		fields.add_child(display_name_label)
+		_asset_display_name_input = LineEdit.new()
+		_asset_display_name_input.placeholder_text = "Example: Generic CC0 race-replica motorcycle"
+		_asset_display_name_input.custom_minimum_size.x = 420.0
+		fields.add_child(_asset_display_name_input)
 		_asset_metadata_dialog.add_child(fields)
 		_asset_metadata_dialog.confirmed.connect(_on_asset_metadata_confirmed)
 		add_child(_asset_metadata_dialog)
 	_asset_license_input.text = ""
 	_asset_source_input.text = ""
-	_asset_metadata_dialog.popup_centered(Vector2i(560, 260))
+	_asset_display_name_input.text = _pending_asset_source_path.get_file().get_basename().replace("_", " ").replace("-", " ").capitalize()
+	_asset_metadata_dialog.popup_centered(Vector2i(600, 340))
 
 func _on_asset_metadata_confirmed() -> void:
 	var license_id := _asset_license_input.text.strip_edges()
 	var source_record := _asset_source_input.text.strip_edges()
-	if license_id.is_empty() or source_record.is_empty():
-		push_warning("Import cancelled: license and source provenance are required.")
-		_asset_metadata_dialog.popup_centered(Vector2i(560, 260))
+	var display_name := _asset_display_name_input.text.strip_edges()
+	if license_id.is_empty() or source_record.is_empty() or display_name.is_empty():
+		push_warning("Import cancelled: display name, license and source provenance are required.")
+		_asset_metadata_dialog.popup_centered(Vector2i(600, 340))
 		return
-	await _install_selected_glb(license_id, source_record)
+	await _install_selected_glb(license_id, source_record, display_name)
 
-func _install_selected_glb(license_id: String, source_record: String) -> void:
+func _install_selected_glb(license_id: String, source_record: String, display_name: String) -> void:
 	var source_file := FileAccess.open(_pending_asset_source_path, FileAccess.READ)
 	if source_file == null:
 		push_warning("Could not read the selected GLB. On Android, use the system file picker and grant access to the file.")
@@ -460,6 +471,12 @@ func _install_selected_glb(license_id: String, source_record: String) -> void:
 	candidate_asset["validation_status"] = "local_import_pending_review"
 	candidate_asset["surface_catalog"] = []
 	candidate_document["asset"] = candidate_asset
+
+	var identity_result: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(candidate_document, asset_hash, display_name)
+	if not identity_result.get("ok", false):
+		push_warning("The imported vehicle identity could not be prepared safely: " + str(identity_result.get("errors", [])))
+		return
+	candidate_document = identity_result["document"]
 	if not BuildDocumentScript.validate(candidate_document).get("ok", false):
 		push_warning("The imported asset metadata did not produce a valid BuildDocument.")
 		return
