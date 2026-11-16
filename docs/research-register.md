@@ -128,3 +128,48 @@ The official Japanese-market 2027 FAQ identifies the Ninja ZX-25RR as a distinct
 These specification sheets are authoritative identity/specification references, not CAD geometry, part-surface topology, mounting coordinates or engineering drawings. They may seed a cited spec sheet and validation checklist, but they do not validate the procedural placeholder mesh or any fitment.
 
 A third-party parts-catalogue listing was also found, but it is hosted on a document-sharing site and is not the preferred provenance source. Do not copy or redistribute the catalogue. Prefer manufacturer-issued parts documentation and legally obtained model-specific material.
+
+
+## Motorcycle and game-source research vault — 2026-11-16
+
+The detailed, pinned audit now lives in the [Atomic-Z Research Vault](../research/README.md), including individual source dossiers, immutable revisions, licence scope, compatibility notes, rejected leads and a sparse fetch helper. Use [source-registry.json](../research/source-registry.json) as the machine-readable index.
+
+Important corrections and dispositions:
+- `ssebs/DankNooner` is a substantial Godot 4.7 / Forward+ motorcycle game, but AGPL-3.0 and about 1.19 GB; study architecture only.
+- `ssebs/moto-player-controller-godot` is an AGPL-3.0 predecessor on Godot 4.5 / Forward+; it is not a current plug-in.
+- `OpenNFS` is MIT-licensed C++/Bullet car-engine research; EA game assets/data and bundled dependencies are separate rights. It is not a Godot motorcycle solver.
+- `OpenUG2` has no clear SPDX licence grant established; study clean-room methods only.
+- `troikoss/speed-re` has a limited MIT statement applying to original contributions, with recovered NFSU2 code/data and retail assets expressly excluded; the repository is now pinned at commit `892e5c31d77c751acd123330eda15c157c4f1b1f`, but the recovered NFSU2 code/data remain excluded from its MIT grant.
+- The correct official REA project is `morluto/rea`; similarly named forks are not authoritative.
+- `nicolasbize/roadkill` is a confirmed Godot pseudo-3D racing/fighting game, but GitHub reports `NOASSERTION` despite the itch page's MIT/CC claim.
+- The previously cited `rishabhsinghio/Godot-Simple-Motorcycle-Physics` URL returned 404. The cited `alvariusgames/bearcycle` contents did not match a motorcycle project.
+- Two Innerscene motorcycle GLB pages state CC0, but no model was downloaded or committed; file hashes and import validation remain pending.
+
+Do not treat the older unverified candidate entries above this section as licence approval. The Research Vault is the current source of truth for this source-audit pass.
+
+
+### Call of Duty source audit — 2026-11-16
+
+Call of Duty has more open research material than a blanket “no source exists” statement suggests, but none is a complete official game-source release suitable for Atomic-Z:
+
+- Activision's [official Open Source page](https://research.activision.com/opensource) publishes versioned Telescope: Activision Webkit middleware archives and matching licence archives for selected titles. Telescope is not the Call of Duty game engine/source.
+- [OpenCOD2](https://github.com/opencod2/opencod2) is an incomplete independent C engine reconstruction; its inspected repository has no detected licence file and requires legally owned CoD2 content.
+- [OpenCoD1](https://github.com/opencod1/opencod1) is an incomplete independent CoD 1.1 multiplayer reconstruction; no repository licence file was detected.
+- [CoDWaW reverse-engineering notes](https://github.com/ItsNoahJ/codwaw-reverse-engineering) are MIT-licensed research notes/data, not Activision game source or game assets; the byte-verification methodology is the transferable part.
+- [CoD-Research](https://github.com/primetime43/CoD-Research) is a GPL-3.0 community wiki for CoD4–CoD10, not game source.
+- [MW2 reconstruction dashboard](https://mw2.momo5502.com/) tracks a private source-level reconstruction; no public code repository or licence was established.
+
+See the [COD dossier](../research/sources/COD_RECONSTRUCTION.md) and the updated [source registry](../research/source-registry.json). No COD code, proprietary assets or game data have been imported.
+
+
+### Godot vehicle systems and configurator sources — 2026-11-16
+
+The expanded source review includes five additional pinned repositories. Full implementation notes and exact file links are in [Godot vehicle systems](../research/sources/GODOT_VEHICLE_SYSTEMS.md) and [Motorcycle configurators](../research/sources/MOTORCYCLE_CONFIGURATORS.md).
+
+- `Seerban/godot-vehicle`: MIT Godot 4.6 Forward+ four-wheel RigidBody/raycast racing car, with suspension/grip, VehicleData resources and ghost replay. Useful architecture reference, not motorcycle dynamics.
+- `Kurtzmusch/kv-vehicle`: Godot 4 modular vehicle addon with engine, gearbox, clutch, tire response, suspension, ABS and anti-roll. No root licence found; README documents straight-line suspension, shapecast origin sensitivity and feedback oscillations. Study-only.
+- `AurickMikleton/ModuVehicle`: CC0 C++ GDExtension prototype, Godot 4.5+, with swappable vehicle resources and a combined slip/tyre-force model, traction control, wheel integration and suspension damping. WIP; no complete motorcycle solver; no GDExtension imported.
+- `Whauv/MotoForge`: Next.js/Three.js + FastAPI/SQLite configurator. Useful part-fitment relations, duplicate-safe quote calculation and GLB asset alignment conventions. No repository-level licence; no code reuse.
+- `rohithyv/3D-Motorcycle-Showroom`: fictional VOLT R1 Three.js showroom. Useful mobile opt-in/lazy GLB loading, fallback, camera choreography and performance telemetry. No repository-level licence; product figures are fictional and must not be treated as engineering facts.
+
+The machine-readable [registry](../research/source-registry.json) now includes 23 entries and 16 pinned Git commits. Only six pinned repositories with an identified licence are exposed by the local sparse-fetch helper (the two new entries are Godot Vehicle and ModuVehicle). Sources with unclear or mixed rights remain manual-reference only.
