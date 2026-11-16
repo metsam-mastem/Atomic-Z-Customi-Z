@@ -118,23 +118,28 @@ func _build_hud() -> void:
 	neon_button.toggled.connect(_on_neon_toggled)
 	controls.add_child(neon_button)
 
-	_add_neon_segment_toggle(controls, "TAIL", "tail_underglow")
-	_add_neon_segment_toggle(controls, "TANK", "tank_accent")
-	_add_neon_segment_toggle(controls, "LOWER", "lower_fairing")
+	var skin_controls := HBoxContainer.new()
+	skin_controls.position = Vector2(24.0, 146.0)
+	skin_controls.add_theme_constant_override("separation", 10)
+	root.add_child(skin_controls)
+
+	_add_neon_segment_toggle(skin_controls, "TAIL", "tail_underglow")
+	_add_neon_segment_toggle(skin_controls, "TANK", "tank_accent")
+	_add_neon_segment_toggle(skin_controls, "LOWER", "lower_fairing")
 
 	var primary_picker := ColorPickerButton.new()
 	primary_picker.color = Color("#00FFCC")
 	primary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	primary_picker.tooltip_text = "Neon primary color"
 	primary_picker.color_changed.connect(_on_neon_primary_changed)
-	controls.add_child(primary_picker)
+	skin_controls.add_child(primary_picker)
 
 	var secondary_picker := ColorPickerButton.new()
 	secondary_picker.color = Color("#FF00FF")
 	secondary_picker.custom_minimum_size = Vector2(42.0, 42.0)
 	secondary_picker.tooltip_text = "Neon secondary color"
 	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
-	controls.add_child(secondary_picker)
+	skin_controls.add_child(secondary_picker)
 
 	var glow_slider := HSlider.new()
 	glow_slider.custom_minimum_size = Vector2(120.0, 32.0)
@@ -144,7 +149,7 @@ func _build_hud() -> void:
 	glow_slider.value = 0.8
 	glow_slider.tooltip_text = "Neon glow intensity"
 	glow_slider.value_changed.connect(_on_glow_changed)
-	controls.add_child(glow_slider)
+	skin_controls.add_child(glow_slider)
 
 	var disclaimer := Label.new()
 	disclaimer.text = "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
