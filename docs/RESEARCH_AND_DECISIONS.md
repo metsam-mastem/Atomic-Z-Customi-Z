@@ -48,6 +48,7 @@ Nature Index topic pages are synthesized summaries, not direct validation. Consu
 | ADR-007 | Visual and engineering evidence separated | Prevent false safety/fitment claims |
 | ADR-008 | Branch/PR-only collaboration | Prevent direct-main races |
 | ADR-009 | Retire the unused SkinProfileStore and NeonSkin.save_skin writers; treat legacy `user://skin_profile.json` as a read-only, one-time migration input into BuildDocument; preserve unmapped 0..10 glow/pulse values in a versioned extension and retain the original file | Enforce one canonical writable state without losing legacy user data | Accepted by product owner; implementation proposed in PR #30 |
+| ADR-010 | Set the product reference identity to Kawasaki Ninja ZX-25RR model year 2026; keep market unset until explicitly selected; legacy ZX-25R neon settings may migrate as customization data only, with their source identity retained and no geometry/fitment inference | Reflect the owner-selected model year/variant without misrepresenting regional specification or legacy geometry | Accepted by product owner; implemented in PR #30 |
 
 ## External adoption checklist
 Verify license and commercial rights, maintenance/release, Godot/API compatibility, copied code versus inspiration, exact upstream commit, dependencies/security, attribution, integration tests and reason native Godot features are insufficient. No external code or asset is automatically approved by being listed here.
