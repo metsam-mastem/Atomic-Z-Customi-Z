@@ -1,0 +1,4 @@
+moderngl>=5.10,<6
+moderngl-window>=2.4,<3
+numpy>=1.26,<3
+glfw>=2.7,<3
