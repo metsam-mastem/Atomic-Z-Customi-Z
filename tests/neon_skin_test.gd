@@ -58,5 +58,25 @@ func _run() -> void:
 		push_error("Rejected config must not replace the last valid skin.")
 		quit(1)
 		return
+	var save_path := "user://test_neon_skin_config.json"
+	if not skin.save_skin(save_path):
+		push_error("Valid skin state must save to the user data directory.")
+		quit(1)
+		return
+	var restored = NeonSkinScript.new()
+	root.add_child(restored)
+	if not restored.load_skin(save_path):
+		push_error("Saved skin config must load again.")
+		quit(1)
+		return
+	if restored.get_segment_color("tail_underglow") != Color("#112233") or not is_equal_approx(restored.get_glow_intensity(), 1.0):
+		push_error("Saved palette and glow state must round-trip.")
+		quit(1)
+		return
+	if restored.is_segment_visible("tank_accent"):
+		push_error("Saved segment visibility must round-trip.")
+		quit(1)
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
 	print("PASS: neon skin JSON loading, stable IDs, palette editing, glow clamping and visibility.")
 	quit(0)
