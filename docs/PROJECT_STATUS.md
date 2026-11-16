@@ -8,19 +8,22 @@
 **Verified main:** `0f0f419b2d561e1180720c13a55f4a707af3856b`  
 **Current release track:** P1 integrated garage; research vault and optional AI remain separate workstreams.
 
-## Current live snapshot — 2026-11-16 09:25 UTC
+## Current live snapshot — 2026-11-16 09:33 UTC
 
-- Main SHA: `9f197b10a246545f5e80d8eff1f77cf927797b5e`.
+- Main SHA: `0f0f419b2d561e1180720c13a55f4a707af3856b`.
 - Merged PR #28 — Android reproducible build and artifact verification.
 - Merged PR #39 — revert of unintended Android ContentUri plugin residue.
 - Merged PR #42 — Customi-Z Core v0.4 integration audit (documentation only).
 - Merged PR #43 — GLB surface catalog, canonical BuildDocument validation, PBR-preserving surface binder and exact Godot CI test.
 - Merged PR #45 — Neon legacy migration into BuildDocument, retirement of the parallel profile store, P1 one-finger orbit/two-finger pan/pinch gestures. Exact-head CI run [#43838993070](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43838993070): smoke/GLB/Neon/UI hydration, simulator and Android Debug/Release export jobs all PASS.
 - Merged PR #46 — research source vault. Exact-head CI run [#43839645819](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43839645819): registry contract tests, helper shell syntax, Godot smoke/contract, Python simulator and Android Debug/Release export all PASS. Registry contains 23 unique source IDs, 16 immutable 40-character commit pins and six licence-identified sparse checkout entries.
-- PR #51 — optional in-garage free-first AI assistant (OPEN; exact head `b353e2964f69a9e69e76c82398af8fd5382518af`). It lazy-loads only after the user presses AI ASSIST, uses a shared provider registry, requires HTTPS for hosted endpoints, permits cleartext only for explicitly trusted private Ollama, disables Android hosted API keys, and adds provider-policy / lazy-load tests. Exact-head Godot/Python/Android CI was QUEUED at this checkpoint; do not merge until all checks complete successfully. Physical Android network QA and live provider integration remain NOT RUN.
+- PR #50 — this refreshed project-status/roadmap checkpoint (OPEN; exact head `40cf8e71c464cb2dca47e6d671da68f90ced3bda`); exact-head checks are still queued.
+- PR #52 — project-management operating plan (OPEN; docs only; exact-head checks are still queued).
+- PR #53 — optional in-garage free-first AI assistant (OPEN; exact head `dbc09b63c15e5a31b2a8e48dc09f3d90d5323550`). It lazy-loads only after the user presses AI ASSIST, uses a shared provider registry, requires HTTPS for hosted endpoints, blocks Android cleartext pending device verification, disables Android hosted API keys, and verifies INTERNET permission in the exported APK. Exact-head Godot/Python/Android CI is QUEUED; merge only after all checks pass. Physical Android network QA and live provider integration remain NOT RUN.
+- PR #51 — closed without merge as a superseded duplicate of PR #53; its initial CI workflow syntax issue was corrected in the replacement branch.
 - PR #31 — closed without merge as an experimental AI prototype. Follow-up is tracked in issue #49; AI remains optional and excluded from the P1 release gate.
 - Open issue #47 — P2 GLB runtime import and Android content-URI plugin. PR #38 was closed after exact-head Android export failure; plugin descriptor/AAR/template and project configuration must be resolved before implementation resumes.
-- Open issue #49 — safe optional multi-model AI assistant integration; implementation is tracked in PR #51. The unsafe prototype PR #31 is closed without merge.
+- Open issue #49 — safe optional multi-model AI assistant integration; implementation is tracked in PR #53. The unsafe prototype PR #31 is closed without merge.
 - Superseded stacked PRs #29, #30, #37 and #44 are closed. Their approved code was selectively transplanted into #43/#45; do not reopen those branches.
 - CI-generated Android artifacts are Debug/test exports. Production signing, Play Store readiness and commercial release approval are NOT RUN.
 - Physical Redmi Note 13 Pro install/launch, real touch interaction, pause/resume, persistence, performance and thermal QA: NOT RUN.
