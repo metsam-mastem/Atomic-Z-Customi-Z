@@ -4,27 +4,26 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 05:18 UTC  
+**Last verified:** 2026-11-16 05:32 UTC  
 **Verified main:** `4d2cf3b82bd78437541b49da46f522c06d2652b5`  
-**Active dependency chain:** PR #28 → PR #29 → PR #30. No direct changes to `main`.
+**Active dependency chain:** PR #28 → PR #29 → PR #30. PR #31 is an independent, unapproved AI feature proposal. No direct changes to `main`.
 
-## Current live snapshot — 2026-11-16 05:16 UTC
+## Current live snapshot — 2026-11-16 05:32 UTC
 
-- `main` remains at `4d2cf3b82bd78437541b49da46f522c06d2652b5`; all current work is on task branches and PRs.
-- PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), is OPEN against `main`, head `092d84c975bed159b244eb552a2b76efd16a41a7`. Android Debug export, APK structure verification and apksigner passed in exact-head workflow [#43807090339](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807090339). Its earlier smoke job was job-green while the old BuildDocument test helper hid failed assertions; do not treat that subtest as verified on PR #28 alone.
-- PR #29, [GLB surface catalog to BuildDocument integration](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/29), is OPEN / DRAFT, stacked on PR #28, head `2325738c652733723412e2e1f7b91fd45e20d961`. Exact-head Godot, Python and Android Debug CI all passed in [#43807888243](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807888243). This includes the corrected BuildDocument assertion harness and synthetic GLB surface-catalog integration. Artifact `atomic-z-android-debug`: ID `14199128439`, ZIP digest `sha256:433202a853c92fc2ff0a5a1a776118d90ff8ba639eef636837f02d72ccba6f5a`; debug build only.
-- PR #30, [Unify legacy neon profile migration with BuildDocument](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/30), is OPEN / DRAFT, stacked on PR #29, head `cc72cafd645d5b3c7b3551eb24a63312fd059b4d`. Exact-head Godot import/smoke/Neon/BuildDocument/Binder/GLB/UI tests, Python tests and Android Debug export all passed in [#43808940023](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43808940023). Artifact `atomic-z-android-debug`: ID `14198774996`, size 26,845,053 bytes, ZIP digest `sha256:f627260018d501cc9f940c70e129ef7eff9ed9458c9ec930c8bffd70d2901577`; debug build only.
-- PR #30 retires the unused `SkinProfileStore` and `NeonSkin.save_skin()` writers; migrates legacy `user://skin_profile.json` into a versioned BuildDocument extension only when no valid canonical BuildDocument exists; preserves the original profile file and unmapped 0..10 glow/pulse values; all future writes use `BuildDocumentStore`.
-- The old `scripts/skin_profile_store.gd` was not registered as an Autoload and had no product-code callers. Its deletion is proposed only in PR #30; it is not deleted from `main`.
-- Main's older BuildDocument test result is classified FAIL / false-green due the test-harness defect. PR #29 contains the correction; its exact-head tests pass.
-- Branch audit: current open work is PR #28/#29/#30. Divergent, unmerged architecture branches `agent/architecture/1-hydrate-build-document-ui`, `agent/architecture/2-retire-legacy-skin-profile-store` and `agent/architecture/3-builddocument-neon-migration` were reviewed; relevant ideas were selectively reimplemented in PR #30. Do not merge those branches wholesale. Other old branches are behind or diverged and are not current ownership sources unless a live PR is opened.
+- `main` remains at `4d2cf3b82bd78437541b49da46f522c06d2652b5`. No implementation writes were made to `main`.
+- PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), is OPEN / READY FOR REVIEW, head `4bf83ef75d196b8a1259179b034632ebca2ca6bf`, based on current main. Exact-head workflow [#43810187315](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43810187315) PASS: Godot smoke, Python tests, Android Debug export, and Android Release export with an ephemeral CI keystore. Release signing values are injected only into a temporary project copy; the tracked export preset is not modified. Debug artifact ID `14200147053`, ZIP size 26,823,303 bytes, digest `sha256:6f0108e8de48c5db658cc450d4175cc943bc5a9fecdfa60d3ad0da9f75a2bf45`; expires 2026-11-30. The ephemeral Release APK is not a production release artifact.
+- PR #29, [GLB surface catalog to BuildDocument integration](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/29), is OPEN / DRAFT, head `2325738c652733723412e2e1f7b91fd45e20d961`, stacked on PR #28. Exact-head workflow [#43807893732](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807893732) PASS for Godot, Python and Android Debug export. It uses a synthetic scene fixture; PR #30 adds an additional imported glTF fixture test.
+- PR #30, [Unify legacy neon profile migration with BuildDocument](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/30), is OPEN / DRAFT, head `09ff054d5b502ae0dbb485c3be1c3145af1ec9ef`, stacked on PR #29. Exact-head workflow [#43810653210](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43810653210) PASS for Godot import/smoke, canonical BuildDocument tests, legacy profile migration, imported glTF surface inventory, Python tests and Android Debug export. Debug artifact ID `14199779335`, ZIP size 26,850,098 bytes, digest `sha256:f87ba2e12be9b7ee2079e637b7a29e8550b0eca54d128864d094f0605572de8a`; expires 2026-11-30.
+- PR #30 retires the unused legacy profile writer and `NeonSkin.save_skin()`; migrates `user://skin_profile.json` only when no valid canonical BuildDocument exists; preserves the original file and unmapped 0..10 glow/pulse values in a versioned extension. Existing valid BuildDocuments take precedence and are not silently rewritten.
+- PR #30 sets the default reference identity for new builds to Kawasaki Ninja ZX-25RR, model year 2026, variant ZX-25RR, with market explicitly null. Legacy ZX-25R identity is retained as migration provenance; its old 2D neon paths remain unverified and do not imply geometry or fitment compatibility. This identity is metadata only; it does not validate production geometry.
+- PR #31, [Add free-first multi-model AI adapter foundation](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/31), is OPEN / DRAFT, head `d8a26a4a481d454d8a8c2c6e9503426ab5edff5f`, based on main. Exact-head workflow [#43809392394](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43809392394) passed generic Godot/Python/Android jobs, but there are no dedicated provider/network tests. Review comments identify missing product-scope approval, Android credential handling, hosted HTTPS enforcement, Android endpoint defaults and registry-driven model discovery. Treat as a prototype only; do not merge or enable in the product baseline without explicit owner acceptance and security/test work.
 - Live open-issue search returned none.
-- Repository branch protection remains UNVERIFIED; the GitHub integration could not read the protection settings endpoint. No `.github/CODEOWNERS` file was found. Governance is documented but not confirmed as technically enforced.
-- Physical Android installation/launch, touch, persistence and thermal QA: NOT RUN. Release signing/export with an owner-controlled keystore: NOT RUN.
-- Production ZX-25RR GLB/CAD, verified UV/surface registration, model-year/market fitment, mechanical validity, hardware calibration and road legality: NOT RUN.
-- Exact ZX-25RR year/market/variant remains MISSING. The legacy config still identifies ZX-25R; do not silently convert it to ZX-25RR.
+- Repository branch protection and required-check enforcement remain UNVERIFIED; the integration cannot read the settings endpoint. Governance is documented but not confirmed as technically enforced.
+- Physical Redmi installation/launch, touch, persistence, frame-time, memory and thermal QA: NOT RUN. Exact Redmi Note 13 Pro SKU remains unknown.
+- Production ZX-25RR GLB/CAD, verified UV/surface registration, regional specification, mechanical fitment, structural validity, calibrated hardware mapping and road legality: NOT RUN. The model year and variant are selected; market remains unresolved.
+- The current glTF fixture is a small two-surface test asset only; it is not a motorcycle asset or evidence of Kawasaki geometry.
 
-The dated tables and baseline below are historical snapshots and are superseded by this live section. Refresh GitHub before acting.
+
 
 ## Resume rule
 
@@ -42,7 +41,7 @@ This file is the operational starting point, not a substitute for live verificat
 - One application lifecycle, active vehicle/build context, navigation flow and persistence/export path.
 - One versioned `BuildDocument` is the only authoritative editable build state.
 - Preferred model interchange: glTF 2.0 / GLB, authored/validated through Blender.
-- Current vehicle target: Kawasaki Ninja ZX-25RR; exact year, market, variant and geometry remain evidence-gated.
+- Current vehicle reference: Kawasaki Ninja ZX-25RR model year 2026, variant ZX-25RR; market is not selected. Production geometry, fitment and engineering validity remain evidence-gated.
 - ZX-25R and ZX-25RR are not interchangeable without authoritative evidence.
 - Procedural geometry is placeholder geometry, not factory CAD or engineering validation.
 - Python/Tkinter and ModernGL are research/developer references, not alternate product runtimes.
