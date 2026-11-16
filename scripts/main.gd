@@ -372,9 +372,9 @@ func _install_selected_glb(license_id: String, source_record: String) -> void:
 		push_warning("Could not read the selected GLB. On Android, use the system file picker and grant access to the file.")
 		return
 	var file_size := source_file.get_length()
-	if file_size < 20 or file_size > 268435456:
+	if file_size < 20 or file_size > 134217728:
 		source_file.close()
-		push_warning("GLB file size is invalid or exceeds the 256 MiB import limit.")
+		push_warning("GLB file size is invalid or exceeds the 128 MiB import limit.")
 		return
 	var model_bytes := source_file.get_buffer(file_size)
 	var read_error := source_file.get_error()
@@ -408,9 +408,12 @@ func _install_selected_glb(license_id: String, source_record: String) -> void:
 		_remove_asset_file(temporary_path)
 		push_warning("Could not calculate the selected GLB SHA-256.")
 		return
-	var installed_path := directory_path + "/asset_" + asset_hash.substr(0, 16) + ".glb"
+	var installed_path := directory_path + "/asset_" + asset_hash + ".glb"
 	if FileAccess.file_exists(installed_path):
 		_remove_asset_file(temporary_path)
+		if FileAccess.get_sha256(installed_path).to_lower() != asset_hash:
+			push_warning("Existing asset path failed full SHA-256 collision verification.")
+			return
 	else:
 		var rename_error := DirAccess.rename_absolute(
 			ProjectSettings.globalize_path(temporary_path),
