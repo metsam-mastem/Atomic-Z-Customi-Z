@@ -32,14 +32,15 @@ func _run() -> void:
 		quit(1)
 		return
 	var panel := overlay.get_node_or_null("AIPanel") as PanelContainer
-	if panel == null or not panel.visible:
-		push_error("Invoking AI ASSIST must open the assistant panel.")
+	var backdrop := overlay.get_node_or_null("AIBackdrop") as ColorRect
+	if panel == null or not panel.visible or backdrop == null or not backdrop.visible:
+		push_error("Invoking AI ASSIST must open the panel and its backdrop.")
 		quit(1)
 		return
 
 	overlay.call("close_panel")
-	if panel.visible:
-		push_error("The optional assistant must close without leaving the panel visible.")
+	if panel.visible or backdrop.visible:
+		push_error("Closing the assistant must hide both panel and backdrop.")
 		quit(1)
 		return
 
