@@ -414,7 +414,27 @@
       "metadata": {
         "language": "C",
         "build": "CMake, SDL2/OpenGL, native x86",
-        "status": "incomplete work in progress; builds/boots but may crash or omit features"
+        "status": "incomplete work in progress; builds/boots but may crash or omit features",
+        "tree_entries": 1039,
+        "modules": [
+          "client_mp",
+          "server_mp",
+          "game_mp",
+          "cgame_mp",
+          "qcommon",
+          "renderer",
+          "EffectsCore",
+          "xanim",
+          "script",
+          "botlib",
+          "cod2rad"
+        ],
+        "build_targets": [
+          "Linux native x86",
+          "Windows MinGW/MSVC",
+          "WebAssembly"
+        ],
+        "x64_port": "compile-only/in progress; no link/run yet"
       },
       "licence": {
         "spdx": "NOASSERTION",
@@ -441,7 +461,27 @@
       "metadata": {
         "language": "C",
         "build": "Premake/Visual Studio, Windows",
-        "status": "incomplete; engine, server and game/cgame/UI modules build/link, effects system still in progress"
+        "status": "incomplete; engine, server and game/cgame/UI modules build/link, effects system still in progress",
+        "tree_entries": 405,
+        "modules": [
+          "client_mp",
+          "server_mp",
+          "game_mp",
+          "cgame_mp",
+          "ui_mp",
+          "qcommon",
+          "renderer",
+          "EffectsCore",
+          "xanim",
+          "botlib",
+          "script",
+          "zlib"
+        ],
+        "build_targets": [
+          "Windows/Visual Studio client",
+          "dedicated server",
+          "game/cgame/UI modules"
+        ]
       },
       "licence": {
         "spdx": "NOASSERTION",
@@ -472,6 +512,14 @@
           "DemonWare deltas",
           "MSVC8 toolchain",
           "byte-exact verification methodology"
+        ],
+        "tree_entries": 20,
+        "contents": [
+          "CSV function/object inventories",
+          "crypto-stack analysis",
+          "MSVC8 toolchain forensics",
+          "methodology and byte-match verifier design",
+          "FastFile/asset-pool/script-layer notes"
         ]
       },
       "licence": {
@@ -499,7 +547,14 @@
       },
       "metadata": {
         "language": "HTML/Markdown documentation",
-        "scope": "community research for CoD4 through CoD10"
+        "scope": "community research for CoD4 through CoD10",
+        "tree_entries": 182,
+        "contents": [
+          "FastFile and Zone schemas",
+          "asset type documentation",
+          "platform-specific structs and offsets",
+          "DemonWare interfaces and wire format notes"
+        ]
       },
       "licence": {
         "spdx": "GPL-3.0",
