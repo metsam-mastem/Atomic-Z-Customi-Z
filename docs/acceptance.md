@@ -86,3 +86,16 @@ The following gates supersede any interpretation of the garage, material editor,
 - [ ] Agent collaboration follows AGENTS.md and docs/AGENT_GOVERNANCE.md; all future source changes use branches and reviewed PRs.
 
 Status of these new gates: NOT RUN. Existing headless tests and CI history cover only the specific behaviors named above in their original sections; they do not automatically satisfy this end-to-end contract.
+
+
+## BuildDocument persistence recovery gates
+
+- [ ] A valid candidate is written to a temporary file and read back through the canonical schema validator before replacing the primary save.
+- [ ] An invalid candidate is rejected without changing the last valid primary document.
+- [ ] A failed backup rotation leaves the last valid primary intact and does not increment the in-memory revision.
+- [ ] A successful replacement retains the previous valid revision as a recovery backup.
+- [ ] A corrupt or missing primary is restored from a valid backup without discarding the backup before recovery is verified.
+- [ ] A failed install attempts restoration from the preserved backup; recovery failure is surfaced and never reported as PASS.
+- [ ] Godot 4.4.1 CI executes the BuildDocument and Garage smoke regression tests.
+
+Status: implementation is present in PR #13; CI and device verification remain NOT RUN / NOT VERIFIED until evidence is available.
