@@ -18,7 +18,17 @@ func _initialize() -> void:
 			{"id": "tail_underglow", "color": "primary", "width": 2.0, "visible": true, "points": [[100, 300], [200, 320]]}
 		]
 	}
+	var target_default: Dictionary = BuildDocumentScript.create_target_default()
+	_assert(target_default.get("vehicle", {}).get("model_year") == 2026, "The selected product reference year must be stored as 2026.")
+	_assert(target_default.get("vehicle", {}).get("variant") == "ZX-25RR", "The selected product reference variant must be ZX-25RR.")
+	_assert(target_default.get("vehicle", {}).get("market") == null, "An unselected market must remain explicitly unset.")
+	_assert(target_default.get("asset", {}).get("validation_status") == "not_run", "Target identity must not imply validated factory geometry.")
 	var document: Dictionary = BuildDocumentScript.from_legacy_neon(legacy)
+	_assert(document.get("vehicle", {}).get("model_year") == 2026, "Legacy neon migration must target the selected 2026 reference year.")
+	_assert(document.get("vehicle", {}).get("variant") == "ZX-25RR", "Legacy ZX-25R settings must not overwrite the selected ZX-25RR product identity.")
+	_assert(document.get("vehicle", {}).get("market") == null, "Legacy migration must not invent a market.")
+	_assert(document.get("migration", {}).get("source_vehicle_label") == "Kawasaki Ninja ZX-25R", "Legacy source vehicle label must be retained as provenance.")
+	_assert(str(document.get("migration", {}).get("mapping_note", "")).contains("geometry"), "Migration must state that legacy customization does not validate model geometry.")
 	_assert(document.get("schema_version") == 1, "Migration must stamp schema version 1.")
 	_assert(document.get("vehicle", {}).get("vehicle_id") == "kawasaki-ninja-zx-25r", "Migration must create a stable vehicle ID.")
 	_assert(document.get("customization", {}).get("neon_layers", []).size() == 1, "Migration must preserve neon segments.")
