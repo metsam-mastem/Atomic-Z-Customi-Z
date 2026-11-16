@@ -108,6 +108,14 @@ func _run_smoke_test() -> void:
 		push_error("Body paint edits must update the shared BuildDocument.")
 		quit(1)
 		return
+	var fuel_paint_record_found := false
+	for material_record in document.get("customization", {}).get("materials", []):
+		if material_record is Dictionary and str(material_record.get("material_id", "")) == "paint:fuel_tank":
+			fuel_paint_record_found = material_record.get("target_part_ids", []) == ["fuel_tank"]
+	if not fuel_paint_record_found:
+		push_error("BuildDocument must persist the selected part's stable paint target.")
+		quit(1)
+		return
 	if document.get("customization", {}).get("palette", {}).get("primary") != "#123456":
 		push_error("Neon palette edits must update the shared BuildDocument.")
 		quit(1)
