@@ -562,6 +562,7 @@ func _on_reset_camera() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		_touch_gestures.sync_camera_state(_orbit_angle, _orbit_pitch, _orbit_distance, _camera_target_offset)
 		_touch_gestures.handle_event(event)
 		_apply_touch_camera_state()
 		return
