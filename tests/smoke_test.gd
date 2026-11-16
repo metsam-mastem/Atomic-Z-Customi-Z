@@ -97,6 +97,11 @@ func _run_smoke_test() -> void:
 	scene.call("_on_neon_toggled", false)
 	bike.call("set_exploded", true)
 	var saved_exploded_tank_position: Vector3 = tank.position
+	var summary_label := scene.find_child("BuildSummaryLabel", true, false) as Label
+	if summary_label == null or not summary_label.text.contains("BUILD  /") or not summary_label.text.contains("fuel tank"):
+		push_error("Garage HUD must display the active BuildDocument and selected part.")
+		quit(1)
+		return
 	var document: Dictionary = scene.call("get_build_document_snapshot")
 	if document.get("schema_version") != 1:
 		push_error("Garage must expose the canonical BuildDocument.")
@@ -128,6 +133,10 @@ func _run_smoke_test() -> void:
 		return
 	if not scene.call("save_project"):
 		push_error("Unified BuildDocument must save successfully.")
+		quit(1)
+		return
+	if not summary_label.text.contains("REVISION  /  2"):
+		push_error("HUD must reflect the persisted BuildDocument revision after save.")
 		quit(1)
 		return
 	var saved := FileAccess.open("user://atomic_z_build.json", FileAccess.READ)
