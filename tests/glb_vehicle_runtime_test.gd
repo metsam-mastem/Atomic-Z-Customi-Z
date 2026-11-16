@@ -4,6 +4,7 @@ const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd")
 const GlbSurfaceCatalogScript = preload("res://scripts/glb_surface_catalog.gd")
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
+const GlbVehicleRuntimeScript = preload("res://scripts/glb_vehicle_runtime.gd")
 
 const FIXTURE_PATH := "user://atomic_z_glb_runtime_fixture.glb"
 const SAVE_PATH := "user://atomic_z_glb_runtime_build.json"
@@ -59,13 +60,29 @@ func _run() -> void:
 
 	source_scene.free()
 
-	var document := BuildDocumentScript.create_default("fixture-bike", "Synthetic GLB Test Bike")
+	var document := BuildDocumentScript.create_default("kawasaki-zx-25rr-2026", "Kawasaki Ninja ZX-25RR")
+	document["vehicle"]["model_year"] = 2026
+	document["vehicle"]["variant"] = "ZX-25RR"
+	document["vehicle"]["market"] = "EU"
 	document["asset"]["uri"] = FIXTURE_PATH
 	document["asset"]["sha256"] = FileAccess.get_sha256(FIXTURE_PATH)
 	document["asset"]["license"] = "CC0-1.0"
 	document["asset"]["source"] = "Atomic-Z-Customi-Z synthetic GLB test fixture"
 	document["asset"]["validation_status"] = "test_fixture"
-	_assert(BuildDocumentScript.validate(document).get("ok", false), "Pinned local GLB document with an empty catalog must satisfy the canonical schema.")
+	var imported_identity: Dictionary = GlbVehicleRuntimeScript.prepare_document_for_import(document, document["asset"]["sha256"], "Synthetic Generic Test Motorcycle")
+	_assert(imported_identity.get("ok", false), "Imported asset identity must be prepared from the actual model file.")
+	if imported_identity.get("ok", false):
+		document = imported_identity["document"]
+	_assert(document.get("vehicle", {}).get("display_name") == "Synthetic Generic Test Motorcycle", "Imported generic model must replace the prior ZX-25RR display label.")
+	_assert(document.get("vehicle", {}).get("model_year") == null and document.get("vehicle", {}).get("variant") == null and document.get("vehicle", {}).get("market") == null, "Unverified imported model identity fields must be cleared.")
+	_assert(str(document.get("vehicle", {}).get("vehicle_id", "")).begins_with("imported-"), "Imported vehicle ID must be pinned to the imported asset hash.")
+	var identity_preserved := false
+	for extension_value in document.get("extensions", []):
+		if extension_value is Dictionary and str(extension_value.get("extension_id", "")) == "replaced_vehicle_identity":
+			var previous_vehicle: Dictionary = extension_value.get("payload", {}).get("vehicle", {})
+			identity_preserved = previous_vehicle.get("variant") == "ZX-25RR" and previous_vehicle.get("model_year") == 2026 and previous_vehicle.get("market") == "EU"
+	_assert(identity_preserved, "Prior vehicle identity must be preserved as unmapped provenance, not discarded.")
+	_assert(BuildDocumentScript.validate(document).get("ok", false), "Pinned local GLB document with its imported identity must satisfy the canonical schema.")
 
 	var bike := BikeAssemblyScript.new()
 	bike.name = "ImportedFixtureBike"
