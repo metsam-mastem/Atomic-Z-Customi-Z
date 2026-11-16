@@ -108,8 +108,8 @@ The current milestone is a working Godot garage vertical slice with a CI-built d
 - PASS — GLB surface catalog and stable surface-ID validation integrated through PR #43; Godot smoke, GLB contract, Neon simulator and Android Debug/Release CI passed on exact head.
 - PASS — Neon state now migrates into the canonical BuildDocument through PR #45. The parallel skin profile writer is retired; legacy shader values that cannot be safely normalized remain preserved as unmapped extension data.
 - PASS — P1 camera gestures integrated through PR #45: one-finger orbit, two-finger pan and pinch zoom. Exact-head CI passed; physical Redmi touch QA remains NOT RUN.
-- OPEN — PR #46 carries the research-only source vault and is awaiting exact-head CI completion/review.
-- DRAFT — PR #31 optional multi-model AI adapter remains a prototype and is excluded from P1 release acceptance.
+- OPEN — PR #46 carries the research-only source vault; its latest exact-head run #43839645819 adds registry schema/pin checks and shell syntax validation.
+- OPEN — issue #49 tracks safe optional AI assistant integration. Draft PR #31 was closed without merge; AI is excluded from P1 release acceptance.
 - BLOCKED — Issue #47 tracks GLB runtime import and Android content-URI plugin work after PR #38's Android export failure.
 - NOT RUN — physical device installation, production GLB provenance/fitment, performance/thermal profiling, production signing and commercial release acceptance.
 
