@@ -808,7 +808,7 @@
         "README.md",
         "addons/kv-vehicle/README.md",
         "addons/kv-vehicle/TireResponse.gd",
-        "addons/kv-vehicle/nodes/kv-wheel.gd (path not confirmed; use tree inventory)"
+        "addons/kv-vehicle/scene/instantiable/kv-wheel.gd"
       ],
       "atomic_z_decision": "No code reuse until rights are clarified. README documents limitations: straight-line suspension travel, shapecast origin sensitivity and wheel/engine feedback oscillations."
     },
