@@ -67,7 +67,7 @@ This live list supersedes the older PR snapshot and statuses retained in earlier
 - The fetch helper supports six pinned/licence-identified checkouts (`danknooner`, `moto-controller`, `opennfs`, `rea`, `godot-vehicle`, `modu-vehicle`) and stores them locally in ignored `.research-cache/`. Unlicensed or mixed-rights sources remain manual-reference only.
 - No external code, game assets or binaries were vendored into the product repository or imported into Godot's `res://` runtime. The research cache is not a product dependency.
 - PR metadata at last read: OPEN, non-draft, `mergeable=true`, `mergeable_state=unstable`; the latest check-runs were queued.
-- Exact-head `Godot CI` runs [#43830219336](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43830219336) and [#43830211488](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43830211488) were **QUEUED** at the last read. Re-check before claiming PASS.
+- Exact-head CI is triggered by each new branch commit and can show multiple push/PR runs. Resolve the latest run for the live PR head from [GitHub Actions](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions); older successful runs do not prove the current head. At the last live read, the current head's smoke, neon and Android export checks were **QUEUED**.
 - Other intermediate documentation commits on the branch completed CI successfully, but that is not a substitute for the exact PR HEAD result.
 - Godot runtime tests and Android device/thermal QA were not run manually for this docs-only task. Source retrieval helper was not executed.
 
