@@ -85,6 +85,18 @@ func apply_material(surface_id: String, source_material: Material) -> Material:
 	if mesh_instance.mesh == null or surface_index >= mesh_instance.mesh.get_surface_count():
 		return null
 
+	var current_override := mesh_instance.get_surface_override_material(surface_index)
+	if current_override != null:
+		if not _owned_overrides.has(surface_id):
+			return null
+		var previous_ownership: Dictionary = _owned_overrides[surface_id]
+		if int(previous_ownership.get("instance_id", -1)) != mesh_instance.get_instance_id():
+			return null
+		if int(previous_ownership.get("surface_index", -1)) != surface_index:
+			return null
+		if previous_ownership.get("material") != current_override:
+			return null
+
 	var instance_material := source_material.duplicate(true) as Material
 	if instance_material == null:
 		return null
