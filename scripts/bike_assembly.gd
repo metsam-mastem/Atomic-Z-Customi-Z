@@ -1,22 +1,91 @@
 extends Node3D
 class_name BikeAssembly
 
+const GlbVehicleRuntimeScript = preload("res://scripts/glb_vehicle_runtime.gd")
+
 var _parts: Dictionary = {}
 var _body_materials: Array[StandardMaterial3D] = []
 var _is_exploded := false
 var _build_document: Dictionary = {}
+var _is_imported_model := false
+var _imported_root: Node3D
+var _imported_binder
+var _imported_parts: Dictionary = {}
+var _imported_catalog: Array = []
 
 func configure_build_document(document: Dictionary) -> void:
 	_build_document = document
 
 func _ready() -> void:
+	var asset: Dictionary = _build_document.get("asset", {})
+	var asset_uri := str(asset.get("uri", "")).strip_edges()
+	if not asset_uri.is_empty():
+		var import_result: Dictionary = GlbVehicleRuntimeScript.instantiate_from_document(_build_document)
+		if import_result.get("ok", false):
+			_is_imported_model = true
+			_imported_root = import_result["scene_root"]
+			_imported_binder = import_result["surface_binder"]
+			_imported_parts = import_result["parts_by_id"]
+			_imported_catalog = _build_document.get("asset", {}).get("surface_catalog", []).duplicate(true)
+			_imported_root.name = "ImportedVehicle"
+			add_child(_imported_root)
+			_sync_imported_document_parts()
+			return
+		push_warning("Imported GLB rejected; procedural placeholder retained: " + str(import_result.get("errors", [])))
 	var requested_mode := str(_build_document.get("assembly", {}).get("mode", "stock"))
 	_build_placeholder()
 	_sync_document_parts()
 	_apply_document_materials()
 	set_exploded(requested_mode == "exploded")
 
+func is_imported_model() -> bool:
+	return _is_imported_model
+
+func supports_exploded_view() -> bool:
+	return not _is_imported_model
+
+func _sync_imported_document_parts() -> void:
+	if _build_document.is_empty():
+		return
+	var part_records: Array = []
+	for part_id in _imported_parts.keys():
+		part_records.append({
+			"part_id": str(part_id),
+			"display_name": str(part_id).replace("_", " ").capitalize(),
+			"surface_ids": _imported_parts[part_id].duplicate(),
+			"asset_status": "glb_catalogued"
+		})
+	_build_document["assembly"]["parts"] = part_records
+	_build_document["assembly"]["mode"] = "stock"
+
+func _get_imported_surface_material(surface_id: String) -> Material:
+	if _imported_root == null:
+		return null
+	for surface_value in _imported_catalog:
+		if not (surface_value is Dictionary):
+			continue
+		var surface: Dictionary = surface_value
+		if str(surface.get("surface_id", "")) != surface_id:
+			continue
+		var target := _imported_root.get_node_or_null(NodePath(str(surface.get("node_path", ""))))
+		if not (target is MeshInstance3D):
+			return null
+		var mesh_instance: MeshInstance3D = target
+		if mesh_instance.mesh == null:
+			return null
+		var surface_index := int(surface.get("surface_index", -1))
+		if surface_index < 0 or surface_index >= mesh_instance.mesh.get_surface_count():
+			return null
+		var override_material := mesh_instance.get_surface_override_material(surface_index)
+		return override_material if override_material != null else mesh_instance.mesh.surface_get_material(surface_index)
+	return null
+
 func set_exploded(enabled: bool) -> void:
+	if _is_imported_model:
+		_is_exploded = false
+		if not _build_document.is_empty():
+			_build_document["assembly"]["mode"] = "stock"
+		return
 	_is_exploded = enabled
 	if not _build_document.is_empty():
 		_build_document["assembly"]["mode"] = "exploded" if enabled else "stock"
@@ -28,6 +97,8 @@ func set_exploded(enabled: bool) -> void:
 		part_node.position = home + (offset if enabled else Vector3.ZERO)
 
 func toggle_exploded() -> bool:
+	if not supports_exploded_view():
+		return false
 	set_exploded(not _is_exploded)
 	return _is_exploded
 
@@ -37,17 +108,32 @@ func set_body_color(color: Color) -> void:
 
 func get_part_ids() -> Array[String]:
 	var part_ids: Array[String] = []
+	if _is_imported_model:
+		for part_id in _imported_parts.keys():
+			part_ids.append(str(part_id))
+		part_ids.sort()
+		return part_ids
 	for part_id in _parts.keys():
 		part_ids.append(str(part_id))
 	part_ids.sort()
 	return part_ids
 
 func get_part_display_name(part_id: String) -> String:
+	if _is_imported_model and _imported_parts.has(part_id):
+		return part_id.replace("_", " ").capitalize()
 	if not _parts.has(part_id):
 		return ""
 	return part_id.replace("_", " ").capitalize()
 
 func get_part_color(part_id: String) -> Color:
+	if _is_imported_model:
+		if not _imported_parts.has(part_id):
+			return Color.TRANSPARENT
+		for surface_id_value in _imported_parts[part_id]:
+			var imported_material := _get_imported_surface_material(str(surface_id_value))
+			if imported_material is StandardMaterial3D:
+				return (imported_material as StandardMaterial3D).albedo_color
+		return Color.TRANSPARENT
 	if not _parts.has(part_id):
 		return Color.TRANSPARENT
 	var material: StandardMaterial3D = _parts[part_id].get("material")
@@ -56,6 +142,22 @@ func get_part_color(part_id: String) -> Color:
 	return material.albedo_color
 
 func set_part_color(part_id: String, color: Color) -> bool:
+	if _is_imported_model:
+		if not _imported_parts.has(part_id):
+			return false
+		var target_surface_ids: Array = _imported_parts[part_id]
+		if target_surface_ids.is_empty():
+			return false
+		for surface_id_value in target_surface_ids:
+			var surface_id := str(surface_id_value)
+			if not _imported_binder.has_surface(surface_id):
+				return false
+			if not (_get_imported_surface_material(surface_id) is StandardMaterial3D):
+				return false
+		for surface_id_value in target_surface_ids:
+			if not _imported_binder.set_surface_color(_build_document, str(surface_id_value), color):
+				return false
+		return true
 	if not _parts.has(part_id):
 		return false
 	var material: StandardMaterial3D = _parts[part_id].get("material")
@@ -121,7 +223,7 @@ func _add_wheel(part_id: String, at: Vector3, radius: float, explode_offset: Vec
 	var rim_visual := MeshInstance3D.new()
 	rim_visual.name = "RimVisual"
 	rim_visual.mesh = rim_mesh
-	rim_visual.rotation = Vector3(PI / 2.0, 0.0, 0.0)
+	rim_visual.rotation = Vector3.ZERO
 	rim_visual.material_override = rim_material
 	wheel_root.add_child(rim_visual)
 	_parts[part_id.replace("_wheel", "_rim")] = {
