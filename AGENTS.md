@@ -75,3 +75,12 @@ Problem/user outcome; architecture and data-flow impact; exact files/interfaces 
 ## Completion report
 
 Report branch/PR/commit, files, tests actually run, outputs, CI links, acceptance status, limitations, risks and next dependency. If a command could not be run, say so.
+
+
+## Chat-independent project continuity (mandatory)
+
+- The repository is the durable project memory. No task may require access to a particular chat, chat transcript, account memory or agent session to understand project identity, accepted decisions, current status or next action.
+- Before any task, read `docs/PROJECT_STATUS.md` after this file. It is the canonical operational resume checkpoint; then refresh its dated GitHub facts against live `main`, PRs, issues and CI.
+- Do not treat a chat summary as source of truth. Conversation history may provide a new product-owner instruction, but once accepted it must be recorded in the appropriate canonical decision/specification and reflected in `docs/PROJECT_STATUS.md`.
+- Before handing off or ending a work session, update `docs/PROJECT_STATUS.md` with the merged commit or PR, files changed, exact tests/CI evidence, unresolved items, decisions required and one next action. If no repository change occurred, record why the checkpoint remains unchanged when the work materially affects project state.
+- A fresh chat or a different agent must be able to resume by cloning the repository and following the documents above. Never rely on hidden context or imply that memory was transferred automatically.
