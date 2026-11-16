@@ -59,6 +59,11 @@ func _run() -> void:
 	var document: Dictionary = attached.get("document", {})
 	_assert(document.get("asset", {}).get("surface_catalog", []).size() == 2, "BuildDocument must contain the canonical surface catalog.")
 	_assert(BuildDocumentScript.validate(document).get("ok", false), "The document with a valid surface catalog must validate.")
+	var restored_document: Dictionary = BuildDocumentScript.from_json(BuildDocumentScript.to_json(document))
+	_assert(not restored_document.is_empty(), "A BuildDocument surface catalog must survive JSON serialization and validation.")
+	var restored_binder = BinderScript.new()
+	var restored_config: Dictionary = restored_binder.configure_from_build_document(root_node, restored_document)
+	_assert(restored_config.get("ok", false), "Binder must accept surface indices restored from JSON.")
 	var legacy_document := document.duplicate(true)
 	legacy_document["asset"].erase("surface_catalog")
 	_assert(BuildDocumentScript.validate(legacy_document).get("ok", false), "Older BuildDocuments without surface_catalog must remain valid.")
@@ -91,7 +96,10 @@ func _run() -> void:
 		{"surface_id": "missing", "node_path": "Body/VisualMesh", "surface_index": 9}
 	])
 	_assert(not missing_surface.get("ok", true), "Out-of-range surface indices must be rejected.")
-
+	var fractional_surface: Dictionary = CatalogScript.validate_manifest(root_node, [
+		{"surface_id": "fractional", "node_path": "Body/VisualMesh", "surface_index": 0.5}
+	])
+	_assert(not fractional_surface.get("ok", true), "Fractional surface indices must be rejected.")
 	var binder = BinderScript.new()
 	var configured: Dictionary = binder.configure_from_build_document(root_node, document)
 	_assert(configured.get("ok", false), "Binder must consume the catalog from the canonical BuildDocument.")
