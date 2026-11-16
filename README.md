@@ -81,6 +81,7 @@ Read these before changing code:
 - [Roadmap](docs/ROADMAP.md) — end-to-end phases and exit gates.
 - [Godot Motorcycle Rendering Research](docs/GODOT_MOTORCYCLE_RENDERING_RESEARCH.md) — GLB surface binding, PBR material ownership and mobile rendering guidance.
 - [Research and Decisions](docs/RESEARCH_AND_DECISIONS.md) — GitHub, Build Your Own X, Nature research and ADRs.
+- [Research Vault](research/README.md) — pinned external source revisions, reverse-engineering dossiers, licence/provenance gates and sparse source retrieval.
 - [Architecture](docs/architecture.md) — technical architecture.
 - [Acceptance](docs/acceptance.md) — testable acceptance gates.
 - [Project Context Brief](docs/project-context-brief.md) — reconciled project context and current work sequence.
