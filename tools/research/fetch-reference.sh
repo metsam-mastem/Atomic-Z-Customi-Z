@@ -22,7 +22,7 @@ if [[ "$SOURCE" == "--list" || "$SOURCE" == "-l" ]]; then
   printf '%s\n' "  moto-controller  (AGPL-3.0; study-only, no runtime import)"
   printf '%s\n' "  opennfs          (MIT original code; EA assets excluded)"
   printf '%s\n' "  rea              (MIT canonical upstream; optional analysis tool)"
-  printf '%s\n' "Manual-reference only, not auto-fetched: OpenUG2, Roadkill, SPEED RE (unresolved/limited rights or revision)."
+  printf '%s\n' "Manual-reference only, not auto-fetched: OpenUG2, Roadkill and SPEED RE (mixed source with recovered NFSU2 code expressly excluded from MIT grant)."
   printf '%s\n' "COD repositories without a detected reuse licence are intentionally excluded: OpenCOD1, OpenCOD2, CoD-Research."
   printf '%s\n' "Official Activision Telescope archives require per-version licence review; private MW2 reconstruction has no public source checkout."
   printf '%s\n' "CC0 GLBs are not auto-fetched until the downloaded file hash and provenance are recorded."
