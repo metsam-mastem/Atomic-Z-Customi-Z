@@ -86,3 +86,15 @@ The following gates supersede any interpretation of the garage, material editor,
 - [ ] Agent collaboration follows AGENTS.md and docs/AGENT_GOVERNANCE.md; all future source changes use branches and reviewed PRs.
 
 Status of these new gates: NOT RUN. Existing headless tests and CI history cover only the specific behaviors named above in their original sections; they do not automatically satisfy this end-to-end contract.
+
+
+## GLB surface material binding prototype
+
+- [ ] `tests/surface_material_binder_test.gd` passes under the repository's pinned Godot CI version.
+- [ ] Stable surface IDs resolve to a unique MeshInstance3D node path and valid surface index.
+- [ ] Applying a material changes only the selected surface and duplicates the material resource.
+- [ ] Imported base PBR materials and unrelated surface overrides remain unchanged.
+- [ ] Duplicate IDs, missing nodes, invalid indices and malformed bindings are rejected atomically.
+- [ ] The binder is connected to the imported-asset manifest and canonical BuildDocument before the UI exposes material editing.
+
+Implementation status: prototype script and focused headless test are committed on the research branch. Test execution and CI integration are NOT RUN; the current CI workflow has not yet been changed to invoke this new test.
