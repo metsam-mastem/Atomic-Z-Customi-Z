@@ -10,7 +10,9 @@ Atomic-Z-Customi-Z is a 3D motorcycle garage and customization workbench for veh
 
 ![Atomic-Z-Customi-Z product concept](assets/product-concept.svg)
 
-The illustration is an authored product/UI concept reference, not a runtime screenshot. A separate cinematic concept image was generated for visual presentation; runtime and device screenshots remain pending.
+This is the only visual concept asset currently verified in the repository. It illustrates a proposed product interface and placeholder motorcycle silhouette; it is not a runtime screenshot, a factory motorcycle render, or evidence of implemented UI fidelity. No additional image files from the current chat were available to transfer. Runtime and target-device screenshots remain pending.
+
+See the [Visual Asset Register](docs/VISUAL_ASSET_REGISTER.md) for the verified image inventory and evidence labels.
 
 ## The integrated experience
 
@@ -58,6 +60,7 @@ Read these before changing code:
 - [Architecture](docs/architecture.md) — technical architecture.
 - [Acceptance](docs/acceptance.md) — testable acceptance gates.
 - [Project Context Brief](docs/project-context-brief.md) — reconciled project context and current work sequence.
+- [Visual Asset Register](docs/VISUAL_ASSET_REGISTER.md) — image inventory, provenance and screenshot status.
 
 ## Project charter, philosophy & handoff
 
