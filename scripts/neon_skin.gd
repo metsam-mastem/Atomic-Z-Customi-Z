@@ -98,6 +98,8 @@ func set_segment_visible(segment_id: String, visible: bool) -> bool:
 
 func set_skin_visible(visible: bool) -> void:
 	_skin_visible = visible
+	if not _build_document.is_empty():
+		_build_document["render"]["neon_enabled"] = visible
 	for segment_id in _ordered_ids:
 		for child in _segments[segment_id]["nodes"]:
 			child.visible = visible and _segments[segment_id]["visible"]
