@@ -405,7 +405,8 @@ func _test_touch_gestures() -> bool:
 	if not float(pinched.get("orbit_distance", 0.0)) < before_pinch:
 		push_error("Two-finger pinch-out must zoom the garage camera in.")
 		return false
-	if Vector3(pinched.get("target_offset", Vector3.ZERO)).is_equal_approx(Vector3.ZERO):
+	var pan_offset: Vector3 = pinched.get("target_offset", Vector3.ZERO)
+	if pan_offset.is_equal_approx(Vector3.ZERO):
 		push_error("Two-finger centroid movement must pan the garage camera target.")
 		return false
 
@@ -419,7 +420,8 @@ func _test_touch_gestures() -> bool:
 	if not is_equal_approx(float(reset_state.get("orbit_distance", 0.0)), 5.3):
 		push_error("Reset must restore the default garage camera distance.")
 		return false
-	if not Vector3(reset_state.get("target_offset", Vector3.ONE)).is_equal_approx(Vector3.ZERO):
+	var reset_offset: Vector3 = reset_state.get("target_offset", Vector3.ONE)
+	if not reset_offset.is_equal_approx(Vector3.ZERO):
 		push_error("Reset must clear the camera pan offset.")
 		return false
 	return true
