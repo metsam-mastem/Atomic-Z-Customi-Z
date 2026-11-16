@@ -268,8 +268,9 @@ func _test_quality_controller() -> bool:
 	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 0.0):
 		push_error("A long app-resume pause must not be counted as an FPS sample.")
 		return false
-
-	_feed_quality_window(frame_controller, 20)
+	# Complete one clean two-second post-resume window at 20 FPS.
+	for _frame in range(20):
+		frame_controller.call("record_frame", 0.05)
 	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 20.0):
 		push_error("Quality telemetry must expose FPS measured over the complete two-second window.")
 		return false
