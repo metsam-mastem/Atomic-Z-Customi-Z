@@ -28,12 +28,14 @@ static func create_default(vehicle_id: String = "vehicle-unassigned", display_na
 		"customization": {
 			"materials": [],
 			"graphic_layers": [],
-			"neon_layers": []
+			"neon_layers": [],
+			"palette": {"primary": "#00FFCC", "secondary": "#FF00FF"}
 		},
 		"render": {
 			"quality_tier": "adaptive",
 			"environment": "garage",
 			"glow_enabled": true,
+			"neon_enabled": true,
 			"glow_intensity": 0.8
 		},
 		"hardware_profiles": [],
