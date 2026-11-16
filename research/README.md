@@ -28,6 +28,8 @@ The source registry records immutable commit IDs where the repository API expose
 bash tools/research/fetch-reference.sh --list
 bash tools/research/fetch-reference.sh danknooner
 bash tools/research/fetch-reference.sh opennfs
+bash tools/research/fetch-reference.sh godot-vehicle
+bash tools/research/fetch-reference.sh modu-vehicle
 ```
 
 The helper uses sparse checkouts into the ignored `.research-cache/` directory. It is intended for reading and local investigation only. It does **not** add downloaded code to the Atomic-Z build, enable it in Godot, or change any external licence. Some sources are intentionally excluded from automatic fetching because their rights or revision state are unresolved.
@@ -48,7 +50,7 @@ A licence on a repository does not automatically cover game assets, recovered co
 
 ## Audit scope and limitations
 
-Research performed on 2026-11-16 covered public repository metadata, current default-branch trees, READMEs, licences/attribution statements, design documents, and selected implementation files. The most relevant controller, physics, input, state, camera, crash, trick, gearbox, rollback and rendering paths were inspected. Exact revisions are recorded where available.
+Research performed on 2026-11-16 covered public repository metadata, current default-branch trees, READMEs, licences/attribution statements, design documents, and selected implementation files. The most relevant controller, physics, input, state, camera, crash, trick, gearbox, rollback, tyre-force, suspension, fitment-validation, showroom-loading and rendering paths were inspected across the pinned repositories. Exact revisions are recorded where available.
 
 This was **not** a line-by-line audit of every file in the 1.19 GB DankNooner repository, a complete decompilation of Need for Speed or Call of Duty, a dynamic trace of proprietary game binaries, or a runtime/device test of Atomic-Z. No external project was executed or imported into the Atomic-Z runtime during this research pass. Findings are engineering research, not claims of behavioural equivalence or legal advice.
 
