@@ -15,6 +15,8 @@ This directory is the maintained, evidence-led entry point for external source r
 | NFS reconstruction and automotive physics references | [NFS research dossier](sources/NFS_RECONSTRUCTION.md) |
 | Reverse Engineer Anything tooling | [REA dossier](sources/REA_TOOLING.md) |
 | Call of Duty source, reconstruction and RE methodology | [COD dossier](sources/COD_RECONSTRUCTION.md) |
+| Godot vehicle physics references and modular vehicle solvers | [Godot vehicle systems dossier](sources/GODOT_VEHICLE_SYSTEMS.md) |
+| Motorcycle configurator and 3D showroom architecture | [Configurator/showroom dossier](sources/MOTORCYCLE_CONFIGURATORS.md) |
 | Pseudo-3D mobile motorcycle game and model assets | [Roadkill and asset dossier](sources/ROADKILL_AND_ASSETS.md) |
 | Third-party source acquisition policy | [third_party/README.md](../third_party/README.md) |
 
