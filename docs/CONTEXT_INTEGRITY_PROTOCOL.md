@@ -166,3 +166,30 @@ This is a point-in-time snapshot. Re-query GitHub before relying on branch, PR o
 
 - 2026-11-16: Initial context-integrity protocol added. No runtime source, project settings, schemas, assets or CI workflows changed.
 - 2026-11-16: Handoff snapshot refreshed after PR #9, #10 and #14 merges; recorded Android export evidence and visual asset inventory.
+
+
+## 14. Chat-independent continuity and canonical resume checkpoint
+
+The project MUST remain operable if this chat is deleted, inaccessible, or replaced by another chat, model, agent or human contributor.
+
+- `docs/PROJECT_STATUS.md` is the single canonical operational resume checkpoint. It records product identity, current verified main commit, CI evidence, open PRs/issues, acceptance gaps, unresolved decisions and next actions.
+- `AGENTS.md` is the mandatory entry policy. The README links directly to the checkpoint.
+- The repository itself stores accepted decisions, contracts, requirements, evidence and implementation. A chat transcript, saved memory or AI-generated summary is never required to reconstruct the project.
+- New product-owner decisions first arrive conversationally if needed, but must be captured in `docs/RESEARCH_AND_DECISIONS.md` or the relevant canonical specification before they are treated as durable project decisions.
+- Every meaningful handoff updates `docs/PROJECT_STATUS.md` through a reviewed PR. The update includes exact commit/PR references, test results, status labels, remaining blockers and the next executable action.
+- On resume, always query live GitHub and reconcile the checkpoint. The checkpoint is a portable handoff, not a substitute for current repository evidence.
+- Do not claim that this protocol deletes, edits or migrates ChatGPT conversations or account memory. It removes the project's operational dependence on them.
+
+**Acceptance test for continuity:** a contributor with only the cloned repository and GitHub access, and no access to this or any prior chat, can identify the product, read accepted constraints, verify current status, find open work, and select the next safe task without guessing. If any of those steps requires a chat transcript, continuity has failed and the checkpoint/docs must be repaired.
+
+## 15. Superseding repository snapshot — 2026-11-16 02:25 UTC
+
+This section supersedes the older point-in-time snapshot in Section 12 for the state observed at this timestamp. The older snapshot is retained as historical context, not current truth.
+
+- Verified `main`: `f38b65864f3b13a04800dbd3b541e3815edf825c`.
+- PR #12 merged to main at 2026-11-16 02:25 UTC; it configures Android export preflight/debug signing and APK metadata/signature verification.
+- CI for that exact main commit: Android Debug Export PASS, Neon Simulator Tests PASS, Smoke Test PASS; workflow run [43792057985](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43792057985).
+- Open PRs at snapshot: #7 (DRAFT, rendering/surface binding; focused binder test and end-to-end integration NOT RUN) and #11 (older Android export diagnostics; review for redundancy against merged #10/#12 before deciding).
+- Open issues at snapshot: #1 unified product delivery; #5 external engineering-source verification and safe integration sequence.
+- Physical Redmi installation/runtime QA, production ZX-25RR geometry, verified surface mapping and Android performance/thermal profiling remain NOT RUN.
+- See `docs/PROJECT_STATUS.md` for the complete portable resume checkpoint and priority sequence. Refresh GitHub before relying on this snapshot.
