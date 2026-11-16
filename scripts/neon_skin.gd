@@ -255,6 +255,7 @@ func _map_point(point: Array) -> Vector2:
 	)
 
 func _load_from_build_document() -> void:
+	_skin_visible = bool(_build_document.get("render", {}).get("neon_enabled", true))
 	var customization: Dictionary = _build_document.get("customization", {})
 	var palette: Dictionary = customization.get("palette", {"primary": "#00FFCC", "secondary": "#FF00FF"})
 	var layers: Array = customization.get("neon_layers", [])

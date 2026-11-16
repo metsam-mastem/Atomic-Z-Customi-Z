@@ -17,9 +17,9 @@ The illustration is an authored product/UI concept reference, not a runtime scre
 - Vehicle identity and variant selection.
 - Named part assembly with Stock / Exploded views.
 - Orbit camera, touch/mouse input and adaptive rendering.
-- Part selection and body paint/material editing.
+- Stable part selection and isolated per-part paint/material editing.
 - Neon/graphic layers in the same garage HUD and 3D scene.
-- One saved build state and one export pipeline.
+- One saved build state with validated temp/backup recovery and one export pipeline.
 - Future asset catalog, parametric geometry, engineering checks and calibrated hardware adapters.
 
 These are integrated capabilities of one application, not separate products or standalone subprojects.

@@ -86,3 +86,16 @@ The following gates supersede any interpretation of the garage, material editor,
 - [ ] Agent collaboration follows AGENTS.md and docs/AGENT_GOVERNANCE.md; all future source changes use branches and reviewed PRs.
 
 Status of these new gates: NOT RUN. Existing headless tests and CI history cover only the specific behaviors named above in their original sections; they do not automatically satisfy this end-to-end contract.
+
+## Part-level customization and persistence hardening
+
+- [x] Garage part selector lists stable part IDs and supports selecting each named assembly part.
+- [x] Paint edits affect only the selected part and update its own material record in BuildDocument.
+- [x] Existing per-part paint records are restored to the correct runtime mesh after load.
+- [x] Saving validates the candidate document before replacing the current save.
+- [x] Save replacement uses a temporary file and recoverable backup; failed backup rotation preserves the last valid primary save.
+- [x] Loading restores a valid backup if the primary save is corrupt or missing.
+- [x] Assembly Stock/Exploded mode and global neon visibility restore from the canonical BuildDocument.
+- [x] Godot 4.4.1 CI smoke and BuildDocument tests pass on the current feature head.
+
+Implementation status: PASS — headless import, garage smoke, neon and BuildDocument tests passed at commit `b773e6911fc30bf20693211ca745c8d7995beae3` in CI run [#43788490715](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788490715). Android Debug export passed after enabling ETC2/ASTC at commit `ced48a657dd688d683b9328a97081af7bfad52ac` in CI run [#43788240486](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788240486). Physical device acceptance remains NOT RUN.

@@ -10,8 +10,11 @@ func configure_build_document(document: Dictionary) -> void:
 	_build_document = document
 
 func _ready() -> void:
+	var requested_mode := str(_build_document.get("assembly", {}).get("mode", "stock"))
 	_build_placeholder()
 	_sync_document_parts()
+	_apply_document_materials()
+	set_exploded(requested_mode == "exploded")
 
 func set_exploded(enabled: bool) -> void:
 	_is_exploded = enabled
@@ -29,10 +32,56 @@ func toggle_exploded() -> bool:
 	return _is_exploded
 
 func set_body_color(color: Color) -> void:
+	for part_id in ["fuel_tank", "front_fairing", "tail_fairing"]:
+		set_part_color(part_id, color)
+
+func get_part_ids() -> Array[String]:
+	var part_ids: Array[String] = []
+	for part_id in _parts.keys():
+		part_ids.append(str(part_id))
+	part_ids.sort()
+	return part_ids
+
+func get_part_display_name(part_id: String) -> String:
+	if not _parts.has(part_id):
+		return ""
+	return part_id.replace("_", " ").capitalize()
+
+func get_part_color(part_id: String) -> Color:
+	if not _parts.has(part_id):
+		return Color.TRANSPARENT
+	var material: StandardMaterial3D = _parts[part_id].get("material")
+	if material == null:
+		return Color.TRANSPARENT
+	return material.albedo_color
+
+func set_part_color(part_id: String, color: Color) -> bool:
+	if not _parts.has(part_id):
+		return false
+	var material: StandardMaterial3D = _parts[part_id].get("material")
+	if material == null:
+		return false
+	material.albedo_color = color
+
 	if not _build_document.is_empty():
-		_build_document["customization"]["materials"] = [{"material_id": "body-paint", "target_part_ids": ["fuel_tank", "front_fairing", "tail_fairing"], "base_color": "#" + color.to_html(false).to_upper()}]
-	for material in _body_materials:
-		material.albedo_color = color
+		var materials: Array = _build_document["customization"].get("materials", [])
+		var material_id := "paint:" + part_id
+		var color_hex := "#" + color.to_html(false).to_upper()
+		var found := false
+		for index in range(materials.size()):
+			if materials[index] is Dictionary and str(materials[index].get("material_id", "")) == material_id:
+				materials[index]["target_part_ids"] = [part_id]
+				materials[index]["base_color"] = color_hex
+				found = true
+				break
+		if not found:
+			materials.append({
+				"material_id": material_id,
+				"target_part_ids": [part_id],
+				"base_color": color_hex
+			})
+		_build_document["customization"]["materials"] = materials
+	return true
 
 func _build_placeholder() -> void:
 	_add_box("main_frame", Vector3(1.35, 0.16, 0.22), Vector3.ZERO, Color("#343d49"), 0.72, 0.36, Vector3(0.0, 0.0, 0.34))
@@ -81,9 +130,33 @@ func _add_mesh_part(part_id: String, mesh: Mesh, at: Vector3, material: Standard
 	mesh_instance.material_override = material
 	part_root.add_child(mesh_instance)
 	add_child(part_root)
-	_parts[part_id] = {"node": part_root, "home": at, "explode": explode_offset}
+	_parts[part_id] = {"node": part_root, "mesh_instance": mesh_instance, "material": material, "home": at, "explode": explode_offset}
 	if is_body:
 		_body_materials.append(material)
+
+func _apply_document_materials() -> void:
+	if _build_document.is_empty():
+		return
+	var saved_materials: Array = _build_document.get("customization", {}).get("materials", []).duplicate(true)
+	for record_value in saved_materials:
+		if not (record_value is Dictionary):
+			continue
+		var record: Dictionary = record_value
+		var color_hex := str(record.get("base_color", ""))
+		if not color_hex.begins_with("#"):
+			continue
+		var color := Color.from_string(color_hex, Color.TRANSPARENT)
+		if color == Color.TRANSPARENT:
+			continue
+		var target_part_ids: Variant = record.get("target_part_ids", [])
+		if not (target_part_ids is Array):
+			continue
+		for part_id_value in target_part_ids:
+			var part_id := str(part_id_value)
+			if _parts.has(part_id):
+				var material: StandardMaterial3D = _parts[part_id].get("material")
+				if material != null:
+					material.albedo_color = color
 
 func _sync_document_parts() -> void:
 	if _build_document.is_empty():

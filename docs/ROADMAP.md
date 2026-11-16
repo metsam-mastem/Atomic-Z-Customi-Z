@@ -84,3 +84,15 @@ Do not invent FPS/memory targets before profiling the exact device. Measure base
 
 ## Project operating cadence
 Every task has owner, scope, dependencies, acceptance criteria and estimate. Every merge requires review and current CI evidence. A milestone closes only when exit gates and evidence are recorded. Maintain decision and risk logs. When a dependency fails, re-plan rather than creating a parallel workaround.
+
+## Current execution evidence — 2026-11-16
+
+- PASS — the integrated garage now has stable part selection and isolated per-part paint records in the canonical BuildDocument.
+- PASS — saved per-part materials, Stock/Exploded assembly mode and global neon visibility restore into the runtime scene.
+- PASS — BuildDocument save uses validated temporary writes, retains the previous valid revision as a backup, and recovers after a corrupt or missing primary or a failed backup rotation.
+- PASS — Godot 4.4.1 headless import, smoke, neon and BuildDocument tests at feature commit `b773e6911fc30bf20693211ca745c8d7995beae3` (CI run [#43788490715](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788490715)).
+- PASS — Android Debug APK export at commit `ced48a657dd688d683b9328a97081af7bfad52ac` (CI run [#43788240486](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43788240486)); root cause was missing ETC2/ASTC texture import in project settings.
+- NOT RUN — install and runtime QA on the user's physical Redmi device.
+- NOT RUN — verified production GLB motorcycle asset, factory dimensions, UV/surface mapping, undo/redo, responsive touch review, Android FPS/memory/thermal profiling and engineering validation.
+
+The current milestone is a working Godot garage vertical slice with a CI-built debug APK, not a production-ready motorcycle configurator. Do not close Phases 2–7 until their stated exit criteria are met.
