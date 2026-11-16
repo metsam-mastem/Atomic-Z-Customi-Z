@@ -256,26 +256,31 @@ func _add_neon_segment_toggle(parent: Control, label_text: String, segment_id: S
 	segment_button.toggled.connect(_on_neon_segment_toggled.bind(segment_id))
 	parent.add_child(segment_button)
 
+func _on_neon_segment_toggled(enabled: bool, segment_id: String) -> void:
 	if _bike.is_imported_model():
 		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_segment_visible(segment_id, enabled)
 
+func _on_neon_primary_changed(color: Color) -> void:
 	if _bike.is_imported_model():
 		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("primary", color)
 
+func _on_neon_secondary_changed(color: Color) -> void:
 	if _bike.is_imported_model():
 		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_palette_color("secondary", color)
 
+func _on_neon_toggled(enabled: bool) -> void:
 	if _bike.is_imported_model():
 		return
 	if is_instance_valid(_neon_skin):
 		_neon_skin.set_skin_visible(enabled)
 
+func _on_glow_changed(value: float) -> void:
 	if _bike.is_imported_model():
 		return
 	if is_instance_valid(_neon_skin):
