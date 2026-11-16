@@ -119,16 +119,29 @@ jobs:
           test -d "$ANDROID_HOME/platforms/android-34"
           test -d "$ANDROID_HOME/build-tools/34.0.0"
 
-      - name: Import project and export debug APK
-        run: |
-          godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk --verbose
-          test -s build/Atomic-Z-debug.apk
+      - name: Validate build scripts
+        run: bash -n scripts/build_android.sh
 
-      - name: Verify APK package and signature
+      - name: Import, export and validate debug APK
+        run: bash scripts/build_android.sh debug
+
+      - name: Create ephemeral release signing key
         run: |
-          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging build/Atomic-Z-debug.apk
-          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose build/Atomic-Z-debug.apk
+          keytool -genkeypair -noprompt -v \
+            -keystore "$RUNNER_TEMP/atomicz-release.keystore" \
+            -storepass atomicz-ci-release \
+            -alias atomicz-ci-release \
+            -keypass atomicz-ci-release \
+            -keyalg RSA -keysize 2048 -validity 2 \
+            -dname "CN=Atomic Z CI Release,O=Atomic Z,C=US"
+
+      - name: Verify release export with ephemeral signing key
+        env:
+          ANDROID_OUTPUT_DIR: ${{ runner.temp }}/atomicz-release-output
+          GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ runner.temp }}/atomicz-release.keystore
+          GODOT_ANDROID_KEYSTORE_RELEASE_USER: atomicz-ci-release
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: atomicz-ci-release
+        run: bash scripts/build_android.sh release
 
       - name: Upload Android debug APK
         uses: actions/upload-artifact@v4

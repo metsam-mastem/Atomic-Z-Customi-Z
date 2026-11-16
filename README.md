@@ -55,7 +55,22 @@ These are integrated capabilities of one application, not separate products or s
 
 ## Android
 
-An Android arm64 debug export preset and CI export job are present. A CI-generated APK is not equivalent to installation and validation on the target Redmi device. Physical-device acceptance remains separate.
+An Android arm64 debug and release export preset are present. Use the reproducible build entrypoint:
+
+    bash scripts/build_android.sh debug
+
+For release, configure the release keystore environment variables documented in [Android Build and Release](docs/ANDROID_BUILD_AND_RELEASE.md), then run:
+
+    bash scripts/build_android.sh release
+
+The build verifier checks APK structure and can run Android SDK signature verification. A CI-generated APK is not equivalent to installation and validation on the target Redmi device. Physical-device acceptance remains separate. The optional Godot-managed Gradle template policy is documented in [android/README.md](android/README.md); no independent Android runtime is introduced.
+
+## Android build engineering
+
+- [Android Build and Release Guide](docs/ANDROID_BUILD_AND_RELEASE.md) — pinned toolchain, reproducible debug/release export, artifact contract, signing and release gates.
+- [Android Gradle Integration](android/README.md) — when Godot's generated Gradle template is justified and how to keep it version-aligned.
+- [APK Artifact Verifier](scripts/verify_android_artifact.py) — ZIP, manifest, Godot payload, arm64 runtime and optional apksigner verification.
+- [Android Build Entrypoint](scripts/build_android.sh) — repeatable local export command.
 
 ## Verification
 
