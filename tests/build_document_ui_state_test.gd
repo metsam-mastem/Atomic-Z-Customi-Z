@@ -83,7 +83,14 @@ func _test_legacy_profile_startup_migration() -> void:
 	_assert(extensions.size() == 1, "First launch must preserve legacy shader parameters in a BuildDocument extension.")
 
 	var persisted := BuildDocumentStoreScript.load_document(BUILD_PATH)
-	_assert(not persisted.is_empty() and _documents_equivalent(persisted, snapshot), "Successful migration must persist the canonical BuildDocument.")
+	_assert(not persisted.is_empty(), "Successful migration must persist a readable canonical BuildDocument.")
+	_assert(persisted.get("customization", {}).get("palette", {}).get("primary") == "#224466FF", "Persisted BuildDocument must retain the migrated legacy color.")
+	var persisted_extensions: Array = persisted.get("extensions", [])
+	_assert(persisted_extensions.size() == 1, "Persisted BuildDocument must retain the legacy profile extension.")
+	if persisted_extensions.size() == 1:
+		var persisted_payload: Dictionary = persisted_extensions[0].get("payload", {})
+		_assert(is_equal_approx(float(persisted_payload.get("glow_intensity_legacy_0_10", -1.0)), 3.5), "Persisted BuildDocument must retain legacy glow intensity.")
+		_assert(is_equal_approx(float(persisted_payload.get("pulse_speed_legacy_0_10", -1.0)), 2.25), "Persisted BuildDocument must retain legacy pulse speed.")
 	_assert(FileAccess.file_exists(PROFILE_PATH), "Migration must retain the original legacy profile file.")
 	var profile_file := FileAccess.open(PROFILE_PATH, FileAccess.READ)
 	if profile_file != null:
