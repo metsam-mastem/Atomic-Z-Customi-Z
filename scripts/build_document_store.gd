@@ -15,17 +15,20 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 
 	var file := FileAccess.open(temporary_path, FileAccess.WRITE)
 	if file == null:
+		push_error("BuildDocumentStore: cannot open temporary save file: " + path)
 		return false
 	file.store_string(BuildDocumentScript.to_json(document))
 	file.flush()
 	var write_error := file.get_error()
 	file.close()
 	if write_error != OK:
+		push_error("BuildDocumentStore: temporary write failed: " + error_string(write_error))
 		_remove_if_exists(temporary_path)
 		return false
 
 	var verified := _read_valid_document(temporary_path)
 	if verified.is_empty() or verified != document:
+		push_error("BuildDocumentStore: temporary document failed read-back validation.")
 		_remove_if_exists(temporary_path)
 		return false
 
@@ -40,6 +43,7 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 			_remove_if_exists(path)
 			var recovery_error := DirAccess.rename_absolute(backup_absolute, destination_absolute)
 			if recovery_error != OK:
+				push_error("BuildDocumentStore: backup recovery failed: " + error_string(recovery_error))
 				_remove_if_exists(temporary_path)
 				return false
 		else:
@@ -49,6 +53,7 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 	if had_primary:
 		var backup_error := DirAccess.rename_absolute(destination_absolute, backup_absolute)
 		if backup_error != OK:
+			push_error("BuildDocumentStore: cannot rotate primary save to backup: " + error_string(backup_error))
 			_remove_if_exists(temporary_path)
 			return false
 
@@ -57,6 +62,7 @@ static func save_document(document: Dictionary, path: String = "user://atomic_z_
 		destination_absolute
 	)
 	if install_error != OK:
+		push_error("BuildDocumentStore: cannot install validated temporary save: " + error_string(install_error))
 		if had_primary and FileAccess.file_exists(backup_path) and not FileAccess.file_exists(path):
 			DirAccess.rename_absolute(backup_absolute, destination_absolute)
 		_remove_if_exists(temporary_path)
