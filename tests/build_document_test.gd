@@ -26,6 +26,9 @@ func _initialize() -> void:
 
 	var encoded: String = BuildDocumentScript.to_json(document)
 	var decoded: Dictionary = BuildDocumentScript.from_json(encoded)
+	var parsed_round_trip: Variant = JSON.parse_string(encoded)
+	print("DIAGNOSTIC BuildDocument parsed type=", type_string(typeof(parsed_round_trip)), " validation=", BuildDocumentScript.validate(parsed_round_trip) if parsed_round_trip is Dictionary else "not a Dictionary")
+	print("DIAGNOSTIC BuildDocument decoded empty=", decoded.is_empty(), " original=", document)
 	_assert(decoded == document, "BuildDocument JSON round-trip must preserve all data.")
 
 	var save_path := "user://atomic_z_store_contract_test.json"
