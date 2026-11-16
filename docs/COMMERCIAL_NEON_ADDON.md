@@ -1,23 +1,32 @@
-# Commercial Neon Shader & Skin Profile Add-on
+# Neon Shader Research Artifact and Legacy Profile Retirement
 
-This add-on is an incremental enhancement for the Android-first Godot 4 customization lab. It does **not** replace the existing procedural bike assembly, neon segment configuration, touch orbit camera, or quality controller.
+**Status:** The shader is a research artifact, not integrated into the product runtime.  
+**Product boundary:** One Godot 4 application and one canonical versioned `BuildDocument`.
 
-## Added assets
+## Current disposition
 
-- `shaders/neon_glow.gdshader`: reusable additive spatial shader with adjustable color, intensity, pulse, core contribution, Fresnel rim falloff, and opacity.
-- `scripts/skin_profile_store.gd`: optional Autoload profile store using versioned JSON, bounded numeric validation, user:// persistence, a profile_changed signal, and JSON export suitable for a hardware bridge.
+- `shaders/neon_glow.gdshader` remains an experimental visual shader. It is not wired into the garage's `NeonSkin` runtime, has no verified imported-surface binding, and has not passed target-Android visual or performance acceptance.
+- The former `scripts/skin_profile_store.gd` profile writer is retired. It was not registered as an Autoload in `project.godot` and had no product-code callers.
+- `NeonSkin.save_skin()` is retired as well. Runtime palette, per-segment visibility, global neon visibility and normalized glow state are held in the active `BuildDocument` and persisted through `BuildDocumentStore`.
+- `neon_skin_config.json` is a read-only legacy import source. It is not an active user-data save target.
+- `user://skin_profile.json` is accepted only as a one-time legacy migration input when no valid canonical BuildDocument exists. The original file is retained after migration.
+- Legacy shader `glow_intensity` and `pulse_speed` values in the 0..10 range are preserved unchanged in a versioned `extensions` record with status `preserved_unmapped`. They are not converted into the canonical renderer's 0..1 glow value.
+- A valid existing `user://atomic_z_build.json` always takes precedence. All subsequent edits and saves use the canonical BuildDocument path.
 
-## Integration steps (Godot 4)
+## Migration safety
 
-1. Open Project > Project Settings > Autoload.
-2. Add `res://scripts/skin_profile_store.gd` with the singleton name `SkinProfileStore`.
-3. For a mesh-based neon tube/strip, create a ShaderMaterial using `res://shaders/neon_glow.gdshader`. Set `neon_color`, `glow_intensity`, and `pulse_speed` from the profile.
-4. Listen to `SkinProfileStore.profile_changed` in the presentation controller and update the material parameters. Existing ribbon overlay visuals remain supported; apply this material only to suitable tube/strip meshes.
-5. Save with `SkinProfileStore.save_profile()`; inspect its Error result. Copy/export `SkinProfileStore.export_hardware_json()` only where clipboard/export UI is implemented.
+The first-launch migration validates the legacy schema, color and numeric ranges before importing. Invalid files remain untouched. If canonical persistence fails, the profile is retained and the migration remains in memory only for that session; no claim of successful migration is made.
 
-## Mobile rendering notes
+The legacy profile migration does not generate hardware-ready JSON. Hardware mapping remains disabled until a calibrated controller profile, validated segment mapping and explicit hardware acceptance exist.
 
-- Existing project is configured for Godot 4.3 GL Compatibility. This shader uses standard spatial built-ins and additive blending; validate it on the target Android GPU and Godot version.
-- Glow bloom is a WorldEnvironment post-process and is separate from shader emission. Enable it only after profiling on target hardware.
-- Fresnel is view-angle based, not a physical tube cross-section or distance falloff. The visual is an artistic neon effect, not lighting simulation.
-- No real ZX-25R model, hardware transport, Play Billing, or APK validation is included in this add-on.
+## Future shader integration gate
+
+Resume shader integration only after all of the following are met:
+
+- A surface/part binding exists for the active provenance-tracked GLB asset.
+- Shader controls read and write the same BuildDocument used by paint and neon.
+- A reviewed mapping exists between legacy 0..10 parameters and normalized render parameters.
+- Compatibility-renderer visual, occlusion, import and Android performance tests pass.
+- No second profile store, Autoload or independent writer is introduced.
+
+The shader is an artistic effect, not physical lighting simulation, body-fitment evidence or engineering validation.
