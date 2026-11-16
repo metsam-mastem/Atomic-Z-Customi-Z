@@ -9,12 +9,14 @@
 
 1. In the garage, select **IMPORT GLB**.
 2. Choose a local `.glb` file from the system file picker.
-3. Enter the exact license identifier and original source/provenance record. The app requires both fields but does not independently verify ownership or license terms.
+3. Enter a display label, the exact license identifier and the original source/provenance record. The display label is not proof of manufacturer identity; the app does not independently verify ownership or license terms.
 4. The selected file is copied into the app's private `user://vehicle_assets/` directory under a filename derived from its full SHA-256.
 5. Import is limited to 128 MiB. The runtime rechecks the pinned SHA-256 before parsing the file.
 6. Godot's `GLTFDocument.append_from_file()` and `generate_scene()` load the local GLB. If a surface catalog is absent, the runtime generates one from the imported mesh inventory and stores it in the existing BuildDocument.
 7. The existing part selector exposes stable per-mesh part IDs; the color picker edits the mapped mesh surface materials.
-8. Save Project persists the asset URI, hash, source/license record, generated surface catalog and material edits in the canonical document.
+8. Save Project persists the asset URI, hash, source/license record, display label, generated surface catalog and material edits in the canonical document.
+
+On asset replacement, the active vehicle identity is reset to an asset-hash-derived ID and the supplied display label. Manufacturer variant, model year and market are cleared because the GLB filename and user-entered display label do not prove what motorcycle it depicts. The previous vehicle identity is preserved in a versioned `replaced_vehicle_identity` extension for traceability, but is not treated as the new asset's identity.
 
 The application performs no network download. A selected file is copied into private app storage and remains local to the device.
 
@@ -33,7 +35,9 @@ Per-surface color edits are delegated to the existing `SurfaceMaterialBinder`. I
 ## Safety and behavior gates
 
 - Local URI must use `res://` or `user://`, end in `.glb`, and contain no parent-directory traversal.
-- License and source fields are mandatory. User-entered text is recorded as provenance, not independently certified.
+- Display name, license and source fields are mandatory. User-entered text is recorded as metadata/provenance, not independently certified.
+- Importing a new asset cannot silently inherit the previous vehicle's manufacturer variant, model year or market. Those fields are cleared and previous identity is kept separately as unmapped provenance.
+- GLB copy is chunked in 1 MiB blocks to avoid holding a second full-size copy in Android memory; the maximum accepted source size remains 128 MiB.
 - The on-disk file's SHA-256 must exactly match the BuildDocument value.
 - GLB files over 128 MiB or malformed imports are rejected.
 - A hash/catalog/import/binder failure leaves the existing procedural garage available.
