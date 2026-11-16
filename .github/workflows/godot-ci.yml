@@ -125,6 +125,24 @@ jobs:
       - name: Import, export and validate debug APK
         run: bash scripts/build_android.sh debug
 
+      - name: Create ephemeral release signing key
+        run: |
+          keytool -genkeypair -noprompt -v \
+            -keystore "$RUNNER_TEMP/atomicz-release.keystore" \
+            -storepass atomicz-ci-release \
+            -alias atomicz-ci-release \
+            -keypass atomicz-ci-release \
+            -keyalg RSA -keysize 2048 -validity 2 \
+            -dname "CN=Atomic Z CI Release,O=Atomic Z,C=US"
+
+      - name: Verify release export with ephemeral signing key
+        env:
+          ANDROID_OUTPUT_DIR: ${{ runner.temp }}/atomicz-release-output
+          GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ runner.temp }}/atomicz-release.keystore
+          GODOT_ANDROID_KEYSTORE_RELEASE_USER: atomicz-ci-release
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: atomicz-ci-release
+        run: bash scripts/build_android.sh release
+
       - name: Upload Android debug APK
         uses: actions/upload-artifact@v4
         with:
