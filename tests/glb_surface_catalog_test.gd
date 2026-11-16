@@ -29,6 +29,8 @@ func _run() -> void:
 	var imported_body := StandardMaterial3D.new()
 	imported_body.resource_name = "ImportedBodyPaint"
 	imported_body.albedo_color = Color("#345678")
+	imported_body.metallic = 0.31
+	imported_body.roughness = 0.43
 	var imported_trim := StandardMaterial3D.new()
 	imported_trim.resource_name = "ImportedTrim"
 	imported_trim.metallic = 0.72
@@ -96,8 +98,15 @@ func _run() -> void:
 	_assert(mesh.surface_get_material(1) == imported_trim, "Unselected imported PBR material resource identity must remain unchanged.")
 	_assert(is_equal_approx(imported_trim.metallic, 0.72), "Unselected imported PBR metallic value must remain unchanged within floating-point tolerance.")
 	_assert(is_equal_approx(imported_trim.roughness, 0.28), "Unselected imported PBR roughness value must remain unchanged within floating-point tolerance.")
+	_assert(is_equal_approx(applied.metallic, imported_body.metallic) and is_equal_approx(applied.roughness, imported_body.roughness), "The edited duplicate must preserve imported PBR properties.")
+	_assert(binder.set_surface_color(document, "body.paint", Color("#FEDCBA")), "A second color edit must update the same canonical surface material record.")
+	_assert(document["customization"]["materials"].size() == 1, "Repeated surface edits must not create duplicate material records.")
+	var reapplied := mesh_instance.get_surface_override_material(0) as StandardMaterial3D
+	_assert(reapplied != null and reapplied.albedo_color == Color("#FEDCBA"), "The second edit must update the owned surface override.")
+	_assert(is_equal_approx(reapplied.metallic, imported_body.metallic) and is_equal_approx(reapplied.roughness, imported_body.roughness), "Repeated edits must retain imported PBR properties.")
 
-	print("PASS: GLB surface inventory, stable manifest, BuildDocument contract and isolated material edit.")
+	if not _failed:
+		print("PASS: GLB surface inventory, stable manifest, BuildDocument contract and isolated material edit.")
 	quit(1 if _failed else 0)
 
 func _assert(condition: bool, message: String) -> void:
