@@ -33,13 +33,13 @@ func _run() -> void:
 		return
 	var panel := overlay.get_node_or_null("AIPanel") as PanelContainer
 	var backdrop := overlay.get_node_or_null("AIBackdrop") as ColorRect
-	if panel == null or not panel.visible or backdrop == null or not backdrop.visible:
+	if panel == null or not panel.visible or backdrop == null or not backdrop.visible or backdrop.mouse_filter != Control.MOUSE_FILTER_STOP:
 		push_error("Invoking AI ASSIST must open the panel and its backdrop.")
 		quit(1)
 		return
 
 	overlay.call("close_panel")
-	if panel.visible or backdrop.visible:
+	if panel.visible or backdrop.visible or backdrop.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		push_error("Closing the assistant must hide both panel and backdrop.")
 		quit(1)
 		return
