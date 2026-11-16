@@ -107,8 +107,8 @@ This section records a repository-level verification pass. It corrects unverifie
 
 ### Current PR and CI integration findings
 
-- PR #3 (BuildDocument contract) contains the correct architectural direction: migrate legacy neon data into one canonical versioned document and bind assembly, paint, neon and persistence to the same state. Its Godot smoke/contract tests passed in the inspected run; Android export failed.
-- PR #4 (neon shader/profile proposal) contains a potentially reusable shader concept, but `scripts/skin_profile_store.gd` creates `user://skin_profile.json`, a second authoritative store. Its glow range is 0..10 while the canonical BuildDocument render intensity is 0..1. Do not merge the profile store in this form. Evaluate the shader only after it is adapted to the canonical range and integrated into the existing NeonSkin/BuildDocument path.
+- PR #3 established the canonical BuildDocument contract and remains the source of truth for editable project state.
+- PR #4's profile writer was never registered as an Autoload and had no product-code callers. Its independent 0..10 `user://skin_profile.json` writer is now retired. On first launch only, and only when no valid canonical BuildDocument exists, the color migrates to the primary palette while raw 0..10 glow/pulse values are preserved unchanged in a versioned unmapped extension. The source user file is retained.
 - Both PR #3 and PR #4 Android export jobs reported: `Cannot export project with preset "Android Debug" due to configuration errors`. The available job logs did not expose the specific failed preset setting. Diagnose the exact export configuration before changing presets or claiming an APK build.
 - PR #2 is a separate documentation PR. Reconcile it through review; do not overwrite its branch or duplicate its charter/workflow files.
 
