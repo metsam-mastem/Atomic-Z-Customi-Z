@@ -35,7 +35,18 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 			errors.append("Binding %s requires node_path and surface_index." % surface_id)
 			continue
 
-		var node_path := NodePath(str(definition["node_path"]))
+		var node_path_text := str(definition["node_path"])
+		if node_path_text.is_empty() or node_path_text.begins_with("/") or node_path_text.contains(":"):
+			errors.append("Binding %s requires a safe root-relative node_path." % surface_id)
+			continue
+		var unsafe_parent_path := false
+		for path_segment in node_path_text.split("/", false):
+			if path_segment == "..":
+				unsafe_parent_path = true
+		if unsafe_parent_path:
+			errors.append("Binding %s cannot traverse outside the imported scene root." % surface_id)
+			continue
+		var node_path := NodePath(node_path_text)
 		var target := scene_root.get_node_or_null(node_path)
 		if not (target is MeshInstance3D):
 			errors.append("Binding %s does not resolve to a MeshInstance3D." % surface_id)
@@ -80,6 +91,9 @@ func configure(scene_root: Node, definitions: Array) -> Dictionary:
 
 ## Configures bindings from the canonical BuildDocument asset catalog.
 func configure_from_build_document(scene_root: Node, document: Dictionary) -> Dictionary:
+	var document_validation: Dictionary = BuildDocumentScript.validate(document)
+	if not document_validation.get("ok", false):
+		return {"ok": false, "errors": document_validation.get("errors", ["BuildDocument is invalid."])}
 	var asset_value: Variant = document.get("asset", null)
 	if not (asset_value is Dictionary):
 		return {"ok": false, "errors": ["BuildDocument asset must be an object."]}
