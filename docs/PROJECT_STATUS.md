@@ -4,11 +4,11 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 05:44 UTC  
+**Last verified:** 2026-11-16 05:48 UTC  
 **Verified main:** `4d2cf3b82bd78437541b49da46f522c06d2652b5`  
 **Active dependency chain:** PR #28 → PR #29 → PR #30 → PR #33. No implementation changes were written to `main`.
 
-## Current live snapshot — 2026-11-16 05:44 UTC
+## Current live snapshot — 2026-11-16 05:48 UTC
 
 - `main` remains at `4d2cf3b82bd78437541b49da46f522c06d2652b5`.
 - PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), remains OPEN / READY FOR REVIEW, head `4bf83ef75d196b8a1259179b034632ebca2ca6bf`, based on main. Exact-head workflow [#43810187315](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43810187315) PASS for Godot, Python, Android Debug and ephemeral-key Android Release. Release APK is an ephemeral test artifact, not production signing.
@@ -17,12 +17,12 @@
 - PR #30 records the owner-selected 2026 ZX-25RR reference identity for new builds, with market unset. This metadata is not evidence of factory geometry, mechanical fitment or regional compatibility.
 - PR #31 is a separate Draft AI adapter proposal and is not part of the vehicle asset dependency chain.
 - PR #32 was closed without merge because its dependency base advanced and its first CI run revealed a GDScript signal reference error. The successor is PR #33; no code from #32 was merged.
-- PR #33, [Import verified GLB models into the integrated garage](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/33), is OPEN / DRAFT, head `c5c808e054d864c4df5e883f94d6cacac832159d`, stacked on the latest PR #30 head. Exact-head workflow [#43811978804](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43811978804) PASS: Godot 4.4.1 import/parse, garage smoke, Neon runtime, BuildDocument contract, surface binder ownership, GLB surface catalog, **verified GLB runtime round-trip**, BuildDocument UI hydration, Python tests/compile, Android Debug APK export, package metadata/signature verification and artifact upload. It contains a synthetic two-surface GLB test only.
-- PR #33 adds local GLB file selection in the existing garage, required user-entered license/source provenance, copying to private app storage, full SHA-256 verification, a 128 MiB cap, Godot GLTF runtime loading, automatic stable part/surface catalog creation, part-level color editing via the existing binder, PBR preservation, BuildDocument save/reload, fail-safe placeholder fallback, and tests against hash tampering.
-- Part IDs are derived from mesh leaf names for readability; collisions use the normalized full node path. Surface IDs are stable for the same pinned GLB bytes/hierarchy. Re-exporting or replacing an asset requires revalidation.
-- Prior asset-specific surface paint records are preserved in a versioned unmapped extension when the active asset changes. Imported-model Exploded mode stays disabled until pivots/offsets are validated; legacy Neon paths stay disabled until UV/surface mapping is verified.
-- Android Debug CI artifact for PR #33: ID `14201011663`, size 26,877,563 bytes, SHA-256 `32b02484012f9660000d3832d039007502e82de4b0da5ca4e59c8b9daf98f0c4`, expires 2026-11-30. CI output is not a physical-device test.
-- The user-selected asset's source/license fields are recorded but not independently certified by the app. No production Kawasaki ZX-25RR GLB/CAD is bundled; the synthetic GLB is a test fixture, not motorcycle geometry.
+- PR #33, [Import verified GLB models into the integrated garage](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/33), is OPEN / DRAFT, stacked on PR #30. The previous feature head `c5c808e054d864c4df5e883f94d6cacac832159d` passed all Godot, Python and Android Debug CI in [#43811978804](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43811978804); the docs-only head `449675ebe8b03b58355e9813187c70d121b0b465` also passed all jobs in [#43812178736](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43812178736). Newer unverified code now adds explicit identity separation and memory-bounded GLB staging; exact-head CI is pending and must pass before those additions are considered accepted.
+- PR #33 adds local GLB file selection in the existing garage, required display label/license/source metadata, copying into private app storage in 1 MiB chunks, full SHA-256 verification, a 128 MiB cap, Godot GLTF runtime loading, automatic stable part/surface catalog creation, part-level color editing via the existing binder, PBR preservation, BuildDocument save/reload and fail-safe placeholder fallback.
+- When a GLB replaces an existing vehicle, the active identity becomes asset-hash-derived and uses the user-supplied display label; manufacturer variant, model year and market are cleared rather than inherited from a prior ZX-25RR selection. The replaced identity is preserved in a versioned `replaced_vehicle_identity` extension. The display label and license/source entries are recorded, not independently certified.
+- Previous asset-specific surface paint records are preserved in a versioned unmapped extension when the active asset changes. Imported-model Exploded mode stays disabled until pivots/offsets are validated; legacy Neon paths stay disabled until UV/surface mapping is verified.
+- A previous Android Debug artifact for the tested code head is ID `14201460063`, size 26,877,541 bytes, SHA-256 `b716d758b3170ec815ac3eebf1306e3946c2f3f2dc3eb7bf537ef1b983948ba4`, expires 2026-11-30. It predates the identity-reset and chunked-copy changes; a fresh artifact is required after the new code passes CI.
+- No production Kawasaki ZX-25RR GLB/CAD is bundled. A synthetic two-surface GLB is a CI fixture only; generic CC0 models are prototype assets, not factory geometry.
 - Physical Android SAF/system file picker behavior, installation/launch, touch interaction, visual QA, memory, sustained frame-time and thermal profiling: NOT RUN. Android API/device acceptance remains required.
 - Production ZX-25RR geometry, exact dimensions, year/market fitment, verified UVs, mechanical/structural validation, calibrated hardware output and road legality: NOT RUN.
 - Repository branch protection and required-check enforcement remain UNVERIFIED.
