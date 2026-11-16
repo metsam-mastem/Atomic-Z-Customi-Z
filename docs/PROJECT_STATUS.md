@@ -4,8 +4,8 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.
-**Last verified:** 2026-11-16 02:25 UTC
-**Checkpoint base:** `f38b65864f3b13a04800dbd3b541e3815edf825c`
+**Last verified:** 2026-11-16 02:33 UTC
+**Checkpoint base:** `dccd4020f9feef522b94b36bf2b326380d6e7af1`
 
 ## Resume rule
 
@@ -31,10 +31,10 @@ This file is the operational starting point, not a substitute for live verificat
 
 ## Verified repository baseline
 
-- `main` at checkpoint: `f38b65864f3b13a04800dbd3b541e3815edf825c`.
-- Latest merge at checkpoint: PR #12, “Fix Android export preflight and APK verification”.
-- PR #12 merged successfully by squash; merge commit equals the main SHA above.
-- CI on that exact main commit: `android-debug-export` PASS, `neon-simulator-tests` PASS, `smoke-test` PASS (workflow run [43792057985](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43792057985)).
+- `main` at checkpoint: `dccd4020f9feef522b94b36bf2b326380d6e7af1`.
+- Latest merge at checkpoint: PR #16, “Make project continuity independent of chat history”.
+- PR #16 merged successfully by squash; merge commit equals the main SHA above. PR #16 adds this canonical checkpoint, mandatory chat-independent handoff rules, and direct README entry points. PR #12 remains the latest Android export implementation change.
+- PR #16 head CI: `android-debug-export` PASS, `neon-simulator-tests` PASS, `smoke-test` PASS (workflow run [43792862879](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43792862879)). The post-merge `main` workflow for `dccd402...` was still running at checkpoint refresh; re-check it before relying on main CI.
 - These are GitHub CI results only. Physical Redmi installation and runtime QA: NOT RUN.
 - Earlier merged work includes PR #3 (BuildDocument contract), #4 (Neon profile store), #6 (research audit), #9 (context integrity), and #10 (part paint / safe persistence).
 - PR #12 corrects Android export preflight, configures debug signing in CI and verifies APK metadata/signature. Do not infer physical-device acceptance from CI export.
@@ -44,9 +44,9 @@ This file is the operational starting point, not a substitute for live verificat
 | PR | Scope | State at checkpoint | Next action |
 |---|---|---|---|
 | #7 | GLB surface/material binding and mobile rendering guidance | OPEN / DRAFT; previously reported merge conflict; focused binder test and end-to-end integration NOT RUN | Keep unmerged until conflict is reconciled, focused test is wired into CI and passes, and integration/data-contract ownership approves |
-| #11 | Older Android export diagnostic workflow change | OPEN; older than merged #12/#10 export fixes | Compare diff with current main; if redundant, close as superseded with a clear explanation; do not merge blindly |
+| #11 | Older Android export diagnostic workflow change | OPEN; older than merged #10/#12 export fixes | Compare diff with current main; if redundant, close as superseded with a clear explanation; do not merge blindly |
 
-PR #8 was closed without merge. PR #12 is merged. Always refresh these states from GitHub before acting.
+PR #8 was closed without merge. PR #12 and PR #16 are merged. Always refresh these states from GitHub before acting.
 
 ## Open issues at checkpoint
 
@@ -61,9 +61,9 @@ Re-fetch both and inspect comments/labels before selecting work.
 |---|---|---|
 | BuildDocument baseline | PASS | PR #3 merged; validate exact current implementation before schema changes |
 | Part paint and safe persistence | PASS on recorded CI | PR #10 merged; CI history includes round-trip and backup/recovery tests |
-| Android Debug CI export | PASS | Main commit `f38b658...`, run #43792057985 |
-| Smoke test | PASS | Same exact-main workflow run |
-| Neon simulator tests | PASS | Same exact-main workflow run |
+| Android Debug CI export | PASS on PR #16 head; main recheck pending | PR #16 head run #43792862879 passed; post-merge main run must be rechecked |
+| Smoke test | PASS on PR #16 head | Run #43792862879; post-merge main recheck pending |
+| Neon simulator tests | PASS on PR #16 head | Run #43792862879; post-merge main recheck pending |
 | Physical Redmi installation/launch | NOT RUN | Requires target device test |
 | Production ZX-25RR GLB/CAD | NOT RUN | Current geometry is placeholder |
 | Verified UV/surface mapping | NOT RUN | Do not claim body-aligned graphics |
@@ -72,7 +72,7 @@ Re-fetch both and inspect comments/labels before selecting work.
 
 ## Priority next actions
 
-1. Refresh live GitHub state; do not rely on the dated PR/issue list above.
+1. Refresh live GitHub state and confirm post-merge CI on `dccd402...`; do not rely on the dated PR/issue list above.
 2. Review PR #11 against merged Android export work and close it as superseded if no unique value remains.
 3. Reconcile PR #7 only after reading the current diff and resolving the reported conflict; require its focused test in pinned Godot CI before merge.
 4. Continue the integrated garage vertical slice against the canonical BuildDocument; avoid parallel stores or editors.
