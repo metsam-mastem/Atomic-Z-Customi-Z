@@ -3,6 +3,7 @@ extends SceneTree
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
+const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 
 func _initialize() -> void:
 	call_deferred("_run_smoke_test")
@@ -186,6 +187,62 @@ func _run_smoke_test() -> void:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
+	if not _test_quality_controller():
+		quit(1)
+		return
+
 	print("PASS: part-isolated paint, canonical state, neon visibility and BuildDocument save/reload recovery.")
 
 	quit(0)
+
+
+func _test_quality_controller() -> bool:
+	var key_light := DirectionalLight3D.new()
+	key_light.shadow_enabled = true
+	var controller = QualityControllerScript.new()
+	root.add_child(key_light)
+	root.add_child(controller)
+	controller.configure(key_light)
+
+	controller.call("submit_fps_sample", 24.0)
+	controller.call("submit_fps_sample", 0.0)
+	if bool(controller.call("is_reduced_quality")):
+		push_error("One low sample and an invalid zero-FPS sample must not reduce quality.")
+		return false
+
+	controller.call("submit_fps_sample", 24.0)
+	if not bool(controller.call("is_reduced_quality")) or key_light.shadow_enabled:
+		push_error("Two consecutive low-FPS samples must disable key-light shadows.")
+		return false
+
+	var replacement_light := DirectionalLight3D.new()
+	replacement_light.shadow_enabled = true
+	root.add_child(replacement_light)
+	controller.configure(replacement_light)
+	if replacement_light.shadow_enabled:
+		push_error("A replacement key light must inherit the current reduced-quality state.")
+		return false
+
+	controller.call("submit_fps_sample", 36.0)
+	for _sample in range(3):
+		controller.call("submit_fps_sample", 55.0)
+	if not bool(controller.call("is_reduced_quality")) or replacement_light.shadow_enabled:
+		push_error("Quality must remain reduced until four consecutive high-FPS samples arrive.")
+		return false
+
+	controller.call("submit_fps_sample", 36.0)
+	for _sample in range(3):
+		controller.call("submit_fps_sample", 55.0)
+	if not bool(controller.call("is_reduced_quality")):
+		push_error("A neutral sample must reset the high-FPS recovery counter.")
+		return false
+
+	controller.call("submit_fps_sample", 55.0)
+	if bool(controller.call("is_reduced_quality")) or not replacement_light.shadow_enabled:
+		push_error("Four consecutive high-FPS samples must restore key-light shadows.")
+		return false
+
+	controller.free()
+	key_light.free()
+	replacement_light.free()
+	return true
