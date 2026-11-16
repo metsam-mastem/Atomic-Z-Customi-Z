@@ -4,23 +4,37 @@
 **Repository:** `metsam-mastem/Atomic-Z-Customi-Z`  
 **Product:** Atomic-Z-Customi-Z — one integrated Android-first motorcycle customization workbench.  
 **Runtime:** Godot 4 / GDScript. **Canonical editable state:** versioned `BuildDocument`.  
-**Last verified:** 2026-11-16 04:55 UTC  
-**Verified main:** `4d2cf3b82bd78437541b49da46f522c06d2652b5`  
-**Current work:** PR #28 — Android artifact verification and reproducible build path (OPEN; exact-head CI running).
+**Last verified:** 2026-11-16 09:30 UTC  
+**Verified main:** `0f0f419b2d561e1180720c13a55f4a707af3856b`  
+**Current release track:** P1 integrated garage; research vault and optional AI remain separate workstreams.
 
-## Current live snapshot — 2026-11-16 04:55 UTC
+## Current live snapshot — 2026-11-16 09:25 UTC
 
-- Main SHA: `4d2cf3b82bd78437541b49da46f522c06d2652b5`.
-- Main CI: PASS — workflow run [#43801760248](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43801760248) on the exact main SHA; Godot, Python and Android Debug export jobs succeeded.
-- Current PR: #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), head `1ee509549f1eaf300488e6788dc330209ae31332`; exact-head CI runs #43806903494 (pull_request) and #43806890386 (push) were queued/in progress at this checkpoint. Re-check before merge.
-- The previous live API refresh found no other open PRs or issues; PR #28 is the only newly opened task in this snapshot.
-- Fresh main artifact: Actions artifact ID `14196731065`, run #346, SHA-256 of artifact ZIP `ab0fb977453de814fc48395f51ab7aa30196c149a70d8e3cad57a0ec6398cb4c`, expires 2026-11-30. The extracted APK SHA-256 is recorded in the build handoff; this is a debug build.
-- APK container integrity and expected Godot/arm64 payload were checked on the downloaded artifact. CI's existing Android job also ran aapt metadata and apksigner verification.
-- Redmi installation/launch, touch, persistence and thermal QA: NOT RUN.
-- No Gradle wrapper or Android Studio project is required by the current product. The Godot-generated Gradle template remains optional and must be generated from the exact Godot version if a reviewed Android plugin/AAB/custom-template requirement appears.
-- Repository branch protection remains UNVERIFIED because the GitHub integration could not read the settings endpoint (403).
+- Main SHA: `9f197b10a246545f5e80d8eff1f77cf927797b5e`.
+- Merged PR #28 — Android reproducible build and artifact verification.
+- Merged PR #39 — revert of unintended Android ContentUri plugin residue.
+- Merged PR #42 — Customi-Z Core v0.4 integration audit (documentation only).
+- Merged PR #43 — GLB surface catalog, canonical BuildDocument validation, PBR-preserving surface binder and exact Godot CI test.
+- Merged PR #45 — Neon legacy migration into BuildDocument, retirement of the parallel profile store, P1 one-finger orbit/two-finger pan/pinch gestures. Exact-head CI run [#43838993070](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43838993070): smoke/GLB/Neon/UI hydration, simulator and Android Debug/Release export jobs all PASS.
+- Merged PR #46 — research source vault. Exact-head CI run [#43839645819](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43839645819): registry contract tests, helper shell syntax, Godot smoke/contract, Python simulator and Android Debug/Release export all PASS. Registry contains 23 unique source IDs, 16 immutable 40-character commit pins and six licence-identified sparse checkout entries.
+- PR #31 — closed without merge as an experimental AI prototype. Follow-up is tracked in issue #49; AI remains optional and excluded from the P1 release gate.
+- Open issue #47 — P2 GLB runtime import and Android content-URI plugin. PR #38 was closed after exact-head Android export failure; plugin descriptor/AAR/template and project configuration must be resolved before implementation resumes.
+- Open issue #49 — safe optional multi-model AI assistant integration. PR #31's prototype remains unmerged; issue #49 defines the required security, privacy, tests and lazy UI acceptance.
+- Superseded stacked PRs #29, #30, #37 and #44 are closed. Their approved code was selectively transplanted into #43/#45; do not reopen those branches.
+- CI-generated Android artifacts are Debug/test exports. Production signing, Play Store readiness and commercial release approval are NOT RUN.
+- Physical Redmi Note 13 Pro install/launch, real touch interaction, pause/resume, persistence, performance and thermal QA: NOT RUN.
+- Production Kawasaki geometry, provenance-verified GLB, UV mapping, factory fitment and engineering validation: NOT RUN.
+- Independent GitHub approval by a second reviewer is NOT recorded. CI success is not a substitute for human review.
 
-The older dated PR/issue tables and baseline below are historical snapshots and are superseded by this live section. Do not use them as current open-work inventory.
+## Integration rules
+
+- One product runtime: Godot 4 / GDScript. One authoritative editable state: BuildDocument.
+- No parallel writable Neon/profile store. Legacy inputs are migration-only and preserved; they are not ongoing write targets.
+- P1 release scope: garage, part selection, paint/material, Neon, canonical save/load and touch camera. Keep AI and native Android content-URI import outside this release gate.
+- P2 asset import must use a complete, version-matched, reproducible Godot Android plugin only if built-in file import is insufficient.
+- Every source change uses a branch and PR. Require exact-head CI and file ownership review; never bypass failed checks.
+- Status vocabulary: PASS / FAIL / NOT RUN / BLOCKED. Do not claim physical-device acceptance from CI exports.
+- Do not merge independent research or AI workstreams into the product runtime without an explicit architecture decision.
 
 ## Resume rule
 
