@@ -107,6 +107,32 @@ func _run_smoke_test() -> void:
 		return
 	var restored: Dictionary = BuildDocumentScript.from_json(saved.get_as_text())
 	saved.close()
+
+	var revision_before_failed_save := int(scene.call("get_build_document_snapshot").get("revision", 0))
+	var backup_directory := ProjectSettings.globalize_path("user://atomic_z_build.json.bak")
+	if DirAccess.make_dir_absolute(backup_directory) != OK:
+		push_error("A backup-path conflict fixture must be created.")
+		quit(1)
+		return
+	if scene.call("save_project"):
+		push_error("A save must fail when the backup destination cannot be rotated.")
+		quit(1)
+		return
+	var revision_after_failed_save := int(scene.call("get_build_document_snapshot").get("revision", 0))
+	if revision_after_failed_save != revision_before_failed_save:
+		push_error("A failed save must not increment the in-memory BuildDocument revision.")
+		quit(1)
+		return
+	if DirAccess.remove_absolute(backup_directory) != OK:
+		push_error("The backup-path conflict fixture must be removed.")
+		quit(1)
+		return
+	var preserved_primary := FileAccess.open("user://atomic_z_build.json", FileAccess.READ)
+	if preserved_primary == null:
+		push_error("A failed save must preserve the previous primary BuildDocument.")
+		quit(1)
+		return
+	preserved_primary.close()
 	if restored.is_empty() or restored.get("customization", {}).get("palette", {}).get("primary") != "#123456":
 		push_error("Saved BuildDocument must preserve shared customization state.")
 		quit(1)
