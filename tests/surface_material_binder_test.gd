@@ -93,5 +93,26 @@ func _run() -> void:
 		quit(1)
 		return
 
+	var alias_result: Dictionary = binder.configure(root_node, [
+		{"surface_id": "body.paint", "node_path": "Body", "surface_index": 0},
+		{"surface_id": "body.paint.alias", "node_path": "Body", "surface_index": 0}
+	])
+	if alias_result.get("ok", true):
+		push_error("Two stable IDs must not point to the same mesh surface.")
+		quit(1)
+		return
+
+	mesh_instance.material_override = StandardMaterial3D.new()
+	var global_override_result: Dictionary = binder.configure(root_node, definitions)
+	if global_override_result.get("ok", true):
+		push_error("Global material_override conflicts must be rejected.")
+		quit(1)
+		return
+	mesh_instance.material_override = null
+	if not binder.has_surface("body.paint"):
+		push_error("Rejected global override conflict must preserve the last valid binding table.")
+		quit(1)
+		return
+
 	print("PASS: stable surface binding, isolated overrides, base material preservation and atomic validation.")
 	quit(0)
