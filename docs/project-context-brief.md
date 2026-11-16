@@ -39,7 +39,7 @@ The current procedural motorcycle geometry is placeholder geometry. It is not fa
 - `BuildDocument` is the single authoritative editable build state.
 - `neon_skin_config.json` is a legacy/migration input or compatibility format only; it must not become a second authoritative writer.
 - Any migration must preserve stable IDs and include schema validation and round-trip tests.
-- The historical PR #4 skin-profile store and its independent `user://skin_profile.json` persistence require reconciliation against the canonical BuildDocument before any further integration. Do not treat its existence or prior merge as approval for a parallel source of truth.
+- The historical PR #4 skin-profile writer has been retired and removed. On first launch only, when no canonical BuildDocument exists, `user://skin_profile.json` is imported: color enters the primary palette, while legacy 0..10 glow/pulse values are preserved as an unmapped versioned extension. The original user file is retained. Existing canonical documents always take precedence.
 - Python/Tkinter and ModernGL are development/research aids, not alternate product runtimes. Port selected ideas into Godot only after compatibility, value and license review.
 
 ## 5. Repository implementation/evidence notes
@@ -57,7 +57,7 @@ The current repository state is authoritative. The following results are tied to
 ## 7. Work sequence (dependency-aware)
 
 1. Confirm exact target vehicle year/market/variant before model-specific assets or fitment.
-2. Audit canonical BuildDocument readers/writers and reconcile historical skin persistence paths.
+2. Keep BuildDocument as the only writer; verify one-time import and preservation of historical skin-profile data.
 3. Verify the current Godot baseline and all applicable headless/contract tests.
 4. Diagnose Android export from the detailed CI logs; do not mutate export settings speculatively.
 5. Acquire or author licensed geometry; validate GLB structure, dimensions, coordinate frame, IDs and surface/material bindings.
