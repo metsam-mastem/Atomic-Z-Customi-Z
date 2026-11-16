@@ -199,7 +199,28 @@
       },
       "metadata": {
         "language": "C/C++",
-        "scope": "incomplete reconstruction of EA Black Box SPEED engine; NFSU2 PC v1.2 first target"
+        "scope": "incomplete reconstruction of EA Black Box SPEED engine; NFSU2 PC v1.2 first target",
+        "tree_entries": 1003,
+        "reviewed_documents": [
+          "docs/pc-vehicle-physics.md",
+          "docs/pc-wheel-physics.md",
+          "docs/pc-physics-parameters.md",
+          "docs/pc-controls.md",
+          "docs/pc-camera.md",
+          "docs/pc-collision-notifications.md",
+          "docs/NATIVE_DEMO.md",
+          "docs/DECOMPILATION_SCOPE.md",
+          "docs/NATIVE_REPLACEMENT_INVENTORY.md"
+        ],
+        "subsystems": [
+          "vehicle update and substeps",
+          "wheel force/slip",
+          "drivetrain and upgrade records",
+          "collision/GJK/impulses",
+          "camera and controls",
+          "native integration/plugin SDK",
+          "verification oracles"
+        ]
       },
       "licence": {
         "spdx": "MIT-LIMITED",
