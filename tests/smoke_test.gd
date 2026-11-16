@@ -197,6 +197,11 @@ func _run_smoke_test() -> void:
 		push_error("Saved paint for another part must remain independent after reload.")
 		quit(1)
 		return
+	var restored_rim_color: Color = restored_bike.get_part_color("front_rim")
+	if not restored_rim_color.is_equal_approx(Color("#B58A32")):
+		push_error("Saved alloy rim paint must be restored independently after reload.")
+		quit(1)
+		return
 	if not restored_tank_position.is_equal_approx(saved_exploded_tank_position):
 		push_error("Saved Stock/Exploded mode must restore the assembly transforms.")
 		quit(1)
