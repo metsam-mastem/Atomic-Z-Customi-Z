@@ -106,11 +106,24 @@ jobs:
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
 
-      - name: Import project and export debug APK
+      - name: Import project and export debug APK (verbose diagnostics)
+        shell: bash
         run: |
-          godot --headless --editor --path . --quit
-          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk
+          set -o pipefail
+          godot --headless --editor --path . --quit --verbose 2>&1 | tee build/godot-import.log
+          godot --headless --path . --export-debug "Android Debug" build/Atomic-Z-debug.apk --verbose 2>&1 | tee build/android-export.log
           test -s build/Atomic-Z-debug.apk
+
+      - name: Upload Android export diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atomic-z-android-export-diagnostics
+          path: |
+            build/godot-import.log
+            build/android-export.log
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload Android debug APK
         uses: actions/upload-artifact@v4
