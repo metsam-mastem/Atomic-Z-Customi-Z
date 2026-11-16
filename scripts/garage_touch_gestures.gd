@@ -45,11 +45,14 @@ func handle_event(event: InputEvent) -> void:
 	var next_centroid := _centroid()
 	var next_spread := _spread(next_centroid)
 	var centroid_delta := next_centroid - previous_centroid
-	_target_offset += Vector3(
-		-centroid_delta.x * PAN_SENSITIVITY,
-		centroid_delta.y * PAN_SENSITIVITY,
-		0.0
+	var camera_right := Vector3(cos(_orbit_angle), 0.0, -sin(_orbit_angle))
+	var camera_up := Vector3(
+		-sin(_orbit_angle) * sin(_orbit_pitch),
+		cos(_orbit_pitch),
+		-cos(_orbit_angle) * sin(_orbit_pitch)
 	)
+	_target_offset += camera_right * (-centroid_delta.x * PAN_SENSITIVITY)
+	_target_offset += camera_up * (centroid_delta.y * PAN_SENSITIVITY)
 	_orbit_distance = clampf(
 		_orbit_distance + (previous_spread - next_spread) * PINCH_SENSITIVITY,
 		MIN_ORBIT_DISTANCE,
