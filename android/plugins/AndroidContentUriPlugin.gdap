@@ -1,0 +1,4 @@
+[config]
+name="AndroidContentUri"
+binary_type="local"
+binary="AndroidContentUriPlugin.release.aar"
