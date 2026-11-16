@@ -4,6 +4,8 @@ const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const CatalogScript = preload("res://scripts/glb_surface_catalog.gd")
 const BinderScript = preload("res://scripts/surface_material_binder.gd")
 
+var _failed := false
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -94,9 +96,9 @@ func _run() -> void:
 	_assert(mesh.surface_get_material(1) == imported_trim and imported_trim.metallic == 0.72, "Unselected imported PBR materials must remain unchanged.")
 
 	print("PASS: GLB surface inventory, stable manifest, BuildDocument contract and isolated material edit.")
-	quit(0)
+	quit(1 if _failed else 0)
 
 func _assert(condition: bool, message: String) -> void:
 	if not condition:
+		_failed = true
 		push_error(message)
-		quit(1)
