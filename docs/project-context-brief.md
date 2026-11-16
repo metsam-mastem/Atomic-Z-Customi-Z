@@ -53,3 +53,7 @@ A prior user request explicitly named ZX-25R for the neon skin configuration, wh
 ## Status vocabulary
 
 Use PASS / FAIL / NOT RUN / BLOCKED. Do not report a feature as complete without corresponding test or device evidence. Visual preview is not engineering validation.
+
+## Corrected integration mandate (2026-11-16)
+
+The user's latest explicit direction supersedes any earlier suggestion to create separate connected subsystems: all capabilities must be components of ONE integrated, modular/puzzle-like system. Godot 4 remains the only product runtime; one BuildDocument, one active vehicle context, one HUD/workflow and one persistence/export pipeline. ModernGL v2 is assessed for feature ideas to port into Godot, not as another product renderer. Multi-agent governance requires branch/PR-based work and preflight inspection.
