@@ -10,8 +10,11 @@ func configure_build_document(document: Dictionary) -> void:
 	_build_document = document
 
 func _ready() -> void:
+	var requested_mode := str(_build_document.get("assembly", {}).get("mode", "stock"))
 	_build_placeholder()
 	_sync_document_parts()
+	_apply_document_materials()
+	set_exploded(requested_mode == "exploded")
 
 func set_exploded(enabled: bool) -> void:
 	_is_exploded = enabled
@@ -66,7 +69,7 @@ func set_part_color(part_id: String, color: Color) -> bool:
 		var color_hex := "#" + color.to_html(false).to_upper()
 		var found := false
 		for index in range(materials.size()):
-			if str(materials[index].get("material_id", "")) == material_id:
+			if materials[index] is Dictionary and str(materials[index].get("material_id", "")) == material_id:
 				materials[index]["target_part_ids"] = [part_id]
 				materials[index]["base_color"] = color_hex
 				found = true
@@ -130,6 +133,30 @@ func _add_mesh_part(part_id: String, mesh: Mesh, at: Vector3, material: Standard
 	_parts[part_id] = {"node": part_root, "mesh_instance": mesh_instance, "material": material, "home": at, "explode": explode_offset}
 	if is_body:
 		_body_materials.append(material)
+
+func _apply_document_materials() -> void:
+	if _build_document.is_empty():
+		return
+	var saved_materials: Array = _build_document.get("customization", {}).get("materials", []).duplicate(true)
+	for record_value in saved_materials:
+		if not (record_value is Dictionary):
+			continue
+		var record: Dictionary = record_value
+		var color_hex := str(record.get("base_color", ""))
+		if not color_hex.begins_with("#"):
+			continue
+		var color := Color.from_string(color_hex, Color.TRANSPARENT)
+		if color == Color.TRANSPARENT:
+			continue
+		var target_part_ids: Variant = record.get("target_part_ids", [])
+		if not (target_part_ids is Array):
+			continue
+		for part_id_value in target_part_ids:
+			var part_id := str(part_id_value)
+			if _parts.has(part_id):
+				var material: StandardMaterial3D = _parts[part_id].get("material")
+				if material != null:
+					material.albedo_color = color
 
 func _sync_document_parts() -> void:
 	if _build_document.is_empty():
