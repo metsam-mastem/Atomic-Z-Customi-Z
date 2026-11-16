@@ -23,7 +23,7 @@ func _run() -> void:
 	_assert(Registry.validate_request_target(ollama, false, false).get("ok", false) == false, "Ollama HTTP must be denied until the user explicitly opts in.")
 	_assert(Registry.validate_request_target(ollama, true, false).get("ok", false), "Explicit private-LAN Ollama HTTP must be allowed without credentials.")
 	_assert(not Registry.validate_request_target(ollama, true, false, true).get("ok", false), "Credentials must never be sent over cleartext HTTP.")
-	_assert(Registry.validate_request_target(ollama, true, true).get("ok", false), "Android must accept a configured private LAN host.")
+	_assert(not Registry.validate_request_target(ollama, true, true).get("ok", false), "Android must reject cleartext Ollama until native network policy is verified.")
 
 	var loopback := ollama.duplicate(true)
 	loopback["base_url"] = "http://127.0.0.1:11434"
