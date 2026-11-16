@@ -44,26 +44,26 @@ The current procedural motorcycle geometry is placeholder geometry. It is not fa
 
 ## 5. Repository implementation/evidence notes
 
-The current repository state is authoritative. The following results are tied to named PR heads and CI runs, not a blanket claim that every current-main gate passes.
+The live repository state is authoritative. This snapshot is tied to the exact refs and CI runs below; refresh GitHub before relying on it.
 
-- PR #10 is merged. It adds isolated part paint, BuildDocument persistence with backup/recovery, and the ETC2/ASTC Android export prerequisite.
-- Godot 4.4.1 import, smoke, neon, BuildDocument, Exploded reload and persistence failure/recovery tests passed on named PR #10 commits.
-- Android Debug APK export and artifact upload passed on PR #10 commit 253029faaecc358e7e3c98d52255a8cb63ee9db1 in workflow run 43788395328. Physical Redmi device installation and QA remain NOT RUN.
-- PR #7 remains open/draft. Its focused Surface Material Binder test and end-to-end GLB/BuildDocument/UI integration remain NOT RUN.
-- PR #8 is closed without merge. PR #11 and PR #12 remain open at the latest snapshot; re-evaluate their overlap with the Android export fix already merged through PR #10 before further action.
-- Current geometry remains procedural placeholder geometry. No verified factory CAD, ZX-25RR replica, physical fitment, engineering validity or road legality is established.
-- The only verified visual asset in the repository is assets/product-concept.svg. It is concept/UI artwork, not a runtime screenshot. See docs/VISUAL_ASSET_REGISTER.md.
+- Verified `main`: `4d2cf3b82bd78437541b49da46f522c06d2652b5`. The main Godot import/smoke, Python simulator and Android Debug Export jobs passed in workflow [#43806740044](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43806740044).
+- PR #20 is merged. Its ownership-safe SurfaceMaterialBinder prototype and BuildDocument-driven neon HUD hydration passed exact-head Godot/Python/Android CI; merge commit `75df0367e11422f6169d5cc9af774900cc65807f`. This proves the binder contract test, not production GLB integration.
+- PR #28, [Android artifact verification and reproducible build path](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/28), is OPEN on branch `agent/build/android-artifact-hardening`, head `092d84c975bed159b244eb552a2b76efd16a41a7`. Its exact-head Godot, Python and Android CI passed in runs [#43807090339](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807090339) and [#43807085346](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43807085346). It adds a common debug/release build entrypoint and APK structural/signature verification. Release export itself remains NOT RUN because no owner-controlled release keystore was supplied.
+- PR #29, [GLB surface catalog to BuildDocument integration](https://github.com/metsam-mastem/Atomic-Z-Customi-Z/pull/29), is a DRAFT stacked on PR #28. It adds recursive surface inventory, stable manifest validation, BuildDocument catalog storage and per-surface material edits in the existing binder. Its latest head is `923f07e5bd7b9af69a2722b0a999f5a55b19bad5`; exact-head CI is queued/pending. Do not merge it before PR #28.
+- PRs #7, #11, #18 and #19 are closed as superseded by PR #20. PR #17 and PR #20 are merged.
+- Current geometry remains procedural placeholder geometry. No verified factory CAD, ZX-25RR replica, production UV map, physical fitment, engineering validity or road legality is established.
+- The only verified visual asset in the repository is `assets/product-concept.svg`. It is concept/UI artwork, not a runtime screenshot. See `docs/VISUAL_ASSET_REGISTER.md`.
+- Physical Redmi installation, touch/persistence QA and performance/thermal profiling remain NOT RUN.
 
 ## 7. Work sequence (dependency-aware)
 
-1. Confirm exact target vehicle year/market/variant before model-specific assets or fitment.
-2. Audit canonical BuildDocument readers/writers and reconcile historical skin persistence paths.
-3. Verify the current Godot baseline and all applicable headless/contract tests.
-4. Diagnose Android export from the detailed CI logs; do not mutate export settings speculatively.
-5. Acquire or author licensed geometry; validate GLB structure, dimensions, coordinate frame, IDs and surface/material bindings.
-6. Bind customization layers to verified surfaces and preserve the one-document save/load/export flow.
-7. Profile and validate on the exact target Android device; record device SKU, SoC/GPU, OS, build hash, frame time, memory and thermal evidence.
-8. Add engineering/hardware capabilities only with explicit assumptions, calibrated inputs and separate acceptance gates.
+1. Complete independent review of PR #28 and merge it only after the exact-head Godot/Python/Android checks and APK verifier review remain green.
+2. After PR #28 merges, retarget PR #29 to `main`, rerun exact-head CI and review the BuildDocument surface-catalog contract before merging.
+3. Reconcile the historical skin-profile persistence path against the canonical BuildDocument; do not introduce a second writable store.
+4. Obtain a licensed, provenance-tracked GLB for an explicitly selected ZX-25RR year/market. Validate its hash, license, dimensions, coordinate frame, node hierarchy, part IDs, material slots and UVs.
+5. Connect verified asset surface IDs to the existing garage selection/HUD workflow; preserve one BuildDocument save/load/export path.
+6. Profile and validate on the exact target Android device; record device SKU, SoC/GPU, OS, build hash, frame time, memory and thermal evidence.
+7. Add engineering/hardware capabilities only with explicit assumptions, calibrated inputs and separate acceptance gates.
 
 ## 8. Status vocabulary
 
