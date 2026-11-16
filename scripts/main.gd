@@ -3,10 +3,10 @@ extends Node3D
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 
-var _bike: Node3D
+var _bike
 var _camera: Camera3D
 var _key_light: DirectionalLight3D
-var _quality: Node
+var _quality
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
