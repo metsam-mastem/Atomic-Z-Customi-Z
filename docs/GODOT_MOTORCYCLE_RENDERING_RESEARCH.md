@@ -1,7 +1,7 @@
 # Godot 4 Motorcycle Rendering and Asset Integration — Technical Review
 
 Date: 2026-11-16
-Status: accepted engineering guidance; implementation gates remain open
+Status: accepted engineering guidance; surface-binding prototype added; runtime integration and verification remain open
 Scope: Atomic-Z-Customi-Z, one Android-first Godot application
 Baseline inspected: `project.godot` declares Godot 4.3 and `gl_compatibility` for desktop/mobile.
 
