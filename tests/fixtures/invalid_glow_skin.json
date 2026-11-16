@@ -1,0 +1,8 @@
+{
+  "bike_model": "Test",
+  "skin_name": "Invalid Glow",
+  "colors": {"primary": "#00FFCC", "secondary": "#FF00FF", "glow_intensity": 1.5},
+  "line_segments": [
+    {"id": "valid", "points": [[100, 400], [300, 350]], "width": 4, "color": "primary"}
+  ]
+}
