@@ -27,6 +27,7 @@ func _ready() -> void:
 	_panel.visible = false
 
 func open_panel() -> void:
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	_backdrop.visible = true
 	_panel.visible = true
 	_panel.grab_focus()
@@ -35,6 +36,7 @@ func close_panel() -> void:
 	_client.cancel_active_request()
 	_panel.visible = false
 	_backdrop.visible = false
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _build_panel() -> void:
 	_backdrop = ColorRect.new()
