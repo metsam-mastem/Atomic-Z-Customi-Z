@@ -366,6 +366,174 @@
         "GLB surface/transform validation"
       ],
       "atomic_z_decision": "Asset page states working suspension, transmission, wiring and powertrain internals are omitted; not an engineering model."
+    },
+    {
+      "id": "activision-telescope-webkit",
+      "name": "Telescope: Activision Webkit (official middleware sources)",
+      "repository": null,
+      "url": "https://research.activision.com/opensource",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "kind": "official versioned source archives; each product version has a paired license archive"
+      },
+      "metadata": {
+        "publisher": "Activision Research",
+        "scope": "open-source Webkit component included in some Activision games",
+        "listed_products": [
+          "Call of Duty: Black Ops 6",
+          "Call of Duty: Modern Warfare III",
+          "Call of Duty: Modern Warfare II",
+          "Call of Duty: Vanguard",
+          "Call of Duty: Black Ops Cold War",
+          "Call of Duty: Warzone"
+        ]
+      },
+      "licence": {
+        "spdx": "MIXED",
+        "scope": "official page lists BSD, MPL-1.1, LGPL-2.0, LGPL-2.1 or other open-source licences; use the matching per-version telescope.license archive"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "third-party middleware provenance and mixed licence handling",
+        "webview integration only if a concrete need emerges"
+      ],
+      "atomic_z_decision": "Not Call of Duty game or engine source. No current Atomic-Z need; evaluate exact archive, version licence, dependency graph, Android compatibility and security separately before any use."
+    },
+    {
+      "id": "opencod2",
+      "name": "OpenCOD2 — independent Call of Duty 2 engine reconstruction",
+      "repository": "opencod2/opencod2",
+      "url": "https://github.com/opencod2/opencod2",
+      "revision": {
+        "branch": "main",
+        "commit": "410342a82da1b2e8286c290274aeb0f1731a6859",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C",
+        "build": "CMake, SDL2/OpenGL, native x86",
+        "status": "incomplete work in progress; builds/boots but may crash or omit features"
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file or GitHub-detected licence in inspected source tree/API metadata"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "legacy engine/client/server/renderer separation",
+        "native build and content-loading architecture"
+      ],
+      "atomic_z_decision": "Not Atomic-Z code: not Godot, not Android-first, incomplete and licence unresolved. README requires users to supply lawful game data; none is included."
+    },
+    {
+      "id": "opencod1",
+      "name": "OpenCoD1 — Call of Duty (2003) multiplayer reconstruction",
+      "repository": "opencod1/opencod1",
+      "url": "https://github.com/opencod1/opencod1",
+      "revision": {
+        "branch": "main",
+        "commit": "718e994af62ca2cbc79d911bab73c445637b94e7",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "C",
+        "build": "Premake/Visual Studio, Windows",
+        "status": "incomplete; engine, server and game/cgame/UI modules build/link, effects system still in progress"
+      },
+      "licence": {
+        "spdx": "NOASSERTION",
+        "scope": "no root LICENSE file or GitHub-detected licence in inspected source tree/API metadata"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "legacy multiplayer client/server/game-module boundaries"
+      ],
+      "atomic_z_decision": "No direct reuse: licence unresolved, Windows native C, incomplete and requires legally owned Call of Duty 1.1 game assets."
+    },
+    {
+      "id": "codwaw-re",
+      "name": "Call of Duty: World at War T4 reverse-engineering notes",
+      "repository": "ItsNoahJ/codwaw-reverse-engineering",
+      "url": "https://github.com/ItsNoahJ/codwaw-reverse-engineering",
+      "revision": {
+        "branch": "main",
+        "commit": "a329baa38fd8595ee8fd5d0b800f29af29b903fe",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "documentation and machine-readable research tables",
+        "target": "CoD: World at War T4 SP 1.7.1263",
+        "focus": [
+          "crypto stack",
+          "DemonWare deltas",
+          "MSVC8 toolchain",
+          "byte-exact verification methodology"
+        ]
+      },
+      "licence": {
+        "spdx": "MIT",
+        "scope": "original repository documentation/data tables only; upstream libraries and Activision game binaries/content retain separate rights"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "byte-match evidence tiers",
+        "compiler/toolchain forensics",
+        "reproducible analysis and explicit unknowns"
+      ],
+      "atomic_z_decision": "Methodology reference only. Repository README says proprietary Activision code, game assets and executable bytes are not redistributed; no shooter subsystem is relevant to current Atomic-Z scope."
+    },
+    {
+      "id": "cod-research",
+      "name": "CoD-Research community technical wiki",
+      "repository": "primetime43/CoD-Research",
+      "url": "https://github.com/primetime43/CoD-Research",
+      "revision": {
+        "branch": "main",
+        "commit": "133813620e28c997fd57cc149b3f1d81c03f9b94",
+        "pinned": true,
+        "observed_at": "2026-11-16"
+      },
+      "metadata": {
+        "language": "HTML/Markdown documentation",
+        "scope": "community research for CoD4 through CoD10"
+      },
+      "licence": {
+        "spdx": "GPL-3.0",
+        "scope": "repository documentation"
+      },
+      "status": "STUDY_ONLY",
+      "relevance": [
+        "technical topic discovery and source/reference pointers"
+      ],
+      "atomic_z_decision": "Do not copy wiki text or code into Atomic-Z. Use links and concise factual references only; not game source."
+    },
+    {
+      "id": "mw2-private-reconstruction",
+      "name": "MW2 2009 private source-level reconstruction progress",
+      "repository": null,
+      "url": "https://mw2.momo5502.com/",
+      "revision": {
+        "page_last_checked": "2026-11-16",
+        "pinned": false,
+        "kind": "mutable progress dashboard; no public source repository established"
+      },
+      "metadata": {
+        "target": "Call of Duty: Modern Warfare 2 (2009) multiplayer",
+        "visibility": "private source project; public progress dashboard only"
+      },
+      "licence": {
+        "spdx": "UNKNOWN",
+        "scope": "no public source code or licence grant established"
+      },
+      "status": "PRIVATE_NO_SOURCE",
+      "relevance": [
+        "progress taxonomy separating byte-exact, decompiled-not-exact and unattempted functions"
+      ],
+      "atomic_z_decision": "Research case study only. Dashboard counts are mutable project-reported progress, not independent proof of game completeness and not a source download."
     }
   ],
   "rejected_or_unresolved_leads": [
