@@ -25,6 +25,9 @@ jobs:
       - name: Run vertical-slice smoke test
         run: godot --headless --path . --script res://tests/smoke_test.gd
 
+      - name: Run neon skin runtime test
+        run: godot --headless --path . --script res://tests/neon_skin_test.gd
+
   neon-simulator-tests:
     runs-on: ubuntu-latest
     steps:
