@@ -15,6 +15,15 @@ var _build_document: Dictionary = {}
 var _part_selector: OptionButton
 var _paint_picker: ColorPickerButton
 var _build_summary_label: Label
+var _assembly_button: Button
+var _neon_toggle_button: Button
+var _neon_editor_controls: Array[Control] = []
+var _disclaimer_label: Label
+var _file_dialog: FileDialog
+var _asset_metadata_dialog: ConfirmationDialog
+var _asset_license_input: LineEdit
+var _asset_source_input: LineEdit
+var _pending_asset_source_path := ""
 var _selected_part_id := "fuel_tank"
 const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
@@ -115,11 +124,11 @@ func _build_hud() -> void:
 	_part_selector.item_selected.connect(_on_part_selected)
 	controls.add_child(_part_selector)
 
-	var assembly_button := Button.new()
-	assembly_button.text = "EXPLODED / STOCK" if _bike.supports_exploded_view() else "EXPLODED VIEW N/A"
-	assembly_button.disabled = not _bike.supports_exploded_view()
-	assembly_button.pressed.connect(_on_toggle_assembly)
-	controls.add_child(assembly_button)
+	_assembly_button = Button.new()
+	_assembly_button.text = "EXPLODED / STOCK" if _bike.supports_exploded_view() else "EXPLODED VIEW N/A"
+	_assembly_button.disabled = not _bike.supports_exploded_view()
+	_assembly_button.pressed.connect(_on_toggle_assembly)
+	controls.add_child(_assembly_button)
 
 	_paint_picker = ColorPickerButton.new()
 	_paint_picker.color = _bike.get_part_color(_selected_part_id)
@@ -133,19 +142,25 @@ func _build_hud() -> void:
 	reset_button.pressed.connect(_on_reset_camera)
 	controls.add_child(reset_button)
 
-	var neon_button := Button.new()
-	neon_button.text = "NEON ON / OFF"
-	neon_button.toggle_mode = true
-	neon_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
-	neon_button.disabled = _bike.is_imported_model()
-	neon_button.tooltip_text = "Neon preview stays disabled until paths are verified against imported GLB surfaces." if _bike.is_imported_model() else "Toggle neon preview"
-	neon_button.toggled.connect(_on_neon_toggled)
-	controls.add_child(neon_button)
+	_neon_toggle_button = Button.new()
+	_neon_toggle_button.text = "NEON ON / OFF"
+	_neon_toggle_button.toggle_mode = true
+	_neon_toggle_button.button_pressed = bool(_build_document.get("render", {}).get("neon_enabled", true))
+	_neon_toggle_button.disabled = _bike.is_imported_model()
+	_neon_toggle_button.tooltip_text = "Neon preview stays disabled until paths are verified against imported GLB surfaces." if _bike.is_imported_model() else "Toggle neon preview"
+	_neon_toggle_button.toggled.connect(_on_neon_toggled)
+	controls.add_child(_neon_toggle_button)
 
 	var skin_controls := HBoxContainer.new()
 	skin_controls.position = Vector2(24.0, 146.0)
 	skin_controls.add_theme_constant_override("separation", 10)
 	root.add_child(skin_controls)
+
+	var import_glb_button := Button.new()
+	import_glb_button.text = "IMPORT GLB"
+	import_glb_button.tooltip_text = "Import a local glTF Binary asset and generate a stable surface catalog"
+	import_glb_button.pressed.connect(_on_import_glb_pressed)
+	skin_controls.add_child(import_glb_button)
 
 	_add_neon_segment_toggle(skin_controls, "TAIL", "tail_underglow")
 	_add_neon_segment_toggle(skin_controls, "TANK", "tank_accent")
@@ -160,6 +175,7 @@ func _build_hud() -> void:
 	primary_picker.disabled = _bike.is_imported_model()
 	primary_picker.color_changed.connect(_on_neon_primary_changed)
 	skin_controls.add_child(primary_picker)
+	_neon_editor_controls.append(primary_picker)
 
 	var secondary_picker := ColorPickerButton.new()
 	secondary_picker.name = "NeonSecondaryPicker"
@@ -169,6 +185,7 @@ func _build_hud() -> void:
 	secondary_picker.disabled = _bike.is_imported_model()
 	secondary_picker.color_changed.connect(_on_neon_secondary_changed)
 	skin_controls.add_child(secondary_picker)
+	_neon_editor_controls.append(secondary_picker)
 
 	var glow_slider := HSlider.new()
 	glow_slider.name = "NeonGlowSlider"
@@ -181,25 +198,26 @@ func _build_hud() -> void:
 	glow_slider.editable = not _bike.is_imported_model()
 	glow_slider.value_changed.connect(_on_glow_changed)
 	skin_controls.add_child(glow_slider)
+	_neon_editor_controls.append(glow_slider)
 
 	var save_skin_button := Button.new()
 	save_skin_button.text = "SAVE PROJECT"
 	save_skin_button.pressed.connect(_on_save_neon_skin)
 	skin_controls.add_child(save_skin_button)
 
-	var disclaimer := Label.new()
-	disclaimer.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / NEON UV MAPPING PENDING / NOT ENGINEERING-VALIDATED" if _bike.is_imported_model() else "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
-	disclaimer.anchor_left = 0.0
-	disclaimer.anchor_top = 1.0
-	disclaimer.anchor_right = 1.0
-	disclaimer.anchor_bottom = 1.0
-	disclaimer.offset_left = 24.0
-	disclaimer.offset_top = -34.0
-	disclaimer.offset_right = -24.0
-	disclaimer.offset_bottom = -10.0
-	disclaimer.add_theme_font_size_override("font_size", 11)
-	disclaimer.modulate = Color("#aab8c8")
-	root.add_child(disclaimer)
+	_disclaimer_label = Label.new()
+	_disclaimer_label.text = "IMPORTED GLB PREVIEW — NOT FACTORY CAD / NEON UV MAPPING PENDING / NOT ENGINEERING-VALIDATED" if _bike.is_imported_model() else "CONCEPT PLACEHOLDER — NOT FACTORY CAD / NOT ENGINEERING-VALIDATED"
+	_disclaimer_label.anchor_left = 0.0
+	_disclaimer_label.anchor_top = 1.0
+	_disclaimer_label.anchor_right = 1.0
+	_disclaimer_label.anchor_bottom = 1.0
+	_disclaimer_label.offset_left = 24.0
+	_disclaimer_label.offset_top = -34.0
+	_disclaimer_label.offset_right = -24.0
+	_disclaimer_label.offset_bottom = -10.0
+	_disclaimer_label.add_theme_font_size_override("font_size", 11)
+	_disclaimer_label.modulate = Color("#aab8c8")
+	root.add_child(_disclaimer_label)
 
 	_build_summary_label = Label.new()
 	_build_summary_label.name = "BuildSummaryLabel"
