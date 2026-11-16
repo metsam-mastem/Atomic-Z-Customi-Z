@@ -5,6 +5,8 @@ const BuildDocumentStoreScript = preload("res://scripts/build_document_store.gd"
 
 const BUILD_PATH := "user://atomic_z_build.json"
 
+var _failed := false
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -18,6 +20,7 @@ func _run() -> void:
 	var packed_scene := load("res://scenes/main.tscn") as PackedScene
 	_assert(packed_scene != null, "Main garage scene must load.")
 	if packed_scene == null:
+		quit(1)
 		return
 
 	var scene := packed_scene.instantiate()
@@ -43,9 +46,9 @@ func _run() -> void:
 	for path in [BUILD_PATH, BUILD_PATH + ".tmp", BUILD_PATH + ".bak"]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	quit(0)
+	quit(1 if _failed else 0)
 
 func _assert(condition: bool, message: String) -> void:
 	if not condition:
+		_failed = true
 		push_error(message)
-		quit(1)
