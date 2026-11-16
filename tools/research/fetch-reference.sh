@@ -22,7 +22,9 @@ if [[ "$SOURCE" == "--list" || "$SOURCE" == "-l" ]]; then
   printf '%s\n' "  moto-controller  (AGPL-3.0; study-only, no runtime import)"
   printf '%s\n' "  opennfs          (MIT original code; EA assets excluded)"
   printf '%s\n' "  rea              (MIT canonical upstream; optional analysis tool)"
-  printf '%s\n' "Manual-reference only, not auto-fetched: OpenUG2, Roadkill and SPEED RE (mixed source with recovered NFSU2 code expressly excluded from MIT grant)."
+  printf '%s\n' "  godot-vehicle    (MIT; four-wheel car reference, Godot 4.6)"
+  printf '%s\n' "  modu-vehicle     (CC0 code; WIP C++ GDExtension, dependencies separate)"
+  printf '%s\n' "Manual-reference only, not auto-fetched: OpenUG2, Roadkill, SPEED RE, kv-vehicle, MotoForge, VOLT showroom (unresolved/mixed rights)."
   printf '%s\n' "COD repositories without a detected reuse licence are intentionally excluded: OpenCOD1, OpenCOD2, CoD-Research."
   printf '%s\n' "Official Activision Telescope archives require per-version licence review; private MW2 reconstruction has no public source checkout."
   printf '%s\n' "CC0 GLBs are not auto-fetched until the downloaded file hash and provenance are recorded."
@@ -58,6 +60,18 @@ case "$SOURCE" in
     SHA="a10037ef10516cf92653596512932b15f190a5c0"
     REF="main"
     PATHS=("/docs/guides/native/" "/docs/guides/android/" "/docs/development/reconstruction-readiness.md" "/docs/getting-started/installation.md" "/skill-src/reverse-engineer-anything/" "/README.md" "/LICENSE")
+    ;;
+  godot-vehicle)
+    REPO="Seerban/godot-vehicle"
+    SHA="935e24c0942df0c0b907dc61512c37b6d64d4f57"
+    REF="main"
+    PATHS=("/Scripts/vehicle/" "/Scripts/controller/" "/Scripts/sprint/GhostPlayer.gd" "/Resources/" "/README.md" "/LICENSE" "/project.godot")
+    ;;
+  modu-vehicle)
+    REPO="AurickMikleton/ModuVehicle"
+    SHA="618e43db7578dcf9d4ca4640d832b45a94ef1ddc"
+    REF="main"
+    PATHS=("/src/components/" "/src/math/" "/src/resources/" "/demo/presets/components/" "/README.md" "/LICENSE" "/CMakeLists.txt" "/.gitmodules")
     ;;
   *)
     printf 'Unknown, unpinned or rights-unreviewed source ID: %s\n' "$SOURCE" >&2
