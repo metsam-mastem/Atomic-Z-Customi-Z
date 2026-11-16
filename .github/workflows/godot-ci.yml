@@ -134,6 +134,9 @@ jobs:
       - name: Import, export and validate debug APK
         run: bash scripts/build_android.sh debug
 
+      - name: Verify opt-in AI network permission in APK manifest
+        run: "$ANDROID_HOME/build-tools/34.0.0/aapt" dump permissions build/Atomic-Z-debug.apk | grep -q 'android.permission.INTERNET'
+
       - name: Create ephemeral release signing key
         run: |
           keytool -genkeypair -noprompt -v \
