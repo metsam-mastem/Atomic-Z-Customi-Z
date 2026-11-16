@@ -27,6 +27,11 @@ func _initialize() -> void:
 	var encoded: String = BuildDocumentScript.to_json(document)
 	var decoded: Dictionary = BuildDocumentScript.from_json(encoded)
 	_assert(_documents_equivalent(decoded, document), "BuildDocument JSON round-trip must preserve all data.")
+	var precision_document := document.duplicate(true)
+	precision_document["customization"]["neon_layers"][0]["width"] = 0.1234567890123
+	var precision_decoded: Dictionary = BuildDocumentScript.from_json(BuildDocumentScript.to_json(precision_document))
+	var precision_width := float(precision_decoded.get("customization", {}).get("neon_layers", [])[0].get("width", -1.0))
+	_assert(absf(precision_width - 0.1234567890123) < 1.0e-12, "BuildDocument JSON must preserve high-precision floating-point measurements.")
 
 	var save_path := "user://atomic_z_store_contract_test.json"
 	_remove_if_exists(save_path)
