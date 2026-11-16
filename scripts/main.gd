@@ -397,12 +397,14 @@ func _install_selected_glb(license_id: String, source_record: String, display_na
 	var directory_path := "user://vehicle_assets"
 	var directory_error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory_path))
 	if directory_error != OK and directory_error != ERR_ALREADY_EXISTS:
+		source_file.close()
 		push_warning("Could not create the local vehicle asset folder: " + error_string(directory_error))
 		return
 
 	var temporary_path := directory_path + "/incoming.glb.tmp"
 	var output_file := FileAccess.open(temporary_path, FileAccess.WRITE)
 	if output_file == null:
+		source_file.close()
 		push_warning("Could not stage the selected GLB in app storage.")
 		return
 	var remaining_bytes := file_size
