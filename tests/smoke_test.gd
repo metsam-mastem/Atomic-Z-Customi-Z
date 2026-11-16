@@ -466,4 +466,35 @@ func _test_touch_gestures() -> bool:
 	if not reset_offset.is_equal_approx(Vector3.ZERO):
 		push_error("Reset must clear the camera pan offset.")
 		return false
+
+	var cancellation_probe = GarageTouchGesturesScript.new()
+	var cancel_first := InputEventScreenTouch.new()
+	cancel_first.index = 0
+	cancel_first.pressed = true
+	cancel_first.position = Vector2(100.0, 100.0)
+	cancellation_probe.handle_event(cancel_first)
+	var cancel_second := InputEventScreenTouch.new()
+	cancel_second.index = 1
+	cancel_second.pressed = true
+	cancel_second.position = Vector2(200.0, 100.0)
+	cancellation_probe.handle_event(cancel_second)
+	var cancelled := InputEventScreenTouch.new()
+	cancelled.index = 1
+	cancelled.pressed = false
+	cancelled.canceled = true
+	cancelled.position = Vector2(200.0, 100.0)
+	cancellation_probe.handle_event(cancelled)
+	var remaining_drag := InputEventScreenDrag.new()
+	remaining_drag.index = 0
+	remaining_drag.position = Vector2(125.0, 100.0)
+	cancellation_probe.handle_event(remaining_drag)
+	var after_cancel: Dictionary = cancellation_probe.get_camera_state()
+	if is_equal_approx(float(after_cancel.get("orbit_angle", 0.0)), 0.0):
+		push_error("A surviving finger must resume one-finger orbit after another touch is cancelled.")
+		return false
+	var after_cancel_offset: Vector3 = after_cancel.get("target_offset", Vector3.ZERO)
+	if not after_cancel_offset.is_equal_approx(Vector3.ZERO):
+		push_error("Cancelled touches must not leave a stale multi-touch pan gesture active.")
+		return false
+	cancellation_probe.free()
 	return true
