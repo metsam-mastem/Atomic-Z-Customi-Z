@@ -2,6 +2,7 @@ extends Node3D
 class_name NeonSkin
 
 const DEFAULT_CONFIG := "res://neon_skin_config.json"
+const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const X_MIN := 100.0
 const X_MAX := 600.0
 const Y_MIN := 280.0
@@ -18,8 +19,15 @@ var _ordered_ids: Array[String] = []
 var _palette: Dictionary = {}
 var _glow_intensity := 0.8
 var _skin_visible := true
+var _build_document: Dictionary = {}
+
+func configure_build_document(document: Dictionary) -> void:
+	_build_document = document
 
 func _ready() -> void:
+	if not _build_document.is_empty():
+		_load_from_build_document()
+		return
 	if not load_skin(DEFAULT_CONFIG):
 		push_warning("Neon skin config could not be loaded; neon overlay remains empty.")
 
@@ -35,12 +43,15 @@ func load_skin(path: String) -> bool:
 		return false
 
 	_config = parsed
+	if _build_document.is_empty():
+		_build_document = BuildDocumentScript.from_legacy_neon(parsed)
 	_palette = {
 		"primary": Color.from_string(str(_config["colors"]["primary"]), Color.WHITE),
 		"secondary": Color.from_string(str(_config["colors"]["secondary"]), Color.WHITE)
 	}
 	_glow_intensity = float(_config["colors"]["glow_intensity"])
 	_rebuild_segments()
+	_sync_document_from_runtime()
 	return true
 
 func get_segment_ids() -> Array[String]:
@@ -80,18 +91,23 @@ func set_segment_visible(segment_id: String, visible: bool) -> bool:
 	if not _segments.has(segment_id):
 		return false
 	_segments[segment_id]["visible"] = visible
+	_sync_document_from_runtime()
 	for child in _segments[segment_id]["nodes"]:
 		child.visible = visible and _skin_visible
 	return true
 
 func set_skin_visible(visible: bool) -> void:
 	_skin_visible = visible
+	if not _build_document.is_empty():
+		_build_document["render"]["neon_enabled"] = visible
 	for segment_id in _ordered_ids:
 		for child in _segments[segment_id]["nodes"]:
 			child.visible = visible and _segments[segment_id]["visible"]
 
 func set_glow_intensity(value: float) -> void:
 	_glow_intensity = clampf(value, 0.0, 1.0)
+	if not _build_document.is_empty():
+		_build_document["render"]["glow_intensity"] = _glow_intensity
 	for segment_id in _ordered_ids:
 		_build_segment_visuals(segment_id)
 
@@ -99,6 +115,8 @@ func set_palette_color(key: String, color: Color) -> bool:
 	if not _palette.has(key):
 		return false
 	_palette[key] = color
+	if not _build_document.is_empty():
+		_build_document["customization"]["palette"][key] = "#" + color.to_html(false).to_upper()
 	for segment_id in _ordered_ids:
 		if _segments[segment_id]["color"] == key:
 			_build_segment_visuals(segment_id)
@@ -235,3 +253,59 @@ func _map_point(point: Array) -> Vector2:
 		lerpf(WORLD_X_MIN, WORLD_X_MAX, x_ratio),
 		lerpf(WORLD_Y_MAX, WORLD_Y_MIN, y_ratio)
 	)
+
+func _load_from_build_document() -> void:
+	var customization: Dictionary = _build_document.get("customization", {})
+	var palette: Dictionary = customization.get("palette", {"primary": "#00FFCC", "secondary": "#FF00FF"})
+	var layers: Array = customization.get("neon_layers", [])
+	_config = {
+		"bike_model": _build_document.get("vehicle", {}).get("display_name", "Unassigned vehicle"),
+		"skin_name": _build_document.get("migration", {}).get("source_skin_name", "Atomic Z Design"),
+		"colors": {
+			"primary": str(palette.get("primary", "#00FFCC")),
+			"secondary": str(palette.get("secondary", "#FF00FF")),
+			"glow_intensity": float(_build_document.get("render", {}).get("glow_intensity", 0.8))
+		},
+		"line_segments": []
+	}
+	for layer in layers:
+		_config["line_segments"].append({
+			"id": str(layer.get("layer_id", "")),
+			"color": str(layer.get("color_token", "primary")),
+			"width": float(layer.get("width", 1.0)),
+			"visible": bool(layer.get("visible", true)),
+			"points": layer.get("points_legacy_2d", []).duplicate(true)
+		})
+	_palette = {
+		"primary": Color.from_string(_config["colors"]["primary"], Color.WHITE),
+		"secondary": Color.from_string(_config["colors"]["secondary"], Color.WHITE)
+	}
+	_glow_intensity = float(_config["colors"]["glow_intensity"])
+	if not _config["line_segments"].is_empty():
+		_rebuild_segments()
+
+func _sync_document_from_runtime() -> void:
+	if _build_document.is_empty():
+		return
+	var customization: Dictionary = _build_document["customization"]
+	customization["palette"] = {
+		"primary": "#" + _palette["primary"].to_html(false).to_upper(),
+		"secondary": "#" + _palette["secondary"].to_html(false).to_upper()
+	}
+	var layers: Array = []
+	for segment_id in _ordered_ids:
+		var segment: Dictionary = _segments[segment_id]
+		layers.append({
+			"layer_id": segment_id,
+			"name": segment_id.replace("_", " ").capitalize(),
+			"kind": "neon_path",
+			"target_part_id": null,
+			"target_surface_id": null,
+			"color_token": str(segment["color"]),
+			"width": float(segment["width"]),
+			"visible": bool(segment["visible"]),
+			"points_legacy_2d": segment["points"].duplicate(true),
+			"mapping_status": "unverified_legacy_2d"
+		})
+	customization["neon_layers"] = layers
+	_build_document["render"]["glow_intensity"] = _glow_intensity

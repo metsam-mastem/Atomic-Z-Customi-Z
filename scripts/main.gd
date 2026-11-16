@@ -3,12 +3,15 @@ extends Node3D
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
+const BuildDocumentScript = preload("res://scripts/build_document.gd")
 
 var _bike
 var _camera: Camera3D
 var _key_light: DirectionalLight3D
 var _quality
 var _neon_skin
+var _build_document: Dictionary = {}
+const BUILD_DOCUMENT_PATH := "user://atomic_z_build.json"
 var _orbit_angle := 0.0
 var _orbit_pitch := 0.16
 var _orbit_distance := 5.3
@@ -16,15 +19,18 @@ var _dragging := false
 var _last_pointer := Vector2.ZERO
 
 func _ready() -> void:
+	_build_document = _load_initial_build_document()
 	_build_world()
 	_bike = BikeAssemblyScript.new()
 	_bike.name = "MotorcyclePlaceholder"
+	_bike.configure_build_document(_build_document)
 	add_child(_bike)
 	_quality = QualityControllerScript.new()
 	add_child(_quality)
 	_quality.configure(_key_light)
 	_neon_skin = NeonSkinScript.new()
 	_neon_skin.name = "NeonSkinOverlay"
+	_neon_skin.configure_build_document(_build_document)
 	_neon_skin.position.z = 0.29
 	add_child(_neon_skin)
 	_update_camera()
@@ -152,7 +158,7 @@ func _build_hud() -> void:
 	skin_controls.add_child(glow_slider)
 
 	var save_skin_button := Button.new()
-	save_skin_button.text = "SAVE SKIN"
+	save_skin_button.text = "SAVE PROJECT"
 	save_skin_button.pressed.connect(_on_save_neon_skin)
 	skin_controls.add_child(save_skin_button)
 
@@ -205,8 +211,8 @@ func _on_glow_changed(value: float) -> void:
 		_neon_skin.set_glow_intensity(value)
 
 func _on_save_neon_skin() -> void:
-	if is_instance_valid(_neon_skin) and not _neon_skin.save_skin():
-		push_warning("Could not save neon skin to user data directory.")
+	if not _save_build_document():
+		push_warning("Could not save the unified build document.")
 
 func _on_reset_camera() -> void:
 	_orbit_angle = 0.0
@@ -251,3 +257,44 @@ func _update_camera() -> void:
 		cos(_orbit_angle) * horizontal
 	)
 	_camera.look_at(target, Vector3.UP)
+
+func _load_initial_build_document() -> Dictionary:
+	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
+		var saved := FileAccess.open(BUILD_DOCUMENT_PATH, FileAccess.READ)
+		if saved != null:
+			var restored := BuildDocumentScript.from_json(saved.get_as_text())
+			saved.close()
+			if not restored.is_empty():
+				return restored
+	var legacy_file := FileAccess.open("res://neon_skin_config.json", FileAccess.READ)
+	if legacy_file != null:
+		var parsed: Variant = JSON.parse_string(legacy_file.get_as_text())
+		legacy_file.close()
+		if parsed is Dictionary:
+			var migrated: Dictionary = BuildDocumentScript.from_legacy_neon(parsed)
+			if BuildDocumentScript.validate(migrated).get("ok", false):
+				return migrated
+	return BuildDocumentScript.create_default()
+
+func _save_build_document() -> bool:
+	if not BuildDocumentScript.validate(_build_document).get("ok", false):
+		push_warning("BuildDocument validation failed; save was refused.")
+		return false
+	_build_document["revision"] = int(_build_document.get("revision", 0)) + 1
+	var temporary_path := BUILD_DOCUMENT_PATH + ".tmp"
+	var file := FileAccess.open(temporary_path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(BuildDocumentScript.to_json(_build_document))
+	file.flush()
+	file.close()
+	if FileAccess.file_exists(BUILD_DOCUMENT_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
+	var rename_error := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary_path), ProjectSettings.globalize_path(BUILD_DOCUMENT_PATH))
+	return rename_error == OK
+
+func get_build_document_snapshot() -> Dictionary:
+	return _build_document.duplicate(true)
+
+func save_project() -> bool:
+	return _save_build_document()
