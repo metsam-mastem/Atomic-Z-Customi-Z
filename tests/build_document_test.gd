@@ -3,6 +3,8 @@ extends SceneTree
 const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const StoreScript = preload("res://scripts/build_document_store.gd")
 
+var _failed := false
+
 func _initialize() -> void:
 	var legacy := {
 		"bike_model": "Kawasaki Ninja ZX-25R",
@@ -71,12 +73,12 @@ func _initialize() -> void:
 	invalid["schema_version"] = 999
 	_assert(not BuildDocumentScript.validate(invalid).get("ok", true), "Unknown schema versions must be rejected.")
 
-	quit(0)
+	quit(1 if _failed else 0)
 
 func _assert(condition: bool, message: String) -> void:
 	if not condition:
+		_failed = true
 		push_error(message)
-		quit(1)
 
 func _write_text(path: String, value: String) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
