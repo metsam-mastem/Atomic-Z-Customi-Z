@@ -41,7 +41,7 @@ func _run_smoke_test() -> void:
 		quit(1)
 		return
 
-	var tank_mesh := tank.get_node_or_null("MeshInstance3D") as MeshInstance3D
+	var tank_mesh := tank.get_node_or_null("VisualMesh") as MeshInstance3D
 	if tank_mesh == null:
 		push_error("Fuel tank mesh is missing.")
 		quit(1)
