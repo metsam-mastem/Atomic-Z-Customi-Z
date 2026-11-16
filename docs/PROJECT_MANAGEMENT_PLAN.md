@@ -45,7 +45,7 @@ Priority is not permission to merge: gates still apply.
 
 ### Stage B — P1 release-candidate stabilization (NEXT)
 - Review and reconcile open governance checkpoint PR #50 with live main; ensure it does not replace current facts with stale status.
-- Review optional AI assistant PR #51 against its privacy, transport, credential and offline-first boundaries; require exact-head Godot/Python/Android CI and test results.
+- Review optional AI assistant PR #53 against its privacy, transport, credential and offline-first boundaries; require exact-head Godot/Python/Android CI and test results.
 - Validate existing garage flows and canonical BuildDocument integration, save/recovery, touch controls and test suite.
 - Exit: reviewed changes merged only after exact-head CI passes; release-scope checklist current.
 
@@ -78,7 +78,7 @@ Priority is not permission to merge: gates still apply.
 ## 6. Live work snapshot (2026-11-16; refresh before execution)
 
 - **PR #50 — governance/status checkpoint:** OPEN. Validate freshness and reconcile against current GitHub inventory before merge.
-- **PR #51 — optional free-first AI assistant integration:** OPEN. Require exact-head CI and security/privacy acceptance; Android hosted secrets remain unsupported by stated design.
+- **PR #53 — optional free-first AI assistant integration:** OPEN; exact-head Godot/Python/Android CI queued. PR #51 was closed as a superseded duplicate after its malformed workflow command was identified; PR #53 carries the corrected workflow.
 - **Issue #47 — Android GLB content-URI support:** BLOCKED/deferred; decision on necessity and plugin reproducibility precedes implementation.
 - **Issue #49 — AI assistant capability:** linked to PR #51; track through PR review and acceptance.
 - Research vault PR #46 is merged; do not re-import its source or create a parallel research cache.
@@ -114,4 +114,4 @@ This snapshot is intentionally provisional; docs/PROJECT_STATUS.md and live GitH
 
 ## 10. Immediate next action
 
-Refresh the current main head, exact-head CI for PRs #50 and #51, and issue #47; then produce a review decision/order of operations before any merge.
+Refresh the current main head, exact-head CI for PRs #50, #52 and #53, and issue #47; then merge eligible reviewed work in dependency order without bypassing any failing or pending gate.
