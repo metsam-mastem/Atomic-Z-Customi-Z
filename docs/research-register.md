@@ -115,3 +115,16 @@ This section records a repository-level verification pass. It corrects unverifie
 ### Non-negotiable adoption gate
 
 No external source or asset is adopted merely because it is open-source or visually useful. Before adoption: verify exact upstream commit/release, license and commercial rights, maintenance, Godot/API compatibility, dependency/security posture, provenance, attribution, code actually reused versus concepts studied, target-device impact and tests. Prefer native Godot functionality unless a measured gap justifies an external dependency.
+
+
+### Kawasaki primary-source identity and specification references — 2026-11-16
+
+- Official Kawasaki Japan 2026 ZX-25RR page: https://www.kawasaki-motors.com/ja-jp/motorcycle/ninja/supersport/ninja-zx-25r/2026-ninja-zx-25rr
+- Official Kawasaki Japan 2026 FAQ / specification attachment: https://faq.kawasaki-motors.com/faq/show/4668?category_id=2&site_domain=default
+- Official Kawasaki Japan 2027 FAQ / specification and accessory attachments: https://faq.kawasaki-motors.com/faq/show/5840?site_domain=default
+
+The official Japanese-market 2027 FAQ identifies the Ninja ZX-25RR as a distinct model from the ZX-25R SE and states its model-specific equipment differences: RR graphic, clear windscreen, Showa BFRC-lite rear shock absorber, and omission of frame sliders and USB socket. The official 2026 product page publishes model specifications including 249 cm³ inline-four engine, 184 kg curb mass, 1,380 mm wheelbase, 1,980 × 750 × 1,110 mm overall dimensions, and 110/70R17 front / 150/60R17 rear tyres. Confirm the exact year/market document before attaching any value to a vehicle definition.
+
+These specification sheets are authoritative identity/specification references, not CAD geometry, part-surface topology, mounting coordinates or engineering drawings. They may seed a cited spec sheet and validation checklist, but they do not validate the procedural placeholder mesh or any fitment.
+
+A third-party parts-catalogue listing was also found, but it is hosted on a document-sharing site and is not the preferred provenance source. Do not copy or redistribute the catalogue. Prefer manufacturer-issued parts documentation and legally obtained model-specific material.
