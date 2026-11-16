@@ -139,7 +139,7 @@ Important corrections and dispositions:
 - `ssebs/moto-player-controller-godot` is an AGPL-3.0 predecessor on Godot 4.5 / Forward+; it is not a current plug-in.
 - `OpenNFS` is MIT-licensed C++/Bullet car-engine research; EA game assets/data and bundled dependencies are separate rights. It is not a Godot motorcycle solver.
 - `OpenUG2` has no clear SPDX licence grant established; study clean-room methods only.
-- `troikoss/speed-re` has a limited MIT statement applying to original contributions, with recovered NFSU2 code/data and retail assets expressly excluded; the revision remains unpinned in this audit.
+- `troikoss/speed-re` has a limited MIT statement applying to original contributions, with recovered NFSU2 code/data and retail assets expressly excluded; the repository is now pinned at commit `892e5c31d77c751acd123330eda15c157c4f1b1f`, but the recovered NFSU2 code/data remain excluded from its MIT grant.
 - The correct official REA project is `morluto/rea`; similarly named forks are not authoritative.
 - `nicolasbize/roadkill` is a confirmed Godot pseudo-3D racing/fighting game, but GitHub reports `NOASSERTION` despite the itch page's MIT/CC claim.
 - The previously cited `rishabhsinghio/Godot-Simple-Motorcycle-Physics` URL returned 404. The cited `alvariusgames/bearcycle` contents did not match a motorcycle project.
