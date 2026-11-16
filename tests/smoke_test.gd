@@ -89,6 +89,27 @@ func _run_smoke_test() -> void:
 		push_error("Painting one part must not recolor another part.")
 		quit(1)
 		return
+	var available_parts: Array = bike.call("get_part_ids")
+	if not ("front_rim" in available_parts) or not ("rear_rim" in available_parts):
+		push_error("Front and rear rims must be independently selectable customization parts.")
+		quit(1)
+		return
+	var front_tire_color_before: Color = bike.call("get_part_color", "front_wheel")
+	var rim_paint := Color("#B58A32")
+	if not bike.call("set_part_color", "front_rim", rim_paint):
+		push_error("The front rim must accept an independent paint edit.")
+		quit(1)
+		return
+	var front_rim_color: Color = bike.call("get_part_color", "front_rim")
+	if not front_rim_color.is_equal_approx(rim_paint):
+		push_error("Front rim color edit did not reach the rim material.")
+		quit(1)
+		return
+	var front_tire_color_after: Color = bike.call("get_part_color", "front_wheel")
+	if not front_tire_color_after.is_equal_approx(front_tire_color_before):
+		push_error("Painting the rim must not recolor the tire.")
+		quit(1)
+		return
 
 	var project_color := Color(0.2, 0.4, 0.9, 1.0)
 	scene.call("_on_body_color_changed", project_color)
