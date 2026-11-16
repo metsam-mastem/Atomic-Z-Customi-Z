@@ -57,3 +57,18 @@ Do not lock FPS or memory budgets until the exact phone SKU, SoC/GPU, RAM and An
 6. Geometric validation and solver adapters.
 7. Plugin package manager and local library.
 8. Android profiling, packaging and regression gates.
+
+
+## Neon skin subsystem (new)
+
+The neon skin is a data-driven design layer, intentionally separated from the Godot runtime:
+- JSON owns palette, glow scalar, named polyline IDs, point sequences and stroke widths.
+- The Tkinter desktop utility is a fast 2D authoring/preview companion; it does not become an Android runtime dependency.
+- A future Godot importer can read the same JSON and map design paths onto verified 3D surfaces using UV coordinates, decal meshes or curve meshes.
+- Keep stable segment IDs so revisions, visibility toggles and material bindings survive palette changes.
+
+### Required conversion before 3D application
+The current points are 2D canvas pixels. To project them onto the motorcycle, first acquire a correctly scaled side-view reference for the exact model year/market, register image coordinates to the vehicle coordinate system, then map each path to a 3D surface/UV region. Do not project from the current stylized Tkinter silhouette or infer dimensions from these sample points.
+
+### Color and rendering semantics
+The JSON stores sRGB hex colors and a normalized glow intensity in [0, 1]. The Tkinter preview approximates glow using layered 2D strokes. The Godot implementation should convert colors consistently, use emissive materials and a restrained bloom/glow post-process only on capable device tiers. Tkinter's glow is not physically based light emission.
