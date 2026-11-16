@@ -468,7 +468,7 @@ func _install_selected_glb(license_id: String, source_record: String) -> void:
 	candidate_bike.name = "ImportedMotorcycle"
 	candidate_bike.configure_build_document(candidate_document)
 	add_child(candidate_bike)
-	await process_frame
+	await get_tree().process_frame
 	if not candidate_bike.is_imported_model():
 		candidate_bike.queue_free()
 		push_warning("GLB import was rejected. The existing garage model remains active; inspect the output warnings for details.")
