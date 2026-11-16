@@ -248,6 +248,10 @@ func _test_quality_controller() -> bool:
 	root.add_child(frame_light)
 	root.add_child(frame_controller)
 	frame_controller.configure(frame_light)
+	var tier_changes: Array[String] = []
+	frame_controller.quality_tier_changed.connect(func(tier: String, _fps: float) -> void:
+		tier_changes.append(tier)
+	)
 	if not frame_controller.has_method("record_frame"):
 		push_error("QualityController must expose frame-delta sampling for the runtime.")
 		return false
@@ -279,6 +283,9 @@ func _test_quality_controller() -> bool:
 	if frame_controller.call("get_quality_tier") != "performance" or frame_light.shadow_enabled:
 		push_error("Two consecutive low-FPS windows must switch to performance tier.")
 		return false
+	if tier_changes != ["performance"]:
+		push_error("Quality-tier change signal must emit exactly once when entering performance tier.")
+		return false
 	for _window in range(3):
 		_feed_quality_window(frame_controller, 60)
 	if not bool(frame_controller.call("is_reduced_quality")):
@@ -294,6 +301,9 @@ func _test_quality_controller() -> bool:
 	if frame_controller.call("get_quality_tier") != "quality" or not frame_light.shadow_enabled:
 		push_error("Four consecutive high-FPS windows must restore the quality tier.")
 		return false
+	if tier_changes != ["performance", "quality"]:
+		push_error("Quality-tier change signal must emit once for each actual tier transition.")
+		return false
 	_feed_quality_window(frame_controller, 20)
 	_feed_quality_window(frame_controller, 20)
 	frame_controller.call("reset_adaptive_state")
@@ -302,6 +312,9 @@ func _test_quality_controller() -> bool:
 		return false
 	if not is_equal_approx(float(frame_controller.call("get_last_measured_fps")), 0.0):
 		push_error("Reset must clear stale FPS telemetry.")
+		return false
+	if tier_changes != ["performance", "quality", "performance", "quality"]:
+		push_error("Reset must emit a single event when it changes the active tier.")
 		return false
 
 	frame_controller.free()
