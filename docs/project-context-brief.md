@@ -1,59 +1,80 @@
-# Atomic Z / JARYAN Virtual Fab Lab — Project Context Brief
+# Atomic-Z-Customi-Z — Project Context Brief
 
-Last reconciled: 2026-11-16
+**Last reconciled:** 2026-11-16  
+**Canonical repository:** https://github.com/metsam-mastem/Atomic-Z-Customi-Z  
+**Context governance:** [CONTEXT_INTEGRITY_PROTOCOL.md](CONTEXT_INTEGRITY_PROTOCOL.md)
 
-## Project identity and boundary
+## 1. Project identity and boundary
 
-- Project: JARYAN Virtual Fab Lab / Atomic-Z-Customi-Z.
-- Canonical repository: https://github.com/metsam-mastem/Atomic-Z-Customi-Z
-- Product direction: Android-first cinematic motorcycle garage, customization, fabrication and engineering-preview lab; modular and extensible.
-- This is a dedicated project stream. Do not merge unrelated JARYAN or other project repositories/workstreams without an explicit instruction.
+- Product: Atomic-Z-Customi-Z — one integrated, Android-first motorcycle customization workbench / virtual garage.
+- Runtime and Android delivery: Godot 4 / GDScript.
+- Rendering baseline: Godot Compatibility renderer until measured device evidence justifies a change.
+- Canonical editable state: one versioned `BuildDocument`.
+- Preferred asset interchange: glTF 2.0 / GLB with recorded provenance, license, coordinate frame and validation.
+- Experience: one application, one active vehicle/build context, one HUD/workflow and one persistence/export pipeline.
+- Accepted target identity in project decisions: Kawasaki Ninja ZX-25RR. Exact model year, market and geometry compatibility remain unresolved/evidence-gated.
 
-## User decisions recovered from project conversations
+This repository is a dedicated project stream. Do not merge unrelated JARYAN workstreams or other projects without explicit product-owner direction.
 
-- Accepted base motorcycle: Kawasaki Ninja ZX-25RR.
-- Entry modes: Stock and Exploded.
-- Graphics quality: Adaptive.
-- Primary platform: Android.
-- Earlier architecture direction: Godot 4 with Compatibility renderer and modular asset packs.
+## 2. User decisions and accepted architecture
 
-## Existing implementation and evidence boundaries
+- Android-first product direction.
+- Godot 4 is the only product runtime and Android delivery engine.
+- Compatibility renderer is the baseline; adaptive quality must be measured on target hardware.
+- Internal modules are allowed, but they are components of one product, not independent apps or subprojects.
+- One canonical BuildDocument owns vehicle, assembly, materials, graphic/neon and render settings.
+- Stock and Exploded are views of the same assembly/build context.
+- Use stable vehicle, part, surface and layer IDs.
+- Hardware mapping requires calibrated controller/LED profiles and explicit validation.
+- Visual preview, geometry checks, engineering simulation, mechanical fitment, road legality and physical hardware deployment are separate evidence classes.
 
-- Godot 4 garage / assembly foundation is present in the repository.
-- The first scene uses procedural placeholder geometry. It is not a factory-accurate Kawasaki model or validated engineering asset.
-- Stock/Exploded assembly and neon skin functionality have code and headless test coverage as described in the root README and acceptance documents.
-- A Python/Tkinter 2D neon design-preview utility exists and consumes neon_skin_config.json.
-- Godot neon runtime consumes the shared JSON, with provisional mapping onto a generic side plane. It is not UV-mapped or conformed to verified motorcycle body panels.
-- CI/headless PASS claims apply only to the named checks and commit/run recorded in docs/acceptance.md. They do not establish Android export, physical-device behavior, fitment, or engineering validity.
-- Exact ZX-25RR model, APK/device validation, and engineering simulation remain unresolved.
+## 3. Vehicle identity and asset boundary
 
-## Motorcycle identity / fitment constraint
+A prior neon design input names ZX-25R, while the accepted base vehicle is ZX-25RR. Preserve the distinction until authoritative model-year/market documentation establishes compatibility. Do not silently transfer dimensions, body geometry, parts or fitment between variants.
 
-A prior user request explicitly named ZX-25R for the neon skin configuration, while the accepted project base is ZX-25RR. Preserve both labels in their respective contexts until the user or authoritative model-year/market documentation resolves compatibility. Do not silently treat ZX-25R and ZX-25RR as interchangeable for exact body geometry, dimensions, parts, or fitment.
+The current procedural motorcycle geometry is placeholder geometry. It is not factory Kawasaki CAD, a verified ZX-25RR replica or an engineering-validated model. Record asset source, license, hash, dimensions, coordinate frame and validation status before elevating an asset's evidence level.
 
-## Neon renderer decision (2026-11-16)
+## 4. Unified state and legacy data
 
-- User supplied a Python 3.10+ ModernGL / moderngl-window / GLFW shader prototype labelled Atomic-Z-Customi-Z v1.0.
-- It has been preserved under experiments/modern_gl_neon/ with a separate audit and dependency declaration.
-- Its "Production Release" header is not accepted as a verified release status.
-- The code has known initialization-order, shader falloff, matrix upload, model-loader contract, geometry fidelity, camera-control, post-processing and Android-delivery gaps.
-- ModernGL remains an isolated desktop rendering experiment. Godot 4 remains the product runtime and Android path.
-- Keep neon_skin_config.json as the shared design-data contract; future adapters should use a versioned schema and stable segment IDs.
+- `BuildDocument` is the single authoritative editable build state.
+- `neon_skin_config.json` is a legacy/migration input or compatibility format only; it must not become a second authoritative writer.
+- Any migration must preserve stable IDs and include schema validation and round-trip tests.
+- The historical PR #4 skin-profile store and its independent `user://skin_profile.json` persistence require reconciliation against the canonical BuildDocument before any further integration. Do not treat its existence or prior merge as approval for a parallel source of truth.
+- Python/Tkinter and ModernGL are development/research aids, not alternate product runtimes. Port selected ideas into Godot only after compatibility, value and license review.
 
-## Next work, in dependency order
+## 5. Repository implementation/evidence notes
 
-1. Resolve exact target vehicle variant/year/market for model-specific assets and skin fitment.
-2. Acquire or author a properly licensed model; record source, license, dimensions, coordinate frame and asset hash.
-3. Validate the current Godot garage and neon subsystem against the repository acceptance gates.
-4. Improve shared skin schema versioning and map neon paths onto verified 3D surfaces / UVs.
-5. Keep ModernGL work isolated; first fix and test its startup fallback, shader math, matrix convention and model import before visual or performance claims.
-6. Export and profile Android on the target device; record exact device SKU, GPU, Android version, build hash, frame-time, memory and thermal evidence.
-7. Treat engineering simulation, road legality and mechanical fitment as separate validated capabilities, not visual-preview features.
+The root README and canonical specifications describe the intended product and developer workflow. Current source presence, historical PR descriptions and older CI runs must not be interpreted as proof that the current main commit passes all gates.
 
-## Status vocabulary
+Known evidence boundaries from inspected repository documentation and PR descriptions:
 
-Use PASS / FAIL / NOT RUN / BLOCKED. Do not report a feature as complete without corresponding test or device evidence. Visual preview is not engineering validation.
+- Godot headless import/smoke/neon/BuildDocument checks have been reported PASS on named historical runs; verify exact current commit before relying on them.
+- Android Debug export has been reported failing with a generic preset-configuration error. PR #8 adds verbose diagnostics; root cause and successful export are not established by that PR description.
+- Android installation and physical Redmi Note 13 Pro validation remain separate gates.
+- Surface-aligned neon paths require a verified model/UV/surface binding; approximate 2D-to-3D mapping is not fitment evidence.
+- No mechanical fitment, mass, stress, structural safety or road-legality claim is established by a visual model.
 
-## Corrected integration mandate (2026-11-16)
+## 6. Current GitHub snapshot — 2026-11-16
 
-The user's latest explicit direction supersedes any earlier suggestion to create separate connected subsystems: all capabilities must be components of ONE integrated, modular/puzzle-like system. Godot 4 remains the only product runtime; one BuildDocument, one active vehicle context, one HUD/workflow and one persistence/export pipeline. ModernGL v2 is assessed for feature ideas to port into Godot, not as another product renderer. Multi-agent governance requires branch/PR-based work and preflight inspection.
+- Default branch: `main`.
+- Branch search returned seven branches: `main`, `agent/integration/1-build-document-contract`, `agent/integration/5-android-export-diagnostics`, `agent/research/godot-mobile-rendering-integration`, `agent/research/5-verified-source-audit`, `docs/product-charter-workflows-handoff`, and `feat/commercial-neon-shader-skin-data`.
+- PR #7 and PR #8 were returned by the open-PR search.
+- PR #2, #3, #4 and #6 were returned by the closed-PR search; recent main history includes merge commits for #2, #3, #4 and #6.
+- This snapshot is temporary. Recheck GitHub before each task; do not rely on these branch/PR states indefinitely.
+
+## 7. Work sequence (dependency-aware)
+
+1. Confirm exact target vehicle year/market/variant before model-specific assets or fitment.
+2. Audit canonical BuildDocument readers/writers and reconcile historical skin persistence paths.
+3. Verify the current Godot baseline and all applicable headless/contract tests.
+4. Diagnose Android export from the detailed CI logs; do not mutate export settings speculatively.
+5. Acquire or author licensed geometry; validate GLB structure, dimensions, coordinate frame, IDs and surface/material bindings.
+6. Bind customization layers to verified surfaces and preserve the one-document save/load/export flow.
+7. Profile and validate on the exact target Android device; record device SKU, SoC/GPU, OS, build hash, frame time, memory and thermal evidence.
+8. Add engineering/hardware capabilities only with explicit assumptions, calibrated inputs and separate acceptance gates.
+
+## 8. Status vocabulary
+
+Use `PASS` / `FAIL` / `NOT RUN` / `BLOCKED`. Never infer a passing test from code presence, a PR title, a previous commit or an unrelated CI job.
+
+For conflict classification, evidence hierarchy and recovery procedure, follow [CONTEXT_INTEGRITY_PROTOCOL.md](CONTEXT_INTEGRITY_PROTOCOL.md).

@@ -7,11 +7,13 @@ Atomic-Z-Customi-Z is a 3D motorcycle garage and customization workbench for veh
 **Asset honesty:** current motorcycle geometry is procedural placeholder geometry, not Kawasaki factory CAD, not a verified ZX-25RR replica and not an engineering-validated model.
 
 ## Product concept illustration
+
 ![Atomic-Z-Customi-Z product concept](assets/product-concept.svg)
 
 The illustration is an authored product/UI concept reference, not a runtime screenshot. A separate cinematic concept image was generated for visual presentation; runtime and device screenshots remain pending.
 
 ## The integrated experience
+
 - Vehicle identity and variant selection.
 - Named part assembly with Stock / Exploded views.
 - Orbit camera, touch/mouse input and adaptive rendering.
@@ -23,15 +25,18 @@ The illustration is an authored product/UI concept reference, not a runtime scre
 These are integrated capabilities of one application, not separate products or standalone subprojects.
 
 ## Run
+
 1. Install the supported Godot 4 editor.
 2. Clone this repository.
 3. Import the folder containing project.godot.
 4. Run the project from the editor.
 
 ## Android
+
 An Android arm64 debug export preset and CI export job are present. A CI-generated APK is not equivalent to installation and validation on the target Redmi device. Physical-device acceptance remains separate.
 
 ## Verification
+
 Run the current headless checks from the repository root:
 
     godot --headless --editor --path . --quit
@@ -42,17 +47,20 @@ Run the current headless checks from the repository root:
 The Python tests currently cover the legacy desktop authoring/preview utility. That utility is a development aid and compatibility path, not a separate product experience. Product customization must converge into the Godot runtime and canonical BuildDocument.
 
 ## Architecture and governance
+
 Read these before changing code:
-- AGENTS.md — mandatory rules for every coding model/agent.
-- docs/UNIFIED_SYSTEM_SPEC.md — product and system contract.
-- docs/AGENT_GOVERNANCE.md — concurrent agent/branch/PR policy.
-- docs/ROADMAP.md — end-to-end phases and exit gates.
-- docs/V2_CODE_ASSESSMENT.md — v2 ModernGL feasibility and integration mapping.
-- docs/RESEARCH_AND_DECISIONS.md — GitHub, Build Your Own X, Nature research and ADRs.
-- docs/architecture.md — technical architecture.
-- docs/acceptance.md — testable acceptance gates.
+- [AGENTS.md](AGENTS.md) — mandatory rules for every coding model/agent.
+- [Context Integrity Protocol](docs/CONTEXT_INTEGRITY_PROTOCOL.md) — project identity, evidence hierarchy, contamination recovery and context classification.
+- [Unified System Specification](docs/UNIFIED_SYSTEM_SPEC.md) — product and system contract.
+- [Agent Governance](docs/AGENT_GOVERNANCE.md) — concurrent agent/branch/PR policy.
+- [Roadmap](docs/ROADMAP.md) — end-to-end phases and exit gates.
+- [Research and Decisions](docs/RESEARCH_AND_DECISIONS.md) — GitHub, Build Your Own X, Nature research and ADRs.
+- [Architecture](docs/architecture.md) — technical architecture.
+- [Acceptance](docs/acceptance.md) — testable acceptance gates.
+- [Project Context Brief](docs/project-context-brief.md) — reconciled project context and current work sequence.
 
 ## Project charter, philosophy & handoff
+
 - [Project Charter](docs/PROJECT_CHARTER.md) — mission, scope, success criteria and governance.
 - [Manifesto & Philosophy](docs/MANIFESTO.md) — principles, product promise and creative philosophy.
 - [Product Catalog](docs/PRODUCT_CATALOG.md) — current capabilities versus roadmap; no overclaiming.
@@ -61,10 +69,13 @@ Read these before changing code:
 - [Repository Audit & Work Report](docs/PROJECT_AUDIT_REPORT.md) — inspected files, gaps, work performed and validation status.
 
 ## Technology boundary
+
 Godot owns the product scene, UI, input, materials, effects, persistence and Android export. Blender to GLB/glTF 2.0 to validation to Godot is the preferred asset path. Python/Tkinter and ModernGL are reference/developer tools; useful controls and rendering ideas are ported into Godot, not shipped as parallel product runtimes.
 
 ## Vehicle identity
+
 The accepted base vehicle in project decisions is Kawasaki Ninja ZX-25RR. The initial neon document explicitly says ZX-25R. Do not treat these as identical for geometry, parts or fitment until exact year/market/variant evidence resolves the difference.
 
 ## Status vocabulary
+
 Use PASS / FAIL / NOT RUN / BLOCKED. Code presence or a green headless test is not proof of Android device performance, factory geometry, fitment or engineering validity.
