@@ -44,6 +44,7 @@ Run the current headless checks from the repository root:
     godot --headless --editor --path . --quit
     godot --headless --path . --script res://tests/smoke_test.gd
     godot --headless --path . --script res://tests/neon_skin_test.gd
+    godot --headless --path . --script res://tests/build_document_ui_state_test.gd
     python -m unittest discover -s tests -p "test_*.py" -v
 
 The Python tests currently cover the legacy desktop authoring/preview utility. That utility is a development aid and compatibility path, not a separate product experience. Product customization must converge into the Godot runtime and canonical BuildDocument.
