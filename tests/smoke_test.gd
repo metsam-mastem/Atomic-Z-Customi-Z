@@ -374,6 +374,21 @@ func _feed_quality_window(controller: Node, fps: int) -> void:
 
 
 func _test_touch_gestures() -> bool:
+	var sync_probe = GarageTouchGesturesScript.new()
+	sync_probe.sync_camera_state(0.75, 0.2, 6.2, Vector3(0.5, 0.25, -0.4))
+	var synchronized: Dictionary = sync_probe.get_camera_state()
+	if not is_equal_approx(float(synchronized.get("orbit_angle", 0.0)), 0.75):
+		push_error("Touch gestures must inherit the current camera orbit after mouse interaction.")
+		return false
+	if not is_equal_approx(float(synchronized.get("orbit_distance", 0.0)), 6.2):
+		push_error("Touch gestures must inherit the current camera zoom after mouse interaction.")
+		return false
+	var synchronized_offset: Vector3 = synchronized.get("target_offset", Vector3.ZERO)
+	if not synchronized_offset.is_equal_approx(Vector3(0.5, 0.25, -0.4)):
+		push_error("Touch gestures must inherit the current camera pan offset.")
+		return false
+	sync_probe.free()
+
 	var gestures = GarageTouchGesturesScript.new()
 	var initial: Dictionary = gestures.get_camera_state()
 	var first_down := InputEventScreenTouch.new()
