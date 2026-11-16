@@ -23,7 +23,7 @@ func _test_legacy_profile_migration_contract() -> void:
 	source["render"]["glow_intensity"] = 0.35
 	var source_before := source.duplicate(true)
 	var legacy_profile := {
-		"schema_version": 1,
+		"schema_version": 1.0,
 		"color": "#224466FF",
 		"glow_intensity": 3.5,
 		"pulse_speed": 2.25
@@ -60,7 +60,7 @@ func _test_legacy_profile_migration_contract() -> void:
 func _test_legacy_profile_startup_migration() -> void:
 	_cleanup_user_files()
 	var legacy_profile := {
-		"schema_version": 1,
+		"schema_version": 1.0,
 		"color": "#224466FF",
 		"glow_intensity": 3.5,
 		"pulse_speed": 2.25
@@ -105,7 +105,7 @@ func _test_canonical_document_precedence_and_hud_hydration() -> void:
 	_assert(BuildDocumentStoreScript.save_document(document, BUILD_PATH), "Test BuildDocument must be saved before opening the garage.")
 
 	var conflicting_profile := {
-		"schema_version": 1,
+		"schema_version": 1.0,
 		"color": "#ABCDEF",
 		"glow_intensity": 7.0,
 		"pulse_speed": 4.0
