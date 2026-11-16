@@ -42,6 +42,7 @@ Read these before changing code:
 - docs/UNIFIED_SYSTEM_SPEC.md — product and system contract.
 - docs/AGENT_GOVERNANCE.md — concurrent agent/branch/PR policy.
 - docs/ROADMAP.md — end-to-end phases and exit gates.
+- docs/GODOT_MOTORCYCLE_RENDERING_RESEARCH.md — GLB material slots, neon/glow, mobile renderer and physics scope review.
 - docs/V2_CODE_ASSESSMENT.md — v2 ModernGL feasibility and integration mapping.
 - docs/RESEARCH_AND_DECISIONS.md — GitHub, Build Your Own X, Nature research and ADRs.
 - docs/architecture.md — technical architecture.
