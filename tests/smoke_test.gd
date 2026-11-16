@@ -4,6 +4,7 @@ const BuildDocumentScript = preload("res://scripts/build_document.gd")
 const BikeAssemblyScript = preload("res://scripts/bike_assembly.gd")
 const NeonSkinScript = preload("res://scripts/neon_skin.gd")
 const QualityControllerScript = preload("res://scripts/quality_controller.gd")
+const GarageTouchGesturesScript = preload("res://scripts/garage_touch_gestures.gd")
 
 func _initialize() -> void:
 	call_deferred("_run_smoke_test")
@@ -226,7 +227,11 @@ func _run_smoke_test() -> void:
 		quit(1)
 		return
 
-	print("PASS: part-isolated paint, canonical state, neon visibility and BuildDocument save/reload recovery.")
+	if not _test_touch_gestures():
+		quit(1)
+		return
+
+	print("PASS: part-isolated paint, canonical state, neon visibility, save/reload recovery and multi-touch camera gestures.")
 
 	quit(0)
 
@@ -366,3 +371,55 @@ func _feed_quality_window(controller: Node, fps: int) -> void:
 	var frame_delta := 2.0 / float(frame_count)
 	for _frame in range(frame_count):
 		controller.call("record_frame", frame_delta)
+
+
+func _test_touch_gestures() -> bool:
+	var gestures = GarageTouchGesturesScript.new()
+	var initial: Dictionary = gestures.get_camera_state()
+	var first_down := InputEventScreenTouch.new()
+	first_down.index = 0
+	first_down.pressed = true
+	first_down.position = Vector2(100.0, 100.0)
+	gestures.handle_event(first_down)
+
+	var one_finger_drag := InputEventScreenDrag.new()
+	one_finger_drag.index = 0
+	one_finger_drag.position = Vector2(150.0, 115.0)
+	gestures.handle_event(one_finger_drag)
+	var orbited: Dictionary = gestures.get_camera_state()
+	if is_equal_approx(float(orbited.get("orbit_angle", 0.0)), float(initial.get("orbit_angle", 0.0))):
+		push_error("Single-finger touch must orbit the garage camera.")
+		return false
+
+	var second_down := InputEventScreenTouch.new()
+	second_down.index = 1
+	second_down.pressed = true
+	second_down.position = Vector2(250.0, 115.0)
+	gestures.handle_event(second_down)
+	var before_pinch: float = float(gestures.get_camera_state().get("orbit_distance", 0.0))
+	var two_finger_drag := InputEventScreenDrag.new()
+	two_finger_drag.index = 1
+	two_finger_drag.position = Vector2(310.0, 115.0)
+	gestures.handle_event(two_finger_drag)
+	var pinched: Dictionary = gestures.get_camera_state()
+	if not float(pinched.get("orbit_distance", 0.0)) < before_pinch:
+		push_error("Two-finger pinch-out must zoom the garage camera in.")
+		return false
+	if Vector3(pinched.get("target_offset", Vector3.ZERO)).is_equal_approx(Vector3.ZERO):
+		push_error("Two-finger centroid movement must pan the garage camera target.")
+		return false
+
+	var second_up := InputEventScreenTouch.new()
+	second_up.index = 1
+	second_up.pressed = false
+	second_up.position = Vector2(310.0, 115.0)
+	gestures.handle_event(second_up)
+	gestures.reset()
+	var reset_state: Dictionary = gestures.get_camera_state()
+	if not is_equal_approx(float(reset_state.get("orbit_distance", 0.0)), 5.3):
+		push_error("Reset must restore the default garage camera distance.")
+		return false
+	if not Vector3(reset_state.get("target_offset", Vector3.ONE)).is_equal_approx(Vector3.ZERO):
+		push_error("Reset must clear the camera pan offset.")
+		return false
+	return true
