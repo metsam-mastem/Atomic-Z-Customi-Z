@@ -36,3 +36,10 @@ Status vocabulary: PASS / FAIL / NOT RUN / BLOCKED. Source code existing is not 
 
 ## Verification record
 No Godot editor/runtime, Android export or physical-device test has been run during this GitHub bootstrap. Runtime and device gates remain NOT RUN until executed in the project environment.
+
+
+## Latest CI evidence
+- PASS — Godot 4.4.1 headless project import/parse and smoke test at commit 2f3fb46ef80f6304355a1eb37260ffecfedeee54.
+- PASS — smoke assertions: main scene load, named fuel-tank part, exploded transform movement, stock transform restoration and body material update.
+- Run: https://github.com/metsam-mastem/Atomic-Z-Customi-Z/actions/runs/43778397883
+- NOT RUN — Android export/install, visual review, touch-on-device, thermal/performance profile and manufacturer-model accuracy.
